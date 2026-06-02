@@ -13,9 +13,9 @@ A scaffolding and deployment toolkit for building stateless web applications in 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/segpr-ndgr/aurora}
-  \item \url{https://segpr-ndgr.github.io/aurora}
-  \item Report bugs at \url{https://github.com/segpr-ndgr/aurora/issues}
+  \item \url{https://github.com/aurora-govpe/aurora-rpkg}
+  \item \url{https://aurora-govpe.github.io/aurora-rpkg}
+  \item Report bugs at \url{https://github.com/aurora-govpe/aurora-rpkg/issues}
 }
 
 }

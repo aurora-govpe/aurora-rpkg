@@ -45,7 +45,7 @@ Browser  <-->  plumber2 server (aurora_app)
 ## Quick start
 
 ```r
-# install.packages("pak"); pak::pak("segpr-ndgr/aurora")
+# install.packages("pak"); pak::pak("aurora-govpe/aurora-rpkg")
 library(aurora)
 
 aurora_create_app("meu_app", template = "minimal")
@@ -77,8 +77,8 @@ telemetry are opt-in (`aurora_create_app(template = "auth")`,
 | `aurora_auth_jwt()` + `aurora_jwt_*` / `aurora_*_auth_cookie()` | JWT-cookie auth scheme (pluggable) |
 | `aurora_dockerfile()` / `aurora_build_image()` / `aurora_shinyproxy_yaml()` | Deploy: Docker + ShinyProxy |
 
-See the [Get started](https://segpr-ndgr.github.io/aurora/articles/aurora.html)
-article and the [Gallery](https://segpr-ndgr.github.io/aurora/articles/gallery.html).
+See the [Get started](https://aurora-govpe.github.io/aurora-rpkg/articles/aurora.html)
+article and the [Gallery](https://aurora-govpe.github.io/aurora-rpkg/articles/gallery.html).
 
 ## Design decisions (see `dev/DECISIONS.md`)
 

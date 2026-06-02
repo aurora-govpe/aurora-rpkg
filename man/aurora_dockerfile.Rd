@@ -10,7 +10,7 @@ aurora_dockerfile(
   base = NULL,
   sysdeps = "auto",
   port = 8000L,
-  aurora_source = "segpr-ndgr/aurora",
+  aurora_source = "aurora-govpe/aurora-rpkg",
   write = TRUE
 )
 }

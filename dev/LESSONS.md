@@ -65,6 +65,20 @@ you hit them.
   serializes as `{"status":["ok"]}`. The reference app's `jsonlite::unbox`
   guards still apply.
 
+## From validating the alpine (r-minimal) Dockerfile flavor
+
+- The curated Alpine `-t`/`-a` names are correct (all apk packages resolve). The
+  plumber2 baseline needs, beyond TLS/curl/sodium/xml: `icu-dev` (stringi via
+  roxygen2), `zlib-dev`, `cmake` (nanonext), `libuv-dev` (fs), the graphics stack
+  (fontconfig/freetype/harfbuzz/fribidi/cairo/png/tiff/jpeg), and — non-obvious —
+  **`rust` + `cargo`**: `plumber2 -> routr -> waysign` is a Rust package, and with
+  no CRAN binaries on Alpine it must compile (build-time only). On debian/PPM
+  these all arrive as binaries, so the issue is Alpine-specific.
+- `pak`'s `local::<tarball>` reader breaks on Alpine (busybox `tar`): "Line
+  starting 'aurora/DESCRIPTION ...' is malformed". Affects LOCAL tarballs only;
+  the published GitHub install path is unaffected. For local validation, install
+  aurora via `install.packages(repos = NULL)` (R's own untar) after its deps.
+
 ## From validating a generated Dockerfile with a real `docker build`
 
 - **PPM needs `HTTPUserAgent`, not just `repos`, to serve Linux binaries.**

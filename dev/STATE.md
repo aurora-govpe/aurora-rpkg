@@ -198,7 +198,7 @@ Bugs found and fixed in `R/dockerfile.R` / `R/run.R` / minimal template:
   `aurora_run(rebuild_ui=NULL)` resolves the env). `aurora_dockerfile()` installs
   RUNTIME deps only (routers/+helpers/+api.R, not build_ui/ui_modules), so no
   bslib/shiny/brand.yml in the image. Build the UI before the image.
-Note: the GitHub-source install line (`pak::pak('segpr-ndgr/aurora')`) is the one
+Note: the GitHub-source install line (`pak::pak('aurora-govpe/aurora-rpkg')`) is the one
 bit not validated locally (aurora unpublished); validation used the tarball.
 
 ## Next actions (pick up here)

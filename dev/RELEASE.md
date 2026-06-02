@@ -25,7 +25,7 @@ git push origin main --tags
 - [ ] Bump `DESCRIPTION` to the next dev version (`0.1.0.9000`) and add a new
       `# aurora 0.1.0.9000 (development)` heading to `NEWS.md`.
 - [ ] (Optional) Pin the Dockerfile install to the tag: pass
-      `aurora_dockerfile(aurora_source = "segpr-ndgr/aurora@v0.1.0")` for
+      `aurora_dockerfile(aurora_source = "aurora-govpe/aurora-rpkg@v0.1.0")` for
       reproducible images.
 
 ## Not blocking 0.1.0 (tracked in dev/PLAN.md / BACKLOG.md)

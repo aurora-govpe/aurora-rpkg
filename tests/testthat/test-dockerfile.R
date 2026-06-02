@@ -15,7 +15,7 @@ test_that("debian flavor (default) targets rocker + PPM binaries", {
   expect_match(df, "packagemanager.posit.co", fixed = TRUE)
   expect_match(df, "HTTPUserAgent", fixed = TRUE)
   expect_match(df, "install.packages(c('plumber2'", fixed = TRUE)
-  expect_match(df, "pak::pak('segpr-ndgr/aurora')", fixed = TRUE)
+  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg')", fixed = TRUE)
   expect_match(df, "CMD [\"Rscript\", \"api.R\"]", fixed = TRUE)
 })
 
@@ -28,7 +28,7 @@ test_that("alpine flavor targets r-minimal + installr", {
   expect_match(df, "-a \"", fixed = TRUE)        # runtime libs
   expect_no_match(df, "gdal")                    # geo not in the baseline
   expect_match(df, "plumber2", fixed = TRUE)
-  expect_match(df, "segpr-ndgr/aurora", fixed = TRUE)
+  expect_match(df, "aurora-govpe/aurora-rpkg", fixed = TRUE)
   expect_match(df, "Rcppcore/Rcpp", fixed = TRUE) # musl workaround
   expect_no_match(df, "packagemanager.posit.co")  # no PPM on alpine
 })

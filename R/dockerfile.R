@@ -50,13 +50,18 @@ ppm_jammy <- "https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 # these cover TLS/curl/sodium/xml + fonts/graphics. App-specific deps (e.g. geo)
 # are added from `pkg_sysreqs(sysreqs_platform = "alpine")` or passed via `sysdeps`.
 default_alpine_build <- c(
-  "linux-headers", "openssl-dev", "curl-dev", "libsodium-dev", "libxml2-dev",
+  "linux-headers", "cmake", "openssl-dev", "curl-dev", "libsodium-dev",
+  "libxml2-dev", "icu-dev", "zlib-dev",
   "fontconfig-dev", "freetype-dev", "harfbuzz-dev", "fribidi-dev", "cairo-dev",
-  "libpng-dev", "tiff-dev", "jpeg-dev", "libuv-dev"
+  "libpng-dev", "tiff-dev", "jpeg-dev", "libuv-dev",
+  # plumber2 -> routr -> waysign is a Rust package; Alpine has no CRAN binaries
+  # so it must compile, which needs the Rust toolchain (build-time only).
+  "rust", "cargo"
 )
 default_alpine_runtime <- c(
-  "libssl3", "libcurl", "libsodium", "libxml2", "fontconfig", "freetype",
-  "harfbuzz", "fribidi", "cairo", "libpng", "tiff", "libjpeg-turbo", "libuv"
+  "libssl3", "libcurl", "libsodium", "libxml2", "icu-libs", "zlib",
+  "fontconfig", "freetype", "harfbuzz", "fribidi", "cairo",
+  "libpng", "tiff", "libjpeg-turbo", "libuv"
 )
 
 # --- Dockerfile bodies (one per flavor) ---------------------------------------
@@ -165,7 +170,7 @@ aurora_dockerfile <- function(dir = ".",
                               base = NULL,
                               sysdeps = "auto",
                               port = 8000L,
-                              aurora_source = "segpr-ndgr/aurora",
+                              aurora_source = "aurora-govpe/aurora-rpkg",
                               write = TRUE) {
   flavor <- rlang::arg_match(flavor)
   cfg <- read_config(dir)
