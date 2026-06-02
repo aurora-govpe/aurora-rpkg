@@ -99,8 +99,7 @@ JWT-cookie session needs a uniform `401` for both absent and expired
 sessions (cookie expiry looks like “absent”) and no extra infrastructure
 — so aurora uses a `@header` guard +
 [`reqres::abort_unauthorized()`](https://reqres.data-imaginist.com/reference/abort_http_problem.html),
-the migration-endorsed replacement for v1 filters. (See the ADRs in the
-package’s `dev/DECISIONS.md`.)
+the migration-endorsed replacement for v1 filters.
 
 ## Production checklist
 

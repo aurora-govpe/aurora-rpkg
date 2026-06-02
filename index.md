@@ -81,7 +81,7 @@ started](https://aurora-govpe.github.io/aurora-rpkg/articles/aurora.html)
 article and the
 [Gallery](https://aurora-govpe.github.io/aurora-rpkg/articles/gallery.html).
 
-## Design decisions (see `dev/DECISIONS.md`)
+## Design decisions
 
 - **plumber2 only** (ADR-001). Each handler’s URL comes from its
   annotation.
@@ -100,15 +100,12 @@ article and the
 
 ## Status
 
-Development (`0.0.0.9000`). The local dev loop, theming, UI↔︎API wiring,
-auth, the hot-reload data store, telemetry, Docker/ShinyProxy
-generation, the docs site, and three worked examples are in place;
-`R CMD check` is clean (0 errors / 0 warnings). See `dev/PLAN.md` /
-`dev/STATE.md`.
+`0.1.0`. The local dev loop, theming, UI↔︎API wiring, auth, the
+hot-reload data store, telemetry, Docker/ShinyProxy generation, the docs
+site, and three worked examples are in place; `R CMD check` is clean (0
+errors / 0 warnings).
 
-## For contributors / agents
+## License
 
-`CLAUDE.md` (root) is the operating manual. `dev/` holds the durable
-project memory: `STATE.md` (resume point), `PLAN.md`, `ARCHITECTURE.md`,
-`DECISIONS.md`, `LESSONS.md`, `PLUMBER2-NOTES.md`, `MIGRATION-V1-V2.md`,
-`BACKLOG.md`.
+MIT © Equipe NGR-Dados. Contributions welcome via issues and pull
+requests.

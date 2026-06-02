@@ -41,8 +41,7 @@ An htmltools tag.
 ## Details
 
 aurora deliberately ships no rendering JavaScript: this keeps the
-runtime thin (see the design invariants in `CLAUDE.md` / ADR-002 and
-ADR-009) and leaves charts, tables, and maps fully under the app's
+runtime thin and leaves charts, tables, and maps fully under the app's
 control. Use it to avoid hand-writing the `data-*` plumbing on every
 element.
 

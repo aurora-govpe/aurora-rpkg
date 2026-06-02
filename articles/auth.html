@@ -200,8 +200,7 @@ self-issued JWT-cookie session needs a uniform <code>401</code> for both
 absent and expired sessions (cookie expiry looks like “absent”) and no
 extra infrastructure — so aurora uses a <code>@header</code> guard +
 <code><a href="https://reqres.data-imaginist.com/reference/abort_http_problem.html" class="external-link">reqres::abort_unauthorized()</a></code>, the migration-endorsed
-replacement for v1 filters. (See the ADRs in the package’s
-<code>dev/DECISIONS.md</code>.)</p>
+replacement for v1 filters.</p>
 </div>
 <div class="section level2">
 <h2 id="production-checklist">Production checklist<a class="anchor" aria-label="anchor" href="#production-checklist"></a>

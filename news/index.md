@@ -70,4 +70,4 @@ warnings).
     [`aurora_shinyproxy_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_shinyproxy_yaml.md)
     (emits a ShinyProxy `proxy.specs` block).
 
-See `dev/PLAN.md` for the roadmap and `dev/STATE.md` for current status.
+See the package website for the full reference and articles.
