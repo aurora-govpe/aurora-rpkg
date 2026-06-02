@@ -78,10 +78,10 @@ serves the prebuilt static UI, so neither installs bslib/shiny at runtime.
   broad compatibility for heavy/geo/Java packages; the validated default.
   **Cons:** large image; PPM binaries are amd64-only (on Apple Silicon build with
   `--platform linux/amd64`).
-- **Pros of `alpine`:** very small images, good for size-sensitive/edge deploys;
-  builds natively on arm64. **Cons:** every dependency compiles from source
-  (slow builds, needs a toolchain), musl-libc quirks, and you curate the Alpine
-  system libraries. _Experimental._
+- **Pros of `alpine`:** very small images (~220 MB), good for size-sensitive/edge
+  deploys; builds natively on arm64. **Cons:** every dependency compiles from
+  source (slow builds, needs a toolchain), musl-libc quirks, and you curate the
+  Alpine system libraries.
 
 Rule of thumb: **`debian`** for fast CI and rich dependencies; **`alpine`** when
 the final image size matters most and you can absorb longer builds.
