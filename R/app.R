@@ -18,12 +18,19 @@
 #'   resolves from `_aurora.yml` (`otel:`) then the `AURORA_OTEL` environment
 #'   variable, falling back to `FALSE`. Wiring is a no-op until the \pkg{otel}
 #'   package is enabled in the environment, so it is safe to leave on.
+#' @param verbose Emit a per-step \pkg{cli} log (one line per sourced helper /
+#'   parsed router, otel wiring). `NULL` (default) resolves from
+#'   `options(aurora.verbose)` then the `AURORA_VERBOSE` env var, falling back to
+#'   `FALSE` (quiet: a single assembly-summary line). Errors and warnings always
+#'   print.
 #'
 #' @return An object of class `aurora_app`.
 #' @export
 aurora_app <- function(dir = ".", rebuild_ui = TRUE,
-                       host = "127.0.0.1", port = 8000L, otel = NULL) {
+                       host = "127.0.0.1", port = 8000L, otel = NULL,
+                       verbose = NULL) {
   rlang::check_installed("plumber2", reason = "to assemble an aurora app")
+  verbose <- aurora_is_verbose(verbose)
   cfg <- read_config(dir)
 
   if (isTRUE(rebuild_ui)) aurora_build_ui(dir)
@@ -31,7 +38,7 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
   # Source helpers first so handlers in routers/ can call them.
   helpers <- helper_files(cfg)
   for (f in helpers) {
-    cli::cli_alert_info("Sourcing helper {.path {fs::path_rel(f, dir)}}")
+    if (verbose) cli::cli_alert_info("Sourcing helper {.path {fs::path_rel(f, dir)}}")
     sys.source(f, envir = globalenv(), chdir = TRUE)
   }
 
@@ -48,14 +55,14 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
     cli::cli_alert_warning("No router files found in {.path {cfg$routers}/}.")
   }
   for (f in routers) {
-    cli::cli_alert_info("Parsing router {.path {fs::path_rel(f, dir)}}")
+    if (verbose) cli::cli_alert_info("Parsing router {.path {fs::path_rel(f, dir)}}")
     pa <- plumber2::api_parse(pa, f)
   }
 
   pa <- plumber2::api_assets(pa, "/", static_dir)
 
   if (resolve_otel(cfg, otel)) {
-    cli::cli_alert_info(
+    if (verbose) cli::cli_alert_info(
       "OpenTelemetry logging enabled ({.fn logger_otel}); export depends on the {.pkg otel} package being enabled."
     )
     pa <- plumber2::api_logger(pa, plumber2::logger_otel())
@@ -64,6 +71,13 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
   if (!is.null(cfg$auth)) {
     cli::cli_alert_warning(
       "Manifest declares {.field auth} but auth wiring is experimental and not applied yet. See {.fn aurora_auth_jwt}."
+    )
+  }
+
+  # Quiet mode: one concise summary instead of the per-file lines above.
+  if (!verbose) {
+    cli::cli_alert_success(
+      "Assembled {.pkg {cfg$name}}: {length(routers)} router{?s}, {length(helpers)} helper{?s}."
     )
   }
 

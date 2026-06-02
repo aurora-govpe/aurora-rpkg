@@ -95,3 +95,14 @@ resolve_otel <- function(cfg, otel = NULL) {
   if (!is.null(cfg$otel)) return(as_flag(cfg$otel))
   as_flag(Sys.getenv("AURORA_OTEL", ""), default = FALSE)
 }
+
+# Whether to emit verbose, per-step cli logs (e.g. one line per sourced helper /
+# parsed router). Errors, warnings, and key successes always print regardless.
+# Precedence: explicit `verbose` arg > option(aurora.verbose) > env
+# AURORA_VERBOSE > FALSE (quiet — a single assembly summary line).
+aurora_is_verbose <- function(verbose = NULL) {
+  if (!is.null(verbose)) return(isTRUE(verbose))
+  opt <- getOption("aurora.verbose")
+  if (!is.null(opt)) return(isTRUE(opt))
+  as_flag(Sys.getenv("AURORA_VERBOSE", ""), default = FALSE)
+}

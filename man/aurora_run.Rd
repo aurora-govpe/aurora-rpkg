@@ -11,7 +11,8 @@ aurora_run(
   rebuild_ui = NULL,
   watch = FALSE,
   watch_interval = 1,
-  otel = NULL
+  otel = NULL,
+  verbose = NULL
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ package.}
 
 \item{otel}{Enable OpenTelemetry logging. Passed to \code{\link[=aurora_app]{aurora_app()}}; \code{NULL}
 (default) resolves from \verb{_aurora.yml} then the \code{AURORA_OTEL} env var.}
+
+\item{verbose}{Per-step \pkg{cli} logging. Passed to \code{\link[=aurora_app]{aurora_app()}}; \code{NULL}
+(default) resolves from \code{options(aurora.verbose)} then \code{AURORA_VERBOSE}.}
 }
 \value{
 The result of \code{\link[plumber2:api_run]{plumber2::api_run()}}, invisibly.

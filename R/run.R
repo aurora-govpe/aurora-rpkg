@@ -22,17 +22,19 @@
 #' @param watch_interval Polling interval in seconds when `watch = TRUE`.
 #' @param otel Enable OpenTelemetry logging. Passed to [aurora_app()]; `NULL`
 #'   (default) resolves from `_aurora.yml` then the `AURORA_OTEL` env var.
+#' @param verbose Per-step \pkg{cli} logging. Passed to [aurora_app()]; `NULL`
+#'   (default) resolves from `options(aurora.verbose)` then `AURORA_VERBOSE`.
 #'
 #' @return The result of [plumber2::api_run()], invisibly.
 #' @export
 aurora_run <- function(dir = ".", port = 8000L, host = "127.0.0.1",
                        rebuild_ui = NULL, watch = FALSE, watch_interval = 1,
-                       otel = NULL) {
+                       otel = NULL, verbose = NULL) {
   if (is.null(rebuild_ui)) {
     rebuild_ui <- as_flag(Sys.getenv("AURORA_REBUILD_UI", "true"), default = TRUE)
   }
   app <- aurora_app(dir, rebuild_ui = rebuild_ui, host = host, port = port,
-                    otel = otel)
+                    otel = otel, verbose = verbose)
 
   if (isTRUE(watch)) start_ui_watcher(app, interval = watch_interval)
 

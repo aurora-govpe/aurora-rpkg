@@ -9,7 +9,8 @@ aurora_app(
   rebuild_ui = TRUE,
   host = "127.0.0.1",
   port = 8000L,
-  otel = NULL
+  otel = NULL,
+  verbose = NULL
 )
 }
 \arguments{
@@ -25,6 +26,12 @@ join \pkg{plumber2}'s automatic request spans and metrics. \code{NULL} (default)
 resolves from \verb{_aurora.yml} (\verb{otel:}) then the \code{AURORA_OTEL} environment
 variable, falling back to \code{FALSE}. Wiring is a no-op until the \pkg{otel}
 package is enabled in the environment, so it is safe to leave on.}
+
+\item{verbose}{Emit a per-step \pkg{cli} log (one line per sourced helper /
+parsed router, otel wiring). \code{NULL} (default) resolves from
+\code{options(aurora.verbose)} then the \code{AURORA_VERBOSE} env var, falling back to
+\code{FALSE} (quiet: a single assembly-summary line). Errors and warnings always
+print.}
 }
 \value{
 An object of class \code{aurora_app}.

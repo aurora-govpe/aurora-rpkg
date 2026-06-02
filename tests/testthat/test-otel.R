@@ -13,6 +13,21 @@ test_that("resolve_otel honours precedence: arg > manifest > env", {
   expect_true(resolve_otel(list(), NULL))
 })
 
+test_that("aurora_is_verbose resolves arg > option > env > FALSE", {
+  withr::local_options(aurora.verbose = NULL)
+  withr::local_envvar(AURORA_VERBOSE = "")
+  expect_false(aurora_is_verbose())            # default quiet
+  expect_true(aurora_is_verbose(TRUE))         # explicit arg
+
+  withr::local_options(aurora.verbose = TRUE)
+  expect_true(aurora_is_verbose())             # option
+  expect_false(aurora_is_verbose(FALSE))       # arg overrides option
+
+  withr::local_options(aurora.verbose = NULL)
+  withr::local_envvar(AURORA_VERBOSE = "yes")
+  expect_true(aurora_is_verbose())             # env
+})
+
 test_that("as_flag coerces common truthy strings", {
   expect_true(as_flag("yes"))
   expect_true(as_flag("1"))
