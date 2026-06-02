@@ -122,6 +122,17 @@ article and the [Gallery](https://aurora-govpe.github.io/aurora-rpkg/articles/ga
 store, telemetry, Docker/ShinyProxy generation, the docs site, and three worked
 examples are in place; `R CMD check` is clean (0 errors / 0 warnings).
 
+## Authors
+
+- **Andre Leite** — maintainer (leite@castlab.org)
+- Marcos Wasilew
+- Hugo Vasconcelos
+- Carlos Amorin
+- Diogo Bezerra
+- Júlia Nascimento Barreto
+
+Developed by the NGR-Dados team (SEPLAG-PE) with UFPE.
+
 ## License
 
-MIT © Equipe NGR-Dados. Contributions welcome via issues and pull requests.
+MIT © aurora authors. Contributions welcome via issues and pull requests.
