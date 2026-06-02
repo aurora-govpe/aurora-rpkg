@@ -53,7 +53,7 @@ default_alpine_build <- c(
   "linux-headers", "cmake", "openssl-dev", "curl-dev", "libsodium-dev",
   "libxml2-dev", "icu-dev", "zlib-dev",
   "fontconfig-dev", "freetype-dev", "harfbuzz-dev", "fribidi-dev", "cairo-dev",
-  "libpng-dev", "tiff-dev", "jpeg-dev", "libuv-dev",
+  "libpng-dev", "tiff-dev", "jpeg-dev", "libwebp-dev", "libuv-dev",
   # plumber2 -> routr -> waysign is a Rust package; Alpine has no CRAN binaries
   # so it must compile, which needs the Rust toolchain (build-time only).
   "rust", "cargo"
@@ -61,7 +61,9 @@ default_alpine_build <- c(
 default_alpine_runtime <- c(
   "libssl3", "libcurl", "libsodium", "libxml2", "icu-libs", "zlib",
   "fontconfig", "freetype", "harfbuzz", "fribidi", "cairo",
-  "libpng", "tiff", "libjpeg-turbo", "libuv"
+  # libwebpmux provides libwebpmux.so.3, which ragg (a plumber2 dep) links at
+  # runtime; keep it in -a or installr's -t cleanup removes it and plumber2 won't load.
+  "libpng", "tiff", "libjpeg-turbo", "libwebpmux", "libuv"
 )
 
 # --- Dockerfile bodies (one per flavor) ---------------------------------------
