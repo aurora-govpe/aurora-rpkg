@@ -1,6 +1,6 @@
 # Detect R package dependencies by scanning app source files.
 # scope = "runtime" scans only what the SERVER needs (routers/, helpers/, api.R)
-# — not build_ui.R / ui_modules/, which are UI build-time only (bslib etc.). The
+# -- not build_ui.R / ui_modules/, which are UI build-time only (bslib etc.). The
 # static UI is compiled before the image is built and shipped as www/index.html,
 # so the runtime image needs no UI dependencies. scope = "all" scans everything.
 detect_packages <- function(dir, scope = c("runtime", "all")) {
@@ -40,13 +40,13 @@ default_sysdeps <- c(
 )
 
 # Posit Package Manager binary repo (jammy = the rocker/r-ver default base). Set
-# it in Rprofile.site so EVERY R invocation — install.packages AND pak's
-# subprocess — pulls prebuilt binaries instead of compiling from source.
+# it in Rprofile.site so EVERY R invocation -- install.packages AND pak's
+# subprocess -- pulls prebuilt binaries instead of compiling from source.
 # NOTE: PPM ships amd64 Linux binaries only; an arm64 build compiles from source.
 ppm_jammy <- "https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 
 # Alpine (r-minimal) deps for the aurora baseline (plumber2 + bslib). r-minimal
-# has no CRAN binaries — everything compiles — and omits the graphics stack, so
+# has no CRAN binaries -- everything compiles -- and omits the graphics stack, so
 # these cover TLS/curl/sodium/xml + fonts/graphics. App-specific deps (e.g. geo)
 # are added from `pkg_sysreqs(sysreqs_platform = "alpine")` or passed via `sysdeps`.
 default_alpine_build <- c(
@@ -177,10 +177,10 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #' Docker or a ShinyProxy container. A `.dockerignore` is written if absent.
 #'
 #' Two flavors:
-#' * `"debian"` (default) — `rocker/r-ver`; installs R packages as **binaries**
+#' * `"debian"` (default) -- `rocker/r-ver`; installs R packages as **binaries**
 #'   from Posit Package Manager (fast builds; amd64). Best for heavy/geo apps and
 #'   fast CI. Larger image.
-#' * `"alpine"` — `rhub/r-minimal`; a tiny image (~25 MB base) that **compiles**
+#' * `"alpine"` -- `rhub/r-minimal`; a tiny image (~25 MB base) that **compiles**
 #'   every package from source via `installr` (no CRAN binaries; builds are
 #'   slower). Best when image size matters or you need native arm64. Tune the
 #'   Alpine build/runtime system deps via `sysdeps` if your packages need more.
@@ -199,7 +199,7 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #'   graphics needs); or pass a character vector to set them explicitly. For
 #'   `"alpine"` this is the **build** (`-t`) set; runtime libs use a curated
 #'   default. (`pkg_sysreqs()` auto-resolution proved unreliable, so aurora ships
-#'   comprehensive defaults instead — extra `-dev` packages are build-time only.)
+#'   comprehensive defaults instead -- extra `-dev` packages are build-time only.)
 #' @param port Port exposed and bound (via the `AURORA_PORT` env var).
 #' @param aurora_source pak/remotes spec used to install aurora in the image.
 #'   Pin a tag or commit for reproducible builds (e.g.
@@ -222,7 +222,7 @@ aurora_dockerfile <- function(dir = ".",
 
   # Runtime deps only: the container serves the prebuilt static UI and does not
   # rebuild it, so UI build deps (bslib, brand.yml, transitively shiny) are not
-  # installed — only what routers/helpers and plumber2 need at request time.
+  # installed -- only what routers/helpers and plumber2 need at request time.
   # An explicit `packages:` list in _aurora.yml pins the runtime deps (instead of
   # scanning the source), for reproducible production images.
   runtime_pkgs <- if (length(cfg$packages) > 0) cfg$packages else detect_packages(dir, scope = "runtime")

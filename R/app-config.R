@@ -149,9 +149,13 @@ abort_app_file <- function(file, dir, e, what = "file", call = NULL) {
   rel <- tryCatch(fs::path_rel(file, dir), error = function(.) basename(file))
   msg <- conditionMessage(e)
   bullets <- c("aurora could not load {what} {.path {rel}}.", "x" = msg)
+  # Match the package name between the quotes R uses in "there is no package
+  # called 'x'" (straight or fancy quotes). The fancy quotes are written as
+  # \u2018/\u2019 so the source stays ASCII (R CMD check flags non-ASCII string
+  # literals as a WARNING).
   pkg <- regmatches(
     msg,
-    regexpr("(?<=called [‘'\"`])[^’'\"`]+", msg, perl = TRUE)
+    regexpr("(?<=called [\u2018'\"`])[^\u2019'\"`]+", msg, perl = TRUE)
   )
   if (length(pkg) == 1L && nzchar(pkg)) {
     bullets <- c(bullets,
@@ -174,7 +178,7 @@ resolve_attach <- function(cfg, attach = NULL) {
 # Whether to emit verbose, per-step cli logs (e.g. one line per sourced helper /
 # parsed router). Errors, warnings, and key successes always print regardless.
 # Precedence: explicit `verbose` arg > option(aurora.verbose) > env
-# AURORA_VERBOSE > FALSE (quiet — a single assembly summary line).
+# AURORA_VERBOSE > FALSE (quiet -- a single assembly summary line).
 aurora_is_verbose <- function(verbose = NULL) {
   if (!is.null(verbose)) return(isTRUE(verbose))
   opt <- getOption("aurora.verbose")

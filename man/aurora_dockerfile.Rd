@@ -28,7 +28,7 @@ flavor (covers the plumber2 + bslib baseline plus common TLS/curl/db/geo/
 graphics needs); or pass a character vector to set them explicitly. For
 \code{"alpine"} this is the \strong{build} (\code{-t}) set; runtime libs use a curated
 default. (\code{pkg_sysreqs()} auto-resolution proved unreliable, so aurora ships
-comprehensive defaults instead — extra \code{-dev} packages are build-time only.)}
+comprehensive defaults instead -- extra \code{-dev} packages are build-time only.)}
 
 \item{port}{Port exposed and bound (via the \code{AURORA_PORT} env var).}
 
@@ -51,10 +51,10 @@ Docker or a ShinyProxy container. A \code{.dockerignore} is written if absent.
 \details{
 Two flavors:
 \itemize{
-\item \code{"debian"} (default) — \code{rocker/r-ver}; installs R packages as \strong{binaries}
+\item \code{"debian"} (default) -- \code{rocker/r-ver}; installs R packages as \strong{binaries}
 from Posit Package Manager (fast builds; amd64). Best for heavy/geo apps and
 fast CI. Larger image.
-\item \code{"alpine"} — \code{rhub/r-minimal}; a tiny image (~25 MB base) that \strong{compiles}
+\item \code{"alpine"} -- \code{rhub/r-minimal}; a tiny image (~25 MB base) that \strong{compiles}
 every package from source via \code{installr} (no CRAN binaries; builds are
 slower). Best when image size matters or you need native arm64. Tune the
 Alpine build/runtime system deps via \code{sysdeps} if your packages need more.

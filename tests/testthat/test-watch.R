@@ -1,5 +1,6 @@
 test_that("ui_watch_files collects build_ui.R and ui_modules/*.R", {
   skip_if_not_installed("bslib")
+  skip_if_not_installed("shiny")
   parent <- withr::local_tempdir()
   app_dir <- fs::path(parent, "w1")
   aurora_create_app(app_dir, template = "minimal")
@@ -28,6 +29,7 @@ test_that("mtime_snapshot reflects changes and added/removed files", {
 
 test_that("watch_tick rebuilds the UI when a UI source changes", {
   skip_if_not_installed("bslib")
+  skip_if_not_installed("shiny")
   parent <- withr::local_tempdir()
   app_dir <- fs::path(parent, "w2")
   aurora_create_app(app_dir, template = "minimal")
@@ -56,6 +58,7 @@ test_that("watch_tick rebuilds the UI when a UI source changes", {
 
 test_that("watch_tick picks up a router change without rebuilding the UI", {
   skip_if_not_installed("bslib")
+  skip_if_not_installed("shiny")
   parent <- withr::local_tempdir()
   app_dir <- fs::path(parent, "w3")
   aurora_create_app(app_dir, template = "minimal")
