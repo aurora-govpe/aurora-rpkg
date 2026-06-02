@@ -56,15 +56,50 @@ default_alpine_build <- c(
   "libpng-dev", "tiff-dev", "jpeg-dev", "libwebp-dev", "libuv-dev",
   # plumber2 -> routr -> waysign is a Rust package; Alpine has no CRAN binaries
   # so it must compile, which needs the Rust toolchain (build-time only).
-  "rust", "cargo"
+  "rust", "cargo",
+  # gfortran: r-minimal's build base has no Fortran compiler, but common CRAN
+  # deps ship Fortran (e.g. KernSmooth, pulled by sf -> classInt). Build-time;
+  # the compiled .so links libgfortran at runtime (see default_alpine_runtime).
+  "gfortran"
 )
 default_alpine_runtime <- c(
   "libssl3", "libcurl", "libsodium", "libxml2", "icu-libs", "zlib",
   "fontconfig", "freetype", "harfbuzz", "fribidi", "cairo",
   # libwebpmux provides libwebpmux.so.3, which ragg (a plumber2 dep) links at
   # runtime; keep it in -a or installr's -t cleanup removes it and plumber2 won't load.
-  "libpng", "tiff", "libjpeg-turbo", "libwebpmux", "libuv"
+  "libpng", "tiff", "libjpeg-turbo", "libwebpmux", "libuv",
+  # libgfortran: runtime lib for any package compiled with gfortran (KernSmooth,
+  # etc.); without it the compiled .so fails to load after the -t cleanup.
+  "libgfortran"
 )
+
+# Alpine system libraries required by SPECIFIC R packages when compiled from
+# source. `pkg_sysreqs()` proved unreliable on this host (see dev/LESSONS.md), so
+# the common heavy packages -- geospatial (sf/terra/...) and database drivers --
+# are curated here. Keys are package names; values list the build (`-t`) and
+# runtime (`-a`) Alpine packages. Matched against the app's runtime package set.
+alpine_pkg_sysdeps <- list(
+  sf          = list(build = c("gdal-dev", "geos-dev", "proj-dev", "sqlite-dev"),
+                     runtime = c("gdal", "geos", "proj", "sqlite-libs")),
+  terra       = list(build = c("gdal-dev", "geos-dev", "proj-dev", "sqlite-dev"),
+                     runtime = c("gdal", "geos", "proj", "sqlite-libs")),
+  lwgeom      = list(build = c("gdal-dev", "geos-dev", "proj-dev", "sqlite-dev"),
+                     runtime = c("gdal", "geos", "proj", "sqlite-libs")),
+  units       = list(build = "udunits-dev", runtime = "udunits"),
+  RPostgres   = list(build = "postgresql-dev", runtime = "libpq"),
+  RPostgreSQL = list(build = "postgresql-dev", runtime = "libpq"),
+  RMariaDB    = list(build = "mariadb-dev", runtime = "mariadb-connector-c"),
+  RMySQL      = list(build = "mariadb-dev", runtime = "mariadb-connector-c"),
+  RSQLite     = list(build = "sqlite-dev", runtime = "sqlite-libs"),
+  V8          = list(build = "v8-dev", runtime = "v8")
+)
+
+# Add package-specific Alpine libraries to a build/runtime dep set.
+# `which` is "build" or "runtime".
+augment_alpine_sysdeps <- function(deps, pkgs, which) {
+  extra <- unlist(lapply(pkgs, function(p) alpine_pkg_sysdeps[[p]][[which]]))
+  unique(c(deps, extra))
+}
 
 # --- Dockerfile bodies (one per flavor) ---------------------------------------
 
@@ -203,8 +238,15 @@ aurora_dockerfile <- function(dir = ".",
     n_sys <- length(sysdeps)
   } else {
     base <- base %||% "rhub/r-minimal"
-    build_deps <- if (identical(sysdeps, "auto")) default_alpine_build else sysdeps
-    runtime_deps <- default_alpine_runtime
+    if (identical(sysdeps, "auto")) {
+      # Curated base set + libraries required by specific packages (sf -> gdal/
+      # geos/proj, RPostgres -> libpq, ...) so geospatial/DB apps build out of box.
+      build_deps <- augment_alpine_sysdeps(default_alpine_build, pkgs, "build")
+      runtime_deps <- augment_alpine_sysdeps(default_alpine_runtime, pkgs, "runtime")
+    } else {
+      build_deps <- sysdeps
+      runtime_deps <- default_alpine_runtime
+    }
     df <- dockerfile_alpine(cfg$name, base, build_deps, runtime_deps, pkgs, port, aurora_source)
     n_sys <- length(build_deps)
   }

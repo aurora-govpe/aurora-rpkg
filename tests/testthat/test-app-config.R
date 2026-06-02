@@ -57,3 +57,24 @@ test_that("add_route writes a mounted router file", {
   txt <- readLines(rf)
   expect_true(any(grepl("@get /api/widgets/data", txt, fixed = TRUE)))
 })
+
+test_that("abort_app_file names the file and hints a missing package", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("helpers", "routers", "www")))
+  writeLines("library(nonexistentpkg123)", fs::path(app, "helpers", "setup.R"))
+  writeLines(
+    c("#* @get /health", "function() list(ok = TRUE)"),
+    fs::path(app, "routers", "health.R")
+  )
+
+  err <- tryCatch(
+    aurora_app(app, rebuild_ui = FALSE),
+    error = function(e) e
+  )
+  expect_s3_class(err, "rlang_error")
+  msg <- cli::ansi_strip(conditionMessage(err))
+  expect_match(msg, "helper")
+  expect_match(msg, "setup.R", fixed = TRUE)
+  expect_match(msg, "nonexistentpkg123", fixed = TRUE)
+  expect_match(msg, "install.packages", fixed = TRUE)
+})

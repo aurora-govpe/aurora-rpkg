@@ -20,7 +20,10 @@ aurora_build_ui <- function(dir = ".") {
 
   # Source in an isolated env, chdir so source('ui_modules/...') etc. resolve.
   env <- new.env(parent = globalenv())
-  sys.source(build_file, envir = env, chdir = TRUE)
+  tryCatch(
+    sys.source(build_file, envir = env, chdir = TRUE),
+    error = function(e) abort_app_file(build_file, dir, e, what = "UI builder")
+  )
 
   if (!is.function(env$build_ui)) {
     cli::cli_abort(c(
@@ -34,7 +37,10 @@ aurora_build_ui <- function(dir = ".") {
   owd <- setwd(dir)
   on.exit(setwd(owd), add = TRUE)
 
-  ui <- env$build_ui()
+  ui <- tryCatch(
+    env$build_ui(),
+    error = function(e) abort_app_file(build_file, dir, e, what = "UI builder")
+  )
   fs::dir_create(fs::path_dir(output))
   htmltools::save_html(ui, file = output)
 

@@ -35,11 +35,25 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
 
   if (isTRUE(rebuild_ui)) aurora_build_ui(dir)
 
-  # Source helpers first so handlers in routers/ can call them.
+  # Source helpers first so handlers in routers/ can call them. Run them with the
+  # app directory as the working directory (NOT chdir into helpers/) so that
+  # app-root-relative paths inside a helper -- e.g. config::get("data/config.yml")
+  # or readRDS("data/x.rds") -- resolve exactly as they did under the v1
+  # entrypoint, where the process cwd was the app root. (LESSONS: helpers are
+  # app-root-relative, not helpers/-relative.)
   helpers <- helper_files(cfg)
-  for (f in helpers) {
-    if (verbose) cli::cli_alert_info("Sourcing helper {.path {fs::path_rel(f, dir)}}")
-    sys.source(f, envir = globalenv(), chdir = TRUE)
+  if (length(helpers) > 0) {
+    owd <- getwd()
+    on.exit(setwd(owd), add = TRUE)
+    setwd(dir)
+    for (f in helpers) {
+      if (verbose) cli::cli_alert_info("Sourcing helper {.path {fs::path_rel(f, dir)}}")
+      tryCatch(
+        sys.source(f, envir = globalenv(), chdir = FALSE),
+        error = function(e) abort_app_file(f, dir, e, what = "helper")
+      )
+    }
+    setwd(owd)
   }
 
   static_dir <- fs::path(dir, cfg$static)
@@ -56,7 +70,10 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
   }
   for (f in routers) {
     if (verbose) cli::cli_alert_info("Parsing router {.path {fs::path_rel(f, dir)}}")
-    pa <- plumber2::api_parse(pa, f)
+    pa <- tryCatch(
+      plumber2::api_parse(pa, f),
+      error = function(e) abort_app_file(f, dir, e, what = "router")
+    )
   }
 
   pa <- plumber2::api_assets(pa, "/", static_dir)
