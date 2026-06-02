@@ -24,17 +24,38 @@
 #'   (default) resolves from `_aurora.yml` then the `AURORA_OTEL` env var.
 #' @param verbose Per-step \pkg{cli} logging. Passed to [aurora_app()]; `NULL`
 #'   (default) resolves from `options(aurora.verbose)` then `AURORA_VERBOSE`.
+#' @param attach Attach the `_aurora.yml` `packages:` before sourcing helpers.
+#'   Passed to [aurora_app()]; `NULL` (default) resolves from `_aurora.yml`
+#'   (`attach:`) then `AURORA_ATTACH`. See ADR-012.
+#' @param on_exit Optional cleanup function `function()` run when the server
+#'   stops (registered on plumber2's `"cleanup"` lifecycle event). Use it to
+#'   release resources opened in a helper -- e.g. `pool::poolClose(con_base)` --
+#'   replacing the v1 `pr_hook("exit", ...)`. Errors in the handler are reported
+#'   but do not block shutdown.
 #'
 #' @return The result of [plumber2::api_run()], invisibly.
 #' @export
 aurora_run <- function(dir = ".", port = 8000L, host = "127.0.0.1",
                        rebuild_ui = NULL, watch = FALSE, watch_interval = 1,
-                       otel = NULL, verbose = NULL) {
+                       otel = NULL, verbose = NULL, attach = NULL,
+                       on_exit = NULL) {
   if (is.null(rebuild_ui)) {
     rebuild_ui <- as_flag(Sys.getenv("AURORA_REBUILD_UI", "true"), default = TRUE)
   }
   app <- aurora_app(dir, rebuild_ui = rebuild_ui, host = host, port = port,
-                    otel = otel, verbose = verbose)
+                    otel = otel, verbose = verbose, attach = attach)
+
+  if (!is.null(on_exit)) {
+    if (!is.function(on_exit)) {
+      cli::cli_abort("{.arg on_exit} must be a function (called when the server stops).")
+    }
+    plumber2::api_on(app$api, "cleanup", function(...) {
+      tryCatch(on_exit(), error = function(e) cli::cli_warn(c(
+        "{.arg on_exit} handler failed during shutdown.",
+        "x" = conditionMessage(e)
+      )))
+    })
+  }
 
   if (isTRUE(watch)) start_ui_watcher(app, interval = watch_interval)
 

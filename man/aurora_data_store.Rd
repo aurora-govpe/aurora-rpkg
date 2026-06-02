@@ -10,12 +10,12 @@ aurora_data_store(..., dir = ".", readers = list())
 \item{...}{Named file paths to register (e.g. \code{sales = "data/sales.rds"}).
 The reader is inferred from the file extension.}
 
-\item{dir}{Base directory that relative paths are resolved against, at read
-time. Defaults to \code{"."} (the process working directory). In the canonical
-deployment the app is launched from its own directory (\verb{Rscript api.R}, or
-\code{aurora_run()} from the app dir), so relative paths like \code{"data/x.rds"}
-resolve correctly. Pass an absolute path if you cannot rely on the working
-directory. Absolute dataset paths are used as-is regardless of \code{dir}.}
+\item{dir}{Base directory that relative dataset paths are resolved against.
+Resolved to an absolute path \strong{once, when the store is created} (not at read
+time), so later changes to the working directory cannot break reads. Defaults
+to \code{"."}; since the store is normally created while a \verb{helpers/*.R} file is
+sourced (cwd = app root), relative paths like \code{"data/x.rds"} anchor to the
+app root. Absolute dataset paths are used as-is regardless of \code{dir}.}
 
 \item{readers}{Named list of reader functions keyed by lowercase file
 extension, merged over (and overriding) the built-ins (\code{rds}, \code{csv},

@@ -51,12 +51,12 @@ assert_data_store <- function(store, call = rlang::caller_env()) {
 #'
 #' @param ... Named file paths to register (e.g. `sales = "data/sales.rds"`).
 #'   The reader is inferred from the file extension.
-#' @param dir Base directory that relative paths are resolved against, at read
-#'   time. Defaults to `"."` (the process working directory). In the canonical
-#'   deployment the app is launched from its own directory (`Rscript api.R`, or
-#'   `aurora_run()` from the app dir), so relative paths like `"data/x.rds"`
-#'   resolve correctly. Pass an absolute path if you cannot rely on the working
-#'   directory. Absolute dataset paths are used as-is regardless of `dir`.
+#' @param dir Base directory that relative dataset paths are resolved against.
+#'   Resolved to an absolute path **once, when the store is created** (not at read
+#'   time), so later changes to the working directory cannot break reads. Defaults
+#'   to `"."`; since the store is normally created while a `helpers/*.R` file is
+#'   sourced (cwd = app root), relative paths like `"data/x.rds"` anchor to the
+#'   app root. Absolute dataset paths are used as-is regardless of `dir`.
 #' @param readers Named list of reader functions keyed by lowercase file
 #'   extension, merged over (and overriding) the built-ins (`rds`, `csv`,
 #'   `parquet`).
@@ -74,7 +74,8 @@ aurora_data_store <- function(..., dir = ".", readers = list()) {
     cli::cli_abort("All datasets passed to {.fn aurora_data_store} must be named.")
   }
   store <- new.env(parent = emptyenv())
-  store$dir <- dir
+  # Anchor to an absolute base now, so reads are immune to later cwd changes.
+  store$dir <- fs::path_abs(dir)
   store$readers <- utils::modifyList(default_data_readers(), readers)
   store$registry <- list()
   store$cache <- new.env(parent = emptyenv())
@@ -105,7 +106,14 @@ aurora_data_register <- function(store, name, path, reader = NULL) {
       ))
     }
   }
-  store$registry[[name]] <- list(path = path, reader = reader)
+  # Resolve to an absolute path now (against the store's anchored dir) so reads
+  # don't depend on the working directory at request time. Keep the original
+  # `path` for messages.
+  store$registry[[name]] <- list(
+    path = path,
+    abs = fs::path_abs(path, start = store$dir),
+    reader = reader
+  )
   invisible(store)
 }
 
@@ -129,7 +137,7 @@ aurora_data_get <- function(store, name) {
       i = "Registered: {.val {names(store$registry)}}."
     ))
   }
-  abs <- fs::path_abs(entry$path, start = store$dir)
+  abs <- entry$abs
   if (!fs::file_exists(abs)) {
     cli::cli_abort("Data file {.path {entry$path}} not found for dataset {.val {name}}.")
   }

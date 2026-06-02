@@ -12,7 +12,9 @@ aurora_run(
   watch = FALSE,
   watch_interval = 1,
   otel = NULL,
-  verbose = NULL
+  verbose = NULL,
+  attach = NULL,
+  on_exit = NULL
 )
 }
 \arguments{
@@ -42,6 +44,16 @@ package.}
 
 \item{verbose}{Per-step \pkg{cli} logging. Passed to \code{\link[=aurora_app]{aurora_app()}}; \code{NULL}
 (default) resolves from \code{options(aurora.verbose)} then \code{AURORA_VERBOSE}.}
+
+\item{attach}{Attach the \verb{_aurora.yml} \verb{packages:} before sourcing helpers.
+Passed to \code{\link[=aurora_app]{aurora_app()}}; \code{NULL} (default) resolves from \verb{_aurora.yml}
+(\verb{attach:}) then \code{AURORA_ATTACH}. See ADR-012.}
+
+\item{on_exit}{Optional cleanup function \verb{function()} run when the server
+stops (registered on plumber2's \code{"cleanup"} lifecycle event). Use it to
+release resources opened in a helper -- e.g. \code{pool::poolClose(con_base)} --
+replacing the v1 \code{pr_hook("exit", ...)}. Errors in the handler are reported
+but do not block shutdown.}
 }
 \value{
 The result of \code{\link[plumber2:api_run]{plumber2::api_run()}}, invisibly.

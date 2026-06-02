@@ -32,7 +32,11 @@ comprehensive defaults instead — extra \code{-dev} packages are build-time onl
 
 \item{port}{Port exposed and bound (via the \code{AURORA_PORT} env var).}
 
-\item{aurora_source}{pak/remotes spec used to install aurora in the image.}
+\item{aurora_source}{pak/remotes spec used to install aurora in the image.
+Pin a tag or commit for reproducible builds (e.g.
+\code{"aurora-govpe/aurora-rpkg@v0.1.0"}): an unpinned moving ref (a branch)
+interacts badly with Docker's layer cache, which can silently keep an old
+commit on rebuild.}
 
 \item{write}{Write the file (\code{TRUE}) or return its text (\code{FALSE}).}
 }

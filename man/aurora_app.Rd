@@ -10,7 +10,8 @@ aurora_app(
   host = "127.0.0.1",
   port = 8000L,
   otel = NULL,
-  verbose = NULL
+  verbose = NULL,
+  attach = NULL
 )
 }
 \arguments{
@@ -32,6 +33,14 @@ parsed router, otel wiring). \code{NULL} (default) resolves from
 \code{options(aurora.verbose)} then the \code{AURORA_VERBOSE} env var, falling back to
 \code{FALSE} (quiet: a single assembly-summary line). Errors and warnings always
 print.}
+
+\item{attach}{Attach the runtime packages declared in \verb{_aurora.yml}
+(\verb{packages:}) before sourcing helpers, so helpers and handlers can use their
+functions unqualified (mirrors a plumber-v1 \code{library()} block). \code{NULL}
+(default) resolves from \verb{_aurora.yml} (\verb{attach:}) then \code{AURORA_ATTACH},
+falling back to \code{FALSE}. Off by default to keep assembly thin; the
+\verb{packages:} list is the runtime set (no \code{shiny}/\code{bslib}), so it is safe to
+enable. See ADR-012.}
 }
 \value{
 An object of class \code{aurora_app}.

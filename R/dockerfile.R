@@ -202,6 +202,10 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #'   comprehensive defaults instead — extra `-dev` packages are build-time only.)
 #' @param port Port exposed and bound (via the `AURORA_PORT` env var).
 #' @param aurora_source pak/remotes spec used to install aurora in the image.
+#'   Pin a tag or commit for reproducible builds (e.g.
+#'   `"aurora-govpe/aurora-rpkg@v0.1.0"`): an unpinned moving ref (a branch)
+#'   interacts badly with Docker's layer cache, which can silently keep an old
+#'   commit on rebuild.
 #' @param write Write the file (`TRUE`) or return its text (`FALSE`).
 #'
 #' @return The Dockerfile path (if written) or its contents, invisibly.
@@ -261,8 +265,24 @@ aurora_dockerfile <- function(dir = ".",
 
   di <- fs::path(dir, ".dockerignore")
   if (!fs::file_exists(di)) {
-    writeLines(c(".Rproj.user", ".Rhistory", ".RData", "*.Rproj", "docs/", "dev/", ".git/"), di)
+    writeLines(c(
+      ".Rproj.user", ".Rhistory", ".RData", "*.Rproj", "docs/", "dev/", ".git/",
+      "# App data + config are mounted/injected at runtime, not baked into the",
+      "# image -- keeps DB credentials and ETL data out of the layers.",
+      "data/"
+    ), di)
     cli::cli_alert_success("Wrote {.path .dockerignore}.")
+    cli::cli_alert_info("{.path data/} is excluded -- mount it at runtime (e.g. {.code -v ./data:/app/data:ro}).")
+  }
+
+  # Reproducibility: a moving ref (a branch) interacts badly with Docker's layer
+  # cache -- a rebuild reuses the cached install layer and silently keeps the old
+  # commit. Nudge toward pinning a tag/commit.
+  if (!grepl("@", aurora_source)) {
+    cli::cli_alert_info(c(
+      "aurora is installed from {.val {aurora_source}} (unpinned ref)."
+    ))
+    cli::cli_alert_info("For reproducible builds, pin a tag/commit: {.code aurora_source = \"{aurora_source}@<tag>\"}.")
   }
 
   invisible(out)
