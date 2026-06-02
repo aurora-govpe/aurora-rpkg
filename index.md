@@ -54,9 +54,37 @@ Deploy:
 
 ``` r
 
-aurora_dockerfile("meu_app")                   # auto deps; writes Dockerfile + .dockerignore
+aurora_dockerfile("meu_app")                          # flavor = "debian" (default)
+aurora_dockerfile("meu_app", flavor = "alpine")       # tiny image, source-built
 aurora_build_image("meu_app", tag = "meuorg/meu_app:latest", push = TRUE)
 ```
+
+### Image flavors
+
+`aurora_dockerfile(flavor = ...)` generates one of two base images. The
+container serves the prebuilt static UI, so neither installs bslib/shiny
+at runtime.
+
+|  | **`debian`** (default) — `rocker/r-ver` | **`alpine`** — `rhub/r-minimal` |
+|----|----|----|
+| R packages | prebuilt **binaries** (Posit Package Manager) | **compiled** from source (`installr`) |
+| Build speed | fast | slow (full compile, incl. Rust for some deps) |
+| Image size | large (~1.6 GB) | tiny (base ~25 MB) |
+| Architectures | amd64 binaries (arm64 compiles) | builds natively on amd64 **and** arm64 |
+| System deps | `apt`, broad/easy (glibc) | curated `apk`, must compile (musl) |
+
+- **Pros of `debian`:** fast, reproducible binary builds; trivial system
+  deps; broad compatibility for heavy/geo/Java packages; the validated
+  default. **Cons:** large image; PPM binaries are amd64-only (on Apple
+  Silicon build with `--platform linux/amd64`).
+- **Pros of `alpine`:** very small images, good for size-sensitive/edge
+  deploys; builds natively on arm64. **Cons:** every dependency compiles
+  from source (slow builds, needs a toolchain), musl-libc quirks, and
+  you curate the Alpine system libraries. *Experimental.*
+
+Rule of thumb: **`debian`** for fast CI and rich dependencies;
+**`alpine`** when the final image size matters most and you can absorb
+longer builds.
 
 During development, `aurora_run("meu_app", watch = TRUE)` rebuilds the
 static UI on change. Theming is a `_brand.yml` consumed by bslib; auth,
@@ -83,20 +111,15 @@ article and the
 
 ## Design decisions
 
-- **plumber2 only** (ADR-001). Each handler’s URL comes from its
-  annotation.
-- **Thin JS runtime** (ADR-002). `core.js` is aurora’s basics; `app.js`
-  and
+- **plumber2 only.** Each handler’s URL comes from its annotation.
+- **Thin JS runtime.** `core.js` is aurora’s basics; `app.js` and
   [`aurora_component()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_component.md)
-  keep rendering in the app, not the package (ADR-009).
-- **Pluggable auth** (ADR-003 / ADR-010). A JWT-cookie `@header` guard,
-  never in
+  keep rendering in the app, not the package.
+- **Pluggable auth.** A JWT-cookie `@header` guard, never in
   [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md)’s
   core path.
-- **Convention over manifest** (ADR-007). Fixed folders; `_aurora.yml`
-  optional.
-- **Theming via brand.yml** (ADR-011). bslib consumes `_brand.yml` at
-  build time.
+- **Convention over manifest.** Fixed folders; `_aurora.yml` optional.
+- **Theming via brand.yml.** bslib consumes `_brand.yml` at build time.
 
 ## Status
 

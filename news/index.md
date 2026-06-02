@@ -22,14 +22,13 @@ warnings).
 
 - Theming via **brand.yml**: the `minimal` template ships `_brand.yml`
   and uses `bs_theme(version = 5, brand = TRUE)`; bslib bakes the theme
-  into the static HTML at build time. aurora builds no theming layer
-  (ADR-011).
+  into the static HTML at build time. aurora builds no theming layer.
 
 ### UI ↔︎ API
 
 - [`aurora_component()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_component.md):
   thin helper emitting an element wired to a JSON endpoint via
-  `data-endpoint`; app JS renders. No rendering JS shipped (ADR-009).
+  `data-endpoint`; app JS renders. No rendering JS shipped.
 
 ### Auth (opt-in)
 
@@ -41,8 +40,7 @@ warnings).
   [`aurora_set_auth_cookie()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_set_auth_cookie.md),
   [`aurora_clear_auth_cookie()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_set_auth_cookie.md).
   The `auth` template gates `/api/*` with a `@header` guard and
-  [`reqres::abort_unauthorized()`](https://reqres.data-imaginist.com/reference/abort_http_problem.html)
-  (ADR-010).
+  [`reqres::abort_unauthorized()`](https://reqres.data-imaginist.com/reference/abort_http_problem.html).
 
 ### Data
 
@@ -57,7 +55,7 @@ warnings).
 
 - OpenTelemetry logging via `aurora_run(otel = TRUE)` /
   `aurora_app(otel=)` / `AURORA_OTEL` — wires
-  `api_logger(logger_otel())`, off by default (ADR-008).
+  `api_logger(logger_otel())`, off by default.
 
 ### Deploy
 

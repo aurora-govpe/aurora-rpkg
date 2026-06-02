@@ -54,16 +54,16 @@
 </ul></div>
 <div class="section level3">
 <h3 id="theming-0-1-0">Theming<a class="anchor" aria-label="anchor" href="#theming-0-1-0"></a></h3>
-<ul><li>Theming via <strong>brand.yml</strong>: the <code>minimal</code> template ships <code>_brand.yml</code> and uses <code>bs_theme(version = 5, brand = TRUE)</code>; bslib bakes the theme into the static HTML at build time. aurora builds no theming layer (ADR-011).</li>
+<ul><li>Theming via <strong>brand.yml</strong>: the <code>minimal</code> template ships <code>_brand.yml</code> and uses <code>bs_theme(version = 5, brand = TRUE)</code>; bslib bakes the theme into the static HTML at build time. aurora builds no theming layer.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="ui--api-0-1-0">UI ↔︎ API<a class="anchor" aria-label="anchor" href="#ui--api-0-1-0"></a></h3>
 <ul><li>
-<code><a href="../reference/aurora_component.html">aurora_component()</a></code>: thin helper emitting an element wired to a JSON endpoint via <code>data-endpoint</code>; app JS renders. No rendering JS shipped (ADR-009).</li>
+<code><a href="../reference/aurora_component.html">aurora_component()</a></code>: thin helper emitting an element wired to a JSON endpoint via <code>data-endpoint</code>; app JS renders. No rendering JS shipped.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="auth-opt-in-0-1-0">Auth (opt-in)<a class="anchor" aria-label="anchor" href="#auth-opt-in-0-1-0"></a></h3>
-<ul><li>JWT-cookie scheme <code><a href="../reference/aurora_auth_jwt.html">aurora_auth_jwt()</a></code> + <code><a href="../reference/aurora_jwt_token.html">aurora_jwt_token()</a></code>, <code><a href="../reference/aurora_jwt_decode.html">aurora_jwt_decode()</a></code>, <code><a href="../reference/aurora_jwt_guard.html">aurora_jwt_guard()</a></code>, <code><a href="../reference/aurora_set_auth_cookie.html">aurora_set_auth_cookie()</a></code>, <code><a href="../reference/aurora_set_auth_cookie.html">aurora_clear_auth_cookie()</a></code>. The <code>auth</code> template gates <code>/api/*</code> with a <code>@header</code> guard and <code><a href="https://reqres.data-imaginist.com/reference/abort_http_problem.html" class="external-link">reqres::abort_unauthorized()</a></code> (ADR-010).</li>
+<ul><li>JWT-cookie scheme <code><a href="../reference/aurora_auth_jwt.html">aurora_auth_jwt()</a></code> + <code><a href="../reference/aurora_jwt_token.html">aurora_jwt_token()</a></code>, <code><a href="../reference/aurora_jwt_decode.html">aurora_jwt_decode()</a></code>, <code><a href="../reference/aurora_jwt_guard.html">aurora_jwt_guard()</a></code>, <code><a href="../reference/aurora_set_auth_cookie.html">aurora_set_auth_cookie()</a></code>, <code><a href="../reference/aurora_set_auth_cookie.html">aurora_clear_auth_cookie()</a></code>. The <code>auth</code> template gates <code>/api/*</code> with a <code>@header</code> guard and <code><a href="https://reqres.data-imaginist.com/reference/abort_http_problem.html" class="external-link">reqres::abort_unauthorized()</a></code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="data-0-1-0">Data<a class="anchor" aria-label="anchor" href="#data-0-1-0"></a></h3>
@@ -72,7 +72,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="telemetry-0-1-0">Telemetry<a class="anchor" aria-label="anchor" href="#telemetry-0-1-0"></a></h3>
-<ul><li>OpenTelemetry logging via <code>aurora_run(otel = TRUE)</code> / <code>aurora_app(otel=)</code> / <code>AURORA_OTEL</code> — wires <code>api_logger(logger_otel())</code>, off by default (ADR-008).</li>
+<ul><li>OpenTelemetry logging via <code>aurora_run(otel = TRUE)</code> / <code>aurora_app(otel=)</code> / <code>AURORA_OTEL</code> — wires <code>api_logger(logger_otel())</code>, off by default.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="deploy-0-1-0">Deploy<a class="anchor" aria-label="anchor" href="#deploy-0-1-0"></a></h3>

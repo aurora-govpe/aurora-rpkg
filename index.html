@@ -118,9 +118,68 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 <span><span class="fu"><a href="reference/aurora_add_route.html">aurora_add_route</a></span><span class="op">(</span><span class="st">"iniciativas"</span>, dir <span class="op">=</span> <span class="st">"meu_app"</span><span class="op">)</span>   <span class="co"># -&gt; routers/iniciativas.R, /api/iniciativas/data</span></span></code></pre></div>
 <p>Deploy:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                   <span class="co"># auto deps; writes Dockerfile + .dockerignore</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                          <span class="co"># flavor = "debian" (default)</span></span>
+<span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span>, flavor <span class="op">=</span> <span class="st">"alpine"</span><span class="op">)</span>       <span class="co"># tiny image, source-built</span></span>
 <span><span class="fu"><a href="reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"meuorg/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="image-flavors">Image flavors<a class="anchor" aria-label="anchor" href="#image-flavors"></a>
+</h3>
+<p><code>aurora_dockerfile(flavor = ...)</code> generates one of two base images. The container serves the prebuilt static UI, so neither installs bslib/shiny at runtime.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th></th>
+<th>
+<strong><code>debian</code></strong> (default) — <code>rocker/r-ver</code>
+</th>
+<th>
+<strong><code>alpine</code></strong> — <code>rhub/r-minimal</code>
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>R packages</td>
+<td>prebuilt <strong>binaries</strong> (Posit Package Manager)</td>
+<td>
+<strong>compiled</strong> from source (<code>installr</code>)</td>
+</tr>
+<tr>
+<td>Build speed</td>
+<td>fast</td>
+<td>slow (full compile, incl. Rust for some deps)</td>
+</tr>
+<tr>
+<td>Image size</td>
+<td>large (~1.6 GB)</td>
+<td>tiny (base ~25 MB)</td>
+</tr>
+<tr>
+<td>Architectures</td>
+<td>amd64 binaries (arm64 compiles)</td>
+<td>builds natively on amd64 <strong>and</strong> arm64</td>
+</tr>
+<tr>
+<td>System deps</td>
+<td>
+<code>apt</code>, broad/easy (glibc)</td>
+<td>curated <code>apk</code>, must compile (musl)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<strong>Pros of <code>debian</code>:</strong> fast, reproducible binary builds; trivial system deps; broad compatibility for heavy/geo/Java packages; the validated default. <strong>Cons:</strong> large image; PPM binaries are amd64-only (on Apple Silicon build with <code>--platform linux/amd64</code>).</li>
+<li>
+<strong>Pros of <code>alpine</code>:</strong> very small images, good for size-sensitive/edge deploys; builds natively on arm64. <strong>Cons:</strong> every dependency compiles from source (slow builds, needs a toolchain), musl-libc quirks, and you curate the Alpine system libraries. <em>Experimental.</em>
+</li>
+</ul>
+<p>Rule of thumb: <strong><code>debian</code></strong> for fast CI and rich dependencies; <strong><code>alpine</code></strong> when the final image size matters most and you can absorb longer builds.</p>
 <p>During development, <code>aurora_run("meu_app", watch = TRUE)</code> rebuilds the static UI on change. Theming is a <code>_brand.yml</code> consumed by bslib; auth, data, and telemetry are opt-in (<code>aurora_create_app(template = "auth")</code>, <code><a href="reference/aurora_data_store.html">aurora_data_store()</a></code>, <code>aurora_run(otel = TRUE)</code>).</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="core-functions">Core functions<a class="anchor" aria-label="anchor" href="#core-functions"></a>
@@ -179,15 +238,15 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 </h2>
 <ul>
 <li>
-<strong>plumber2 only</strong> (ADR-001). Each handler’s URL comes from its annotation.</li>
+<strong>plumber2 only.</strong> Each handler’s URL comes from its annotation.</li>
 <li>
-<strong>Thin JS runtime</strong> (ADR-002). <code>core.js</code> is aurora’s basics; <code>app.js</code> and <code><a href="reference/aurora_component.html">aurora_component()</a></code> keep rendering in the app, not the package (ADR-009).</li>
+<strong>Thin JS runtime.</strong> <code>core.js</code> is aurora’s basics; <code>app.js</code> and <code><a href="reference/aurora_component.html">aurora_component()</a></code> keep rendering in the app, not the package.</li>
 <li>
-<strong>Pluggable auth</strong> (ADR-003 / ADR-010). A JWT-cookie <code>@header</code> guard, never in <code><a href="reference/aurora_app.html">aurora_app()</a></code>’s core path.</li>
+<strong>Pluggable auth.</strong> A JWT-cookie <code>@header</code> guard, never in <code><a href="reference/aurora_app.html">aurora_app()</a></code>’s core path.</li>
 <li>
-<strong>Convention over manifest</strong> (ADR-007). Fixed folders; <code>_aurora.yml</code> optional.</li>
+<strong>Convention over manifest.</strong> Fixed folders; <code>_aurora.yml</code> optional.</li>
 <li>
-<strong>Theming via brand.yml</strong> (ADR-011). bslib consumes <code>_brand.yml</code> at build time.</li>
+<strong>Theming via brand.yml.</strong> bslib consumes <code>_brand.yml</code> at build time.</li>
 </ul>
 </div>
 <div class="section level2">
