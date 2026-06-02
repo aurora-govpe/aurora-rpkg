@@ -49,12 +49,20 @@ aurora_run <- function(dir = ".", port = 8000L, host = "127.0.0.1",
     if (!is.function(on_exit)) {
       cli::cli_abort("{.arg on_exit} must be a function (called when the server stops).")
     }
-    plumber2::api_on(app$api, "cleanup", function(...) {
+    # plumber2/fiery fires "end" when the server stops; "cleanup" is registered
+    # too as a fallback. A once-guard keeps on_exit from running twice if both
+    # fire. (Verified: api_stop() triggers "end", not "cleanup".)
+    done <- FALSE
+    handler <- function(...) {
+      if (done) return(invisible(NULL))
+      done <<- TRUE
       tryCatch(on_exit(), error = function(e) cli::cli_warn(c(
         "{.arg on_exit} handler failed during shutdown.",
         "x" = conditionMessage(e)
       )))
-    })
+    }
+    plumber2::api_on(app$api, "end", handler)
+    plumber2::api_on(app$api, "cleanup", handler)
   }
 
   if (isTRUE(watch)) start_ui_watcher(app, interval = watch_interval)
