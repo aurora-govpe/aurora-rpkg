@@ -26,9 +26,11 @@ reference:
 - title: Scaffolding
   contents: [aurora_create_app, aurora_add_route]
 - title: Build & run
-  contents: [aurora_build_ui, aurora_app, aurora_run]
+  contents: [aurora_build_ui, aurora_app, aurora_run, aurora_config, aurora_check]
 - title: UI
   contents: [aurora_component]
+- title: Serializers
+  contents: [aurora_unbox, aurora_geojson, aurora_unique]
 - title: Data
   contents: [aurora_data_store, aurora_data_register, aurora_data_get, aurora_data_names]
 - title: Deploy
