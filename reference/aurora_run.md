@@ -3,8 +3,10 @@
 Rebuilds the UI (optional), assembles the
 [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md)
 from convention, and starts the plumber2 server. Development-time
-equivalent of `shiny::runApp()`. The generated `api.R` calls this
-function, so local dev and container entry share one assembly path.
+equivalent of
+[`shiny::runApp()`](https://rdrr.io/pkg/shiny/man/runApp.html). The
+generated `api.R` calls this function, so local dev and container entry
+share one assembly path.
 
 ## Usage
 
@@ -17,7 +19,9 @@ aurora_run(
   watch = FALSE,
   watch_interval = 1,
   otel = NULL,
-  verbose = NULL
+  verbose = NULL,
+  attach = NULL,
+  on_exit = NULL
 )
 ```
 
@@ -70,6 +74,22 @@ aurora_run(
   [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md);
   `NULL` (default) resolves from `options(aurora.verbose)` then
   `AURORA_VERBOSE`.
+
+- attach:
+
+  Attach the `_aurora.yml` `packages:` before sourcing helpers. Passed
+  to
+  [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md);
+  `NULL` (default) resolves from `_aurora.yml` (`attach:`) then
+  `AURORA_ATTACH`. See ADR-012.
+
+- on_exit:
+
+  Optional cleanup function `function()` run when the server stops
+  (registered on plumber2's `"cleanup"` lifecycle event). Use it to
+  release resources opened in a helper – e.g.
+  `pool::poolClose(con_base)` – replacing the v1 `pr_hook("exit", ...)`.
+  Errors in the handler are reported but do not block shutdown.
 
 ## Value
 

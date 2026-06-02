@@ -42,7 +42,7 @@ aurora_dockerfile(
   graphics needs); or pass a character vector to set them explicitly.
   For `"alpine"` this is the **build** (`-t`) set; runtime libs use a
   curated default. (`pkg_sysreqs()` auto-resolution proved unreliable,
-  so aurora ships comprehensive defaults instead — extra `-dev` packages
+  so aurora ships comprehensive defaults instead – extra `-dev` packages
   are build-time only.)
 
 - port:
@@ -51,7 +51,11 @@ aurora_dockerfile(
 
 - aurora_source:
 
-  pak/remotes spec used to install aurora in the image.
+  pak/remotes spec used to install aurora in the image. Pin a tag or
+  commit for reproducible builds (e.g.
+  `"aurora-govpe/aurora-rpkg@v0.1.0"`): an unpinned moving ref (a
+  branch) interacts badly with Docker's layer cache, which can silently
+  keep an old commit on rebuild.
 
 - write:
 
@@ -65,11 +69,11 @@ The Dockerfile path (if written) or its contents, invisibly.
 
 Two flavors:
 
-- `"debian"` (default) — `rocker/r-ver`; installs R packages as
+- `"debian"` (default) – `rocker/r-ver`; installs R packages as
   **binaries** from Posit Package Manager (fast builds; amd64). Best for
   heavy/geo apps and fast CI. Larger image.
 
-- `"alpine"` — `rhub/r-minimal`; a tiny image (~25 MB base) that
+- `"alpine"` – `rhub/r-minimal`; a tiny image (~25 MB base) that
   **compiles** every package from source via `installr` (no CRAN
   binaries; builds are slower). Best when image size matters or you need
   native arm64. Tune the Alpine build/runtime system deps via `sysdeps`

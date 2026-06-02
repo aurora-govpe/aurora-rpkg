@@ -22,14 +22,13 @@ aurora_data_store(..., dir = ".", readers = list())
 
 - dir:
 
-  Base directory that relative paths are resolved against, at read time.
-  Defaults to `"."` (the process working directory). In the canonical
-  deployment the app is launched from its own directory
-  (`Rscript api.R`, or
-  [`aurora_run()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_run.md)
-  from the app dir), so relative paths like `"data/x.rds"` resolve
-  correctly. Pass an absolute path if you cannot rely on the working
-  directory. Absolute dataset paths are used as-is regardless of `dir`.
+  Base directory that relative dataset paths are resolved against.
+  Resolved to an absolute path **once, when the store is created** (not
+  at read time), so later changes to the working directory cannot break
+  reads. Defaults to `"."`; since the store is normally created while a
+  `helpers/*.R` file is sourced (cwd = app root), relative paths like
+  `"data/x.rds"` anchor to the app root. Absolute dataset paths are used
+  as-is regardless of `dir`.
 
 - readers:
 

@@ -14,7 +14,8 @@ aurora_app(
   host = "127.0.0.1",
   port = 8000L,
   otel = NULL,
-  verbose = NULL
+  verbose = NULL,
+  attach = NULL
 )
 ```
 
@@ -48,6 +49,17 @@ aurora_app(
   otel wiring). `NULL` (default) resolves from `options(aurora.verbose)`
   then the `AURORA_VERBOSE` env var, falling back to `FALSE` (quiet: a
   single assembly-summary line). Errors and warnings always print.
+
+- attach:
+
+  Attach the runtime packages declared in `_aurora.yml` (`packages:`)
+  before sourcing helpers, so helpers and handlers can use their
+  functions unqualified (mirrors a plumber-v1
+  [`library()`](https://rdrr.io/r/base/library.html) block). `NULL`
+  (default) resolves from `_aurora.yml` (`attach:`) then
+  `AURORA_ATTACH`, falling back to `FALSE`. Off by default to keep
+  assembly thin; the `packages:` list is the runtime set (no
+  `shiny`/`bslib`), so it is safe to enable. See ADR-012.
 
 ## Value
 

@@ -11,15 +11,34 @@
 
 - [`aurora_build_ui()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_build_ui.md)
   : Build the static UI for an aurora app
+
 - [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md)
   : Assemble an aurora app as a plumber2 API
+
 - [`aurora_run()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_run.md)
   : Run an aurora app locally
+
+- [`aurora_config()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_config.md)
+  :
+
+  Read the app's `data/config.yml`, anchored to the app root
+
+- [`aurora_check()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_check.md)
+  : Check an aurora app for common problems
 
 ## UI
 
 - [`aurora_component()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_component.md)
   : Wire a UI element to a JSON API endpoint
+
+## Serializers
+
+- [`aurora_unbox()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_unbox.md)
+  : Unbox a scalar for a JSON response, NULL-safe
+- [`aurora_geojson()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_geojson.md)
+  : Encode an sf object as GeoJSON for a JSON response, NULL-safe
+- [`aurora_unique()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_unique.md)
+  : Sorted unique non-missing values, for filter options
 
 ## Data
 

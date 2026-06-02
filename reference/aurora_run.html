@@ -52,7 +52,7 @@ and container entry share one assembly path."><meta property="og:image" content=
     <div class="ref-description section level2">
     <p>Rebuilds the UI (optional), assembles the <code><a href="aurora_app.html">aurora_app()</a></code> from convention, and
 starts the <span class="pkg">plumber2</span> server. Development-time equivalent of
-<code>shiny::runApp()</code>. The generated <code>api.R</code> calls this function, so local dev
+<code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">shiny::runApp()</a></code>. The generated <code>api.R</code> calls this function, so local dev
 and container entry share one assembly path.</p>
     </div>
 
@@ -66,7 +66,9 @@ and container entry share one assembly path.</p>
 <span>  watch <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  watch_interval <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  otel <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attach <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  on_exit <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -116,6 +118,20 @@ package.</p></dd>
 <dd><p>Per-step <span class="pkg">cli</span> logging. Passed to <code><a href="aurora_app.html">aurora_app()</a></code>; <code>NULL</code>
 (default) resolves from <code>options(aurora.verbose)</code> then <code>AURORA_VERBOSE</code>.</p></dd>
 
+
+<dt id="arg-attach">attach<a class="anchor" aria-label="anchor" href="#arg-attach"></a></dt>
+<dd><p>Attach the <code>_aurora.yml</code> <code>packages:</code> before sourcing helpers.
+Passed to <code><a href="aurora_app.html">aurora_app()</a></code>; <code>NULL</code> (default) resolves from <code>_aurora.yml</code>
+(<code>attach:</code>) then <code>AURORA_ATTACH</code>. See ADR-012.</p></dd>
+
+
+<dt id="arg-on-exit">on_exit<a class="anchor" aria-label="anchor" href="#arg-on-exit"></a></dt>
+<dd><p>Optional cleanup function <code>function()</code> run when the server
+stops (registered on plumber2's <code>"cleanup"</code> lifecycle event). Use it to
+release resources opened in a helper – e.g. <code>pool::poolClose(con_base)</code> –
+replacing the v1 <code>pr_hook("exit", ...)</code>. Errors in the handler are reported
+but do not block shutdown.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -127,7 +143,7 @@ package.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Equipe NGR-Dados.</p>
+  <p>Developed by Andre Leite, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra, Júlia Nascimento Barreto.</p>
 </div>
 
 <div class="pkgdown-footer-right">

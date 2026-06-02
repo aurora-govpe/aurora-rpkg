@@ -74,12 +74,12 @@ The reader is inferred from the file extension.</p></dd>
 
 
 <dt id="arg-dir">dir<a class="anchor" aria-label="anchor" href="#arg-dir"></a></dt>
-<dd><p>Base directory that relative paths are resolved against, at read
-time. Defaults to <code>"."</code> (the process working directory). In the canonical
-deployment the app is launched from its own directory (<code>Rscript api.R</code>, or
-<code><a href="aurora_run.html">aurora_run()</a></code> from the app dir), so relative paths like <code>"data/x.rds"</code>
-resolve correctly. Pass an absolute path if you cannot rely on the working
-directory. Absolute dataset paths are used as-is regardless of <code>dir</code>.</p></dd>
+<dd><p>Base directory that relative dataset paths are resolved against.
+Resolved to an absolute path <strong>once, when the store is created</strong> (not at read
+time), so later changes to the working directory cannot break reads. Defaults
+to <code>"."</code>; since the store is normally created while a <code>helpers/*.R</code> file is
+sourced (cwd = app root), relative paths like <code>"data/x.rds"</code> anchor to the
+app root. Absolute dataset paths are used as-is regardless of <code>dir</code>.</p></dd>
 
 
 <dt id="arg-readers">readers<a class="anchor" aria-label="anchor" href="#arg-readers"></a></dt>
@@ -122,7 +122,7 @@ parsed) and read from it in handlers:</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Equipe NGR-Dados.</p>
+  <p>Developed by Andre Leite, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra, Júlia Nascimento Barreto.</p>
 </div>
 
 <div class="pkgdown-footer-right">

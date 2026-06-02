@@ -64,7 +64,8 @@ overrides a few keys.</p>
 <span>  host <span class="op">=</span> <span class="st">"127.0.0.1"</span>,</span>
 <span>  port <span class="op">=</span> <span class="fl">8000L</span>,</span>
 <span>  otel <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  attach <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -100,6 +101,16 @@ parsed router, otel wiring). <code>NULL</code> (default) resolves from
 <code>FALSE</code> (quiet: a single assembly-summary line). Errors and warnings always
 print.</p></dd>
 
+
+<dt id="arg-attach">attach<a class="anchor" aria-label="anchor" href="#arg-attach"></a></dt>
+<dd><p>Attach the runtime packages declared in <code>_aurora.yml</code>
+(<code>packages:</code>) before sourcing helpers, so helpers and handlers can use their
+functions unqualified (mirrors a plumber-v1 <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> block). <code>NULL</code>
+(default) resolves from <code>_aurora.yml</code> (<code>attach:</code>) then <code>AURORA_ATTACH</code>,
+falling back to <code>FALSE</code>. Off by default to keep assembly thin; the
+<code>packages:</code> list is the runtime set (no <code>shiny</code>/<code>bslib</code>), so it is safe to
+enable. See ADR-012.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -117,7 +128,7 @@ is no runtime path injection here.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Equipe NGR-Dados.</p>
+  <p>Developed by Andre Leite, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra, Júlia Nascimento Barreto.</p>
 </div>
 
 <div class="pkgdown-footer-right">

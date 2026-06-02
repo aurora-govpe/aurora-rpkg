@@ -90,7 +90,7 @@ flavor (covers the plumber2 + bslib baseline plus common TLS/curl/db/geo/
 graphics needs); or pass a character vector to set them explicitly. For
 <code>"alpine"</code> this is the <strong>build</strong> (<code>-t</code>) set; runtime libs use a curated
 default. (<code>pkg_sysreqs()</code> auto-resolution proved unreliable, so aurora ships
-comprehensive defaults instead — extra <code>-dev</code> packages are build-time only.)</p></dd>
+comprehensive defaults instead – extra <code>-dev</code> packages are build-time only.)</p></dd>
 
 
 <dt id="arg-port">port<a class="anchor" aria-label="anchor" href="#arg-port"></a></dt>
@@ -98,7 +98,11 @@ comprehensive defaults instead — extra <code>-dev</code> packages are build-ti
 
 
 <dt id="arg-aurora-source">aurora_source<a class="anchor" aria-label="anchor" href="#arg-aurora-source"></a></dt>
-<dd><p>pak/remotes spec used to install aurora in the image.</p></dd>
+<dd><p>pak/remotes spec used to install aurora in the image.
+Pin a tag or commit for reproducible builds (e.g.
+<code>"aurora-govpe/aurora-rpkg@v0.1.0"</code>): an unpinned moving ref (a branch)
+interacts badly with Docker's layer cache, which can silently keep an old
+commit on rebuild.</p></dd>
 
 
 <dt id="arg-write">write<a class="anchor" aria-label="anchor" href="#arg-write"></a></dt>
@@ -111,10 +115,10 @@ comprehensive defaults instead — extra <code>-dev</code> packages are build-ti
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Two flavors:</p><ul><li><p><code>"debian"</code> (default) — <code>rocker/r-ver</code>; installs R packages as <strong>binaries</strong>
+    <p>Two flavors:</p><ul><li><p><code>"debian"</code> (default) – <code>rocker/r-ver</code>; installs R packages as <strong>binaries</strong>
 from Posit Package Manager (fast builds; amd64). Best for heavy/geo apps and
 fast CI. Larger image.</p></li>
-<li><p><code>"alpine"</code> — <code>rhub/r-minimal</code>; a tiny image (~25 MB base) that <strong>compiles</strong>
+<li><p><code>"alpine"</code> – <code>rhub/r-minimal</code>; a tiny image (~25 MB base) that <strong>compiles</strong>
 every package from source via <code>installr</code> (no CRAN binaries; builds are
 slower). Best when image size matters or you need native arm64. Tune the
 Alpine build/runtime system deps via <code>sysdeps</code> if your packages need more.</p></li>
@@ -128,7 +132,7 @@ in <code>_aurora.yml</code>; <code>plumber2</code> and <code>aurora</code> are a
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Equipe NGR-Dados.</p>
+  <p>Developed by Andre Leite, Marcos Wasilew, Hugo Vasconcelos, Carlos Amorin, Diogo Bezerra, Júlia Nascimento Barreto.</p>
 </div>
 
 <div class="pkgdown-footer-right">
