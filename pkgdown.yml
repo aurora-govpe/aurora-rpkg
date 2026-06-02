@@ -1,0 +1,14 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  aurora: aurora.html
+  auth: auth.html
+  deploy: deploy.html
+  articles/gallery: gallery.html
+  migrating-from-shiny: migrating-from-shiny.html
+  telemetry: telemetry.html
+last_built: 2026-06-02T13:24Z
+urls:
+  reference: https://aurora-govpe.github.io/aurora-rpkg/reference
+  article: https://aurora-govpe.github.io/aurora-rpkg/articles

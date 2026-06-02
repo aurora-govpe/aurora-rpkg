@@ -1,0 +1,117 @@
+# Get started with aurora
+
+## What aurora is
+
+aurora builds **stateless** web apps on top of
+[plumber2](https://plumber2.posit.co): you author the UI with
+[bslib](https://rstudio.github.io/bslib/), aurora compiles it to a
+static `index.html` at build time, and plumber2 serves those assets plus
+your JSON API routes. You get Shiny-like ergonomics with an API
+deployment model — no WebSocket, no per-user R process, no sticky
+sessions. R runs only when a route is called, so an app scales
+horizontally behind a load balancer or Docker.
+
+## Scaffold, run, add a route
+
+``` r
+
+library(aurora)
+
+aurora_create_app("meu_app", template = "minimal")
+aurora_run("meu_app")                 # http://127.0.0.1:8000 (docs at /__docs__)
+
+# add an API route (writes routers/relatorios.R with the path in the annotation)
+aurora_add_route("relatorios", dir = "meu_app")
+```
+
+During development, `aurora_run("meu_app", watch = TRUE)` rebuilds the
+static UI whenever `build_ui.R` or `ui_modules/` change — just refresh
+the browser.
+
+## The app contract (convention, not a manifest)
+
+aurora assembles an app from a fixed layout. Nothing here is required to
+be wired by hand; aurora finds it by convention.
+
+    meu_app/
+    ├── api.R            # entry point: aurora::aurora_run("."), host/port from env
+    ├── build_ui.R       # defines build_ui() -> an htmltools tag
+    ├── helpers/         # *.R sourced BEFORE routers are parsed (db, config, stores)
+    ├── routers/         # plumber2 annotated handlers; the URL is the annotation path
+    ├── ui_modules/      # ui_*.R partials sourced by build_ui.R
+    ├── www/             # static assets: js/core.js (runtime), js/app.js, style.css, images/
+    ├── data/config.yml  # config (the config package)
+    ├── _brand.yml        # optional: visual brand consumed by bslib
+    └── _aurora.yml       # optional: overrides name / engine / auth
+
+## Writing a route
+
+A handler’s URL comes from its annotation. Note plumber2 only binds
+**path** parameters to named arguments; read the query string from the
+`query` argument and a parsed body from `body` (see
+[`vignette("migrating-from-shiny")`](https://aurora-govpe.github.io/aurora-rpkg/articles/migrating-from-shiny.md)).
+
+``` r
+
+# routers/sales.R
+#* @get /api/sales/data
+#* @serializer json
+function() {
+  list(categories = c("Jan", "Fev", "Mar"), values = c(120, 200, 150))
+}
+```
+
+## Wiring UI to the API
+
+aurora ships a thin runtime (`www/js/core.js`) exposing `window.aurora`:
+a credentialed `fetch`/`json` wrapper plus an `onUnauthorized` hook. It
+ships **no** rendering code — your `app.js` renders. Use
+[`aurora_component()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_component.md)
+to emit an element wired to its endpoint, then read it from JS:
+
+``` r
+
+# build_ui.R
+aurora_component("api/sales/data", id = "chart", style = "height:360px;")
+```
+
+``` js
+// www/js/app.js
+var el = document.getElementById("chart");
+aurora.json(el.dataset.endpoint).then(function (d) {
+  echarts.init(el).setOption({
+    xAxis: { type: "category", data: d.categories },
+    yAxis: { type: "value" },
+    series: [{ type: "bar", data: d.values }]
+  });
+});
+```
+
+See `inst/examples/02-dashboard-echarts` and `03-map` for full worked
+apps.
+
+## Theming, data, auth, telemetry
+
+- **Theming** — edit `_brand.yml`; bslib bakes it in at build time. The
+  `minimal` template uses `bs_theme(version = 5, brand = TRUE)`.
+- **Data** —
+  [`aurora_data_store()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_data_store.md)
+  hands handlers a hot-reloading, globals-free store:
+  `aurora_data_get(store, "sales")` re-reads when the file changes on
+  disk.
+- **Auth** — opt-in JWT-cookie scheme; scaffold it with
+  `aurora_create_app(..., template = "auth")`. See
+  [`vignette("auth")`](https://aurora-govpe.github.io/aurora-rpkg/articles/auth.md).
+- **Telemetry** — `aurora_run(otel = TRUE)`. See
+  [`vignette("telemetry")`](https://aurora-govpe.github.io/aurora-rpkg/articles/telemetry.md).
+
+## Deploy
+
+``` r
+
+aurora_dockerfile("meu_app")
+aurora_build_image("meu_app", tag = "org/meu_app:latest", push = TRUE)
+```
+
+See
+[`vignette("deploy")`](https://aurora-govpe.github.io/aurora-rpkg/articles/deploy.md).

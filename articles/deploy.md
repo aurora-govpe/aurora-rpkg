@@ -1,0 +1,141 @@
+# Deploying aurora apps
+
+Because an aurora app is stateless, deployment is the boring, scalable
+kind: a container that serves static assets plus JSON routes. Run as
+many replicas as you like behind a load balancer — there are no sticky
+sessions to worry about.
+
+## Build an image
+
+The static UI is compiled at build time and shipped as `www/index.html`;
+the container **serves** it and does not rebuild it, so the runtime
+image installs no UI dependencies (bslib, and transitively shiny). Build
+the UI before the image:
+
+``` r
+
+library(aurora)
+
+aurora_build_ui("meu_app")   # compile www/index.html (needs bslib; run on dev/CI)
+
+# Generate a Dockerfile (+ .dockerignore). It installs only the runtime deps
+# your routers/helpers need, plus plumber2 and aurora.
+aurora_dockerfile("meu_app")
+
+# Build (and optionally push) the image using the docker CLI.
+aurora_build_image("meu_app", tag = "org/meu_app:latest", push = TRUE)
+```
+
+The generated Dockerfile pulls R packages as prebuilt **binaries** from
+Posit Package Manager, so builds are fast and need no compiler toolchain
+at run time. Posit Package Manager only serves **amd64 (x86_64)** Linux
+binaries, so on an Apple Silicon machine build for the production target
+explicitly — otherwise the native arm64 build compiles every dependency
+from source:
+
+``` sh
+docker build --platform linux/amd64 -t org/meu_app:latest .
+```
+
+[`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
+writes a Dockerfile whose entry point is `Rscript api.R`, so the
+container and local development share one assembly path. Key arguments:
+
+- `flavor` — `"debian"` (default) or `"alpine"` (see below).
+- `base` — base image; `NULL` resolves per flavor (`rocker/r-ver` /
+  `rhub/r-minimal`).
+- `sysdeps` — `"auto"` uses a curated default set covering the
+  plumber2 + bslib baseline plus common TLS/curl/db/geo/graphics needs;
+  pass a vector to override.
+- `port` — exposed port (default `8000`).
+
+### Choosing a flavor
+
+|  | `debian` (default) | `alpine` |
+|----|----|----|
+| Base | `rocker/r-ver` | `rhub/r-minimal` |
+| R packages | **binaries** from Posit Package Manager (fast) | **compiled** from source via `installr` (slower) |
+| Image size | larger | tiny (~25 MB base) |
+| Arch | amd64 binaries (arm64 compiles) | builds natively on amd64 **and** arm64 |
+| Best for | heavy/geo apps, fast CI, broad compatibility | size-sensitive / edge deploys, simple deps |
+
+``` r
+
+aurora_dockerfile("meu_app", flavor = "alpine")
+```
+
+The `alpine` flavor compiles everything (no CRAN binaries on Alpine) and
+uses `installr -d -t "<build deps>" -a "<runtime libs>"`. aurora ships
+defaults that cover the plumber2 + bslib baseline; for extra system
+libraries (e.g. GDAL/GEOS for `sf`) pass them via `sysdeps`. Note that
+aurora’s baseline still pulls a non-trivial tree (httpuv, the fiery
+stack, roxygen2, the graphics packages), so even a small app compiles a
+fair amount on Alpine — the win is final image size.
+
+## Runtime configuration (environment variables)
+
+The generated `api.R` reads its bind address and port from the
+environment, and aurora features are env-toggleable, so the **same
+image** runs in dev and prod:
+
+| Variable | Used for |
+|----|----|
+| `AURORA_HOST` / `AURORA_PORT` | bind address / port (`api.R`) |
+| `AURORA_OTEL` | enable OpenTelemetry logging ([`vignette("telemetry")`](https://aurora-govpe.github.io/aurora-rpkg/articles/telemetry.md)) |
+| `AURORA_JWT_SECRET` | signing secret for the `auth` template |
+| `AURORA_ENV=prod` | `Secure; SameSite=Strict` auth cookies (behind HTTPS) |
+
+Never bake secrets into the image — inject them at run time:
+
+``` sh
+docker run -p 8000:8000 \
+  -e AURORA_JWT_SECRET="$(openssl rand -hex 32)" \
+  -e AURORA_ENV=prod \
+  org/meu_app:latest
+```
+
+## Behind a reverse proxy / load balancer
+
+Serve the app under a path prefix or a subdomain via your proxy (nginx,
+Traefik, an ingress). The runtime resolves API paths against the page’s
+base path, so an app served under `/meu_app/` still calls its routes
+correctly. Run multiple replicas freely — state lives in the client
+(cookies) or an external store, not in the R process (see
+[`vignette("aurora")`](https://aurora-govpe.github.io/aurora-rpkg/articles/aurora.md)
+on
+[`aurora_data_store()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_data_store.md)).
+
+## ShinyProxy
+
+ShinyProxy launches the container like any Docker-backed app.
+[`aurora_shinyproxy_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_shinyproxy_yaml.md)
+emits the `proxy.specs` entry for you:
+
+``` r
+
+aurora_shinyproxy_yaml(
+  image = "org/meu_app:latest",
+  dir   = "meu_app",              # defaults id / display-name from the app name
+  env   = list(AURORA_ENV = "prod")
+)
+#> - id: meu_app
+#>   display-name: meu_app
+#>   container-image: org/meu_app:latest
+#>   port: 8000
+#>   container-env:
+#>     AURORA_ENV: prod
+```
+
+Paste that under `proxy.specs` in your ShinyProxy config, or pass
+`wrap = TRUE` for a complete `proxy: specs:` snippet (and `write = TRUE`
+to save it to a file).
+
+## Checklist
+
+Strong `AURORA_JWT_SECRET` injected at run time (if using auth).
+
+`AURORA_ENV=prod` and HTTPS terminated at the proxy.
+
+Image rebuilt after dependency changes (sysdeps are resolved at build).
+
+Health check wired to a public route (e.g. `/health`).

@@ -1,0 +1,105 @@
+# Telemetry with OpenTelemetry
+
+aurora apps are plumber2 apps, and plumber2 ships
+[OpenTelemetry](https://opentelemetry.io) instrumentation that follows
+the HTTP [semantic
+conventions](https://opentelemetry.io/docs/specs/semconv/http/http-spans/)
+out of the box. aurora’s only job is to make turning it on a one-liner
+and to stay out of the way. Nothing about telemetry is reimplemented in
+aurora.
+
+## What you get for free
+
+The instrumentation lives in the layers under plumber2 (`reqres`,
+`fiery`, `routr`), so it works the moment OpenTelemetry is enabled in
+the environment:
+
+- **A span per request**, attached to the request object
+  (`request$otel`) and closed automatically when the response is sent.
+  It carries the standard HTTP attributes plus `server.id`,
+  `server.framework.name` (`"plumber2"`), and
+  `server.framework.version`.
+- **A subspan per route** the request passes through, with `routr.route`
+  and `routr.path.param.<name>` attributes.
+- **The standard server metrics**: `http.server.request.duration`,
+  `http.server.active_requests`, `http.server.request.body.size`,
+  `http.server.response.body.size`.
+
+## Turning it on in aurora
+
+aurora wires `plumber2::api_logger(plumber2::logger_otel())` so that
+your logs join the spans and metrics. Enable it any of three ways
+(highest precedence first):
+
+``` r
+
+# 1. Explicitly at run time
+aurora_run("meu_app", otel = TRUE)
+
+# 2. In the optional manifest — _aurora.yml
+# otel: true
+
+# 3. Via environment (handy for containers; the generated api.R reads it)
+Sys.setenv(AURORA_OTEL = "true")
+aurora_run("meu_app")
+```
+
+The flag resolves as: explicit `otel =` argument \> `_aurora.yml`
+`otel:` \> `AURORA_OTEL` env var \> `FALSE` (off).
+
+Leaving it on is safe: wiring the otel logger is a **no-op until
+OpenTelemetry is actually enabled** in the environment (see below). So
+you can bake `otel: true` into a production image and control collection
+purely through env vars.
+
+## Actually exporting data
+
+aurora does **not** own exporter configuration — that belongs to the
+[`otel`](https://otel.r-lib.org) and `otelsdk` packages, driven by
+standard `OTEL_*` environment variables. The essentials:
+
+- Install `otel` (instrumentation API) and `otelsdk` (the
+  collector/exporter).
+- Select exporters with `OTEL_TRACES_EXPORTER`, `OTEL_LOGS_EXPORTER`,
+  `OTEL_METRICS_EXPORTER` (or their `OTEL_R_*` variants). **If none are
+  set, nothing is emitted** — this is exactly what makes the aurora flag
+  a safe no-op.
+- Use `OTEL_ENV=dev` while developing so telemetry code fails loudly
+  instead of swallowing errors.
+
+Consult the `otel`/`otelsdk` package docs for the full list and for
+pointing the exporter at your collector (e.g. an OTLP endpoint). aurora
+intentionally does not wrap these.
+
+## Custom spans and logs in your handlers
+
+Inside a route handler you can add your own spans; they automatically
+pick up the active `routr` subspan as their parent:
+
+``` r
+
+#* @get /api/report/<id>
+#* @serializer json
+function(id, server) {
+  otel::start_local_active_span("build report")   # closes at end of scope
+  server$log("message", paste("building report", id))   # joins the request span
+  build_report(id)
+}
+```
+
+Two aurora conventions worth following:
+
+- Log through `server$log(...)` (the reserved `server` handler argument)
+  rather than
+  [`cat()`](https://rdrr.io/r/base/cat.html)/[`print()`](https://rdrr.io/r/base/print.html),
+  so logs are picked up by the otel logger and associated with the
+  request span.
+- Keep custom instrumentation sparse — the default instrumentation is
+  already detailed. Add spans only for the operations you specifically
+  care about.
+
+## See also
+
+- [`vignette("otel", package = "plumber2")`](https://plumber2.posit.co/articles/otel.html)
+  — the underlying instrumentation in full detail.
+- The [otel R package](https://otel.r-lib.org).
