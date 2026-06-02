@@ -74,3 +74,7 @@ Two flavors:
   binaries; builds are slower). Best when image size matters or you need
   native arm64. Tune the Alpine build/runtime system deps via `sysdeps`
   if your packages need more.
+
+Runtime R packages are detected by scanning `routers/`, `helpers/`, and
+`api.R`. To pin them explicitly (reproducible images), set a `packages:`
+list in `_aurora.yml`; `plumber2` and `aurora` are always added.

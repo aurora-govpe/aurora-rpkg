@@ -118,7 +118,10 @@ fast CI. Larger image.</p></li>
 every package from source via <code>installr</code> (no CRAN binaries; builds are
 slower). Best when image size matters or you need native arm64. Tune the
 Alpine build/runtime system deps via <code>sysdeps</code> if your packages need more.</p></li>
-</ul></div>
+</ul><p>Runtime R packages are detected by scanning <code>routers/</code>, <code>helpers/</code>, and
+<code>api.R</code>. To pin them explicitly (reproducible images), set a <code>packages:</code> list
+in <code>_aurora.yml</code>; <code>plumber2</code> and <code>aurora</code> are always added.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
