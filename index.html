@@ -174,8 +174,7 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 <li>
 <strong>Pros of <code>debian</code>:</strong> fast, reproducible binary builds; trivial system deps; broad compatibility for heavy/geo/Java packages; the validated default. <strong>Cons:</strong> large image; PPM binaries are amd64-only (on Apple Silicon build with <code>--platform linux/amd64</code>).</li>
 <li>
-<strong>Pros of <code>alpine</code>:</strong> very small images, good for size-sensitive/edge deploys; builds natively on arm64. <strong>Cons:</strong> every dependency compiles from source (slow builds, needs a toolchain), musl-libc quirks, and you curate the Alpine system libraries. <em>Experimental.</em>
-</li>
+<strong>Pros of <code>alpine</code>:</strong> very small images (~220 MB), good for size-sensitive/edge deploys; builds natively on arm64. <strong>Cons:</strong> every dependency compiles from source (slow builds, needs a toolchain), musl-libc quirks, and you curate the Alpine system libraries.</li>
 </ul>
 <p>Rule of thumb: <strong><code>debian</code></strong> for fast CI and rich dependencies; <strong><code>alpine</code></strong> when the final image size matters most and you can absorb longer builds.</p>
 <p>During development, <code>aurora_run("meu_app", watch = TRUE)</code> rebuilds the static UI on change. Theming is a <code>_brand.yml</code> consumed by bslib; auth, data, and telemetry are opt-in (<code>aurora_create_app(template = "auth")</code>, <code><a href="reference/aurora_data_store.html">aurora_data_store()</a></code>, <code>aurora_run(otel = TRUE)</code>).</p>
