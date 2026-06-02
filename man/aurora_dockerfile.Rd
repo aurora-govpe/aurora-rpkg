@@ -55,4 +55,8 @@ every package from source via \code{installr} (no CRAN binaries; builds are
 slower). Best when image size matters or you need native arm64. Tune the
 Alpine build/runtime system deps via \code{sysdeps} if your packages need more.
 }
+
+Runtime R packages are detected by scanning \verb{routers/}, \verb{helpers/}, and
+\code{api.R}. To pin them explicitly (reproducible images), set a \verb{packages:} list
+in \verb{_aurora.yml}; \code{plumber2} and \code{aurora} are always added.
 }

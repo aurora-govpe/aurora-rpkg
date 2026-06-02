@@ -4,10 +4,13 @@
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 #* Login: verify credentials, issue the JWT cookie.
+#*
+#* Logs via `server$log()` (a reserved handler argument) so events are picked up
+#* by the OpenTelemetry logger when telemetry is on. Prefer this over cat()/print().
 #* @post /auth/login
 #* @parser json
 #* @serializer json
-function(request, response, body = NULL) {
+function(request, response, body = NULL, server) {
   user <- body$user %||% ""
   pass <- body$pass %||% ""
 
@@ -16,9 +19,11 @@ function(request, response, body = NULL) {
     tryCatch(sodium::password_verify(u$hash, pass), error = function(e) FALSE)
 
   if (!isTRUE(ok)) {
+    server$log("message", paste("login denied for", user))
     response$status <- 401L
     return(list(error = "Usuário ou senha inválidos."))
   }
+  server$log("message", paste("login ok for", u$name))
 
   token <- aurora::aurora_jwt_token(auth, list(
     user       = u$name,

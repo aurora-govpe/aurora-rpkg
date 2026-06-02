@@ -150,6 +150,10 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #'   slower). Best when image size matters or you need native arm64. Tune the
 #'   Alpine build/runtime system deps via `sysdeps` if your packages need more.
 #'
+#' Runtime R packages are detected by scanning `routers/`, `helpers/`, and
+#' `api.R`. To pin them explicitly (reproducible images), set a `packages:` list
+#' in `_aurora.yml`; `plumber2` and `aurora` are always added.
+#'
 #' @param dir App directory.
 #' @param flavor Base-image flavor: `"debian"` (rocker + PPM binaries) or
 #'   `"alpine"` (r-minimal + source builds).
@@ -180,7 +184,10 @@ aurora_dockerfile <- function(dir = ".",
   # Runtime deps only: the container serves the prebuilt static UI and does not
   # rebuild it, so UI build deps (bslib, brand.yml, transitively shiny) are not
   # installed — only what routers/helpers and plumber2 need at request time.
-  pkgs <- setdiff(unique(c("plumber2", detect_packages(dir, scope = "runtime"))), "aurora")
+  # An explicit `packages:` list in _aurora.yml pins the runtime deps (instead of
+  # scanning the source), for reproducible production images.
+  runtime_pkgs <- if (length(cfg$packages) > 0) cfg$packages else detect_packages(dir, scope = "runtime")
+  pkgs <- setdiff(unique(c("plumber2", runtime_pkgs)), "aurora")
   if (!fs::file_exists(fs::path(dir, "www", "index.html"))) {
     cli::cli_alert_warning(c(
       "No {.path www/index.html} found.",

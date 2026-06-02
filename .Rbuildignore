@@ -13,3 +13,5 @@
 ^inst/examples/[^/]+/www/lib$
 ^inst/examples/[^/]+/www/index\.html$
 ^vignettes/articles$
+^pkgdown$
+^\.DS_Store$

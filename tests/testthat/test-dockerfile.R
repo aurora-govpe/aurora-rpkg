@@ -33,6 +33,19 @@ test_that("alpine flavor targets r-minimal + installr", {
   expect_no_match(df, "packagemanager.posit.co")  # no PPM on alpine
 })
 
+test_that("packages: in _aurora.yml pins runtime deps over source scanning", {
+  d <- make_app(brand = FALSE)
+  # a router that ::-uses something the scan would otherwise pick up
+  writeLines("#* @get /api/x\nfunction() dplyr::tibble(a = 1)", fs::path(d, "routers", "x.R"))
+  yaml::write_yaml(list(name = "p", packages = c("jsonlite", "DBI")),
+                   fs::path(d, "_aurora.yml"))
+  df <- aurora_dockerfile(d, write = FALSE)
+  expect_match(df, "'jsonlite'", fixed = TRUE)
+  expect_match(df, "'DBI'", fixed = TRUE)
+  expect_match(df, "'plumber2'", fixed = TRUE)   # always added
+  expect_no_match(df, "'dplyr'")                 # scan suppressed by the pin
+})
+
 test_that("runtime image excludes UI build deps and does not rebuild the UI", {
   df <- aurora_dockerfile(make_app(brand = TRUE), write = FALSE)
   # The container serves the prebuilt UI; UI build deps are not installed.

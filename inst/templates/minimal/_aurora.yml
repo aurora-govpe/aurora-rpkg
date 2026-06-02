@@ -1,5 +1,5 @@
 # Optional. Convention is the source of truth; this file only overrides.
-# Recognised keys: name, engine (must be plumber2), auth, otel.
+# Recognised keys: name, engine (must be plumber2), auth, otel, packages.
 name: minimal
 engine: plumber2
 
@@ -7,3 +7,7 @@ engine: plumber2
 # A no-op until the `otel` package is enabled in the environment. You can also
 # set this via the AURORA_OTEL env var or aurora_run(otel = TRUE).
 # otel: true
+
+# Pin the runtime R packages for aurora_dockerfile() instead of scanning the
+# source (reproducible production images). plumber2 + aurora are always added.
+# packages: [dplyr, jsonlite]
