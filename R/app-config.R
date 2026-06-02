@@ -96,6 +96,26 @@ resolve_otel <- function(cfg, otel = NULL) {
   as_flag(Sys.getenv("AURORA_OTEL", ""), default = FALSE)
 }
 
+# Re-raise an error from sourcing/parsing an app file with the offending file
+# path and an actionable hint (notably for a missing R package), instead of the
+# bare `loadNamespace(x): there is no package called 'config'` that R produces.
+abort_app_file <- function(file, dir, e, what = "file", call = NULL) {
+  rel <- tryCatch(fs::path_rel(file, dir), error = function(.) basename(file))
+  msg <- conditionMessage(e)
+  bullets <- c("aurora could not load {what} {.path {rel}}.", "x" = msg)
+  pkg <- regmatches(
+    msg,
+    regexpr("(?<=called [‘'\"`])[^’'\"`]+", msg, perl = TRUE)
+  )
+  if (length(pkg) == 1L && nzchar(pkg)) {
+    bullets <- c(bullets,
+      "i" = "The R package {.pkg {pkg}} is not installed.",
+      "i" = "Install the app's runtime dependencies (e.g. {.code install.packages(\"{pkg}\")}); see {.field packages} in {.file _aurora.yml}."
+    )
+  }
+  cli::cli_abort(bullets, call = call)
+}
+
 # Whether to emit verbose, per-step cli logs (e.g. one line per sourced helper /
 # parsed router). Errors, warnings, and key successes always print regardless.
 # Precedence: explicit `verbose` arg > option(aurora.verbose) > env
