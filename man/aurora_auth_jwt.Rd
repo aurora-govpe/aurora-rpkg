@@ -22,8 +22,8 @@ supplying it via an environment variable rather than hardcoding.}
 An object of class \code{aurora_auth_jwt}.
 }
 \description{
-aurora's auth is \emph{pluggable} and never baked into \code{\link[=aurora_app]{aurora_app()}}'s core path
-(see ADR-003). This is the one provided scheme: a stateless JSON Web Token
+aurora's auth is \emph{pluggable} and never baked into \code{\link[=aurora_app]{aurora_app()}}'s core path.
+This is the one provided scheme: a stateless JSON Web Token
 signed with \pkg{jose} (HMAC) and delivered as an \code{HttpOnly} cookie. It is the
 plumber2 translation of the reference app's v1 \verb{@filter} JWT scheme.
 }

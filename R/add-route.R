@@ -2,8 +2,8 @@
 #'
 #' Generates an annotated \pkg{plumber2} route file under `routers/`. Because
 #' `aurora_app()` parses every file in `routers/`, no manifest update is needed.
-#' The handler's URL embeds the `mount` prefix directly in its annotation (see
-#' ADR-005), so there is no runtime path injection.
+#' The handler's URL embeds the `mount` prefix directly in its annotation, so
+#' there is no runtime path injection.
 #'
 #' @param name Route name; becomes `routers/<name>.R`.
 #' @param mount URL prefix for the route. Defaults to `/api/<name>`.

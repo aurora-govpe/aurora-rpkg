@@ -19,6 +19,6 @@ The created route file path, invisibly.
 \description{
 Generates an annotated \pkg{plumber2} route file under \verb{routers/}. Because
 \code{aurora_app()} parses every file in \verb{routers/}, no manifest update is needed.
-The handler's URL embeds the \code{mount} prefix directly in its annotation (see
-ADR-005), so there is no runtime path injection.
+The handler's URL embeds the \code{mount} prefix directly in its annotation, so
+there is no runtime path injection.
 }

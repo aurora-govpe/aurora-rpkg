@@ -1,7 +1,7 @@
 #' JWT-cookie authentication scheme
 #'
-#' aurora's auth is *pluggable* and never baked into [aurora_app()]'s core path
-#' (see ADR-003). This is the one provided scheme: a stateless JSON Web Token
+#' aurora's auth is *pluggable* and never baked into [aurora_app()]'s core path.
+#' This is the one provided scheme: a stateless JSON Web Token
 #' signed with \pkg{jose} (HMAC) and delivered as an `HttpOnly` cookie. It is the
 #' plumber2 translation of the reference app's v1 `@filter` JWT scheme.
 #'
