@@ -78,3 +78,50 @@ test_that("abort_app_file names the file and hints a missing package", {
   expect_match(msg, "nonexistentpkg123", fixed = TRUE)
   expect_match(msg, "install.packages", fixed = TRUE)
 })
+
+test_that("aurora_config reads data/config.yml anchored to the app dir", {
+  skip_if_not_installed("config")
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, "data"))
+  writeLines(c("default:", "  foo: bar", "  app_name: myapp"),
+             fs::path(app, "data", "config.yml"))
+  # Resolves via `dir`, not the (different) current working directory.
+  expect_identical(aurora_config("foo", dir = app), "bar")
+})
+
+test_that("read_config name falls back to config.yml app_name", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "data", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines(c("default:", "  app_name: from_config"),
+             fs::path(app, "data", "config.yml"))
+  expect_identical(read_config(app)$name, "from_config")
+})
+
+test_that("aurora_app(attach=TRUE) attaches declared packages", {
+  skip_if_not_installed("tibble")
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("helpers", "routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("x <- 1", fs::path(app, "helpers", "s.R"))
+  writeLines(c("name: demo", "attach: true", "packages:", "  - tibble"),
+             fs::path(app, "_aurora.yml"))
+
+  was_attached <- "package:tibble" %in% search()
+  withr::defer(if (!was_attached && "package:tibble" %in% search())
+    detach("package:tibble", character.only = TRUE))
+
+  aurora_app(app, rebuild_ui = FALSE)
+  expect_true("package:tibble" %in% search())
+})
+
+test_that("aurora_app(attach=TRUE) errors helpfully on a missing declared package", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("helpers", "routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines(c("name: demo", "attach: true", "packages:", "  - nonexistentpkg999"),
+             fs::path(app, "_aurora.yml"))
+  err <- tryCatch(aurora_app(app, rebuild_ui = FALSE), error = function(e) e)
+  expect_s3_class(err, "rlang_error")
+  expect_match(cli::ansi_strip(conditionMessage(err)), "nonexistentpkg999")
+})

@@ -39,7 +39,7 @@ read_config <- function(dir = ".") {
     user <- yaml::read_yaml(man) %||% list()
     cfg <- utils::modifyList(cfg, user)
   }
-  cfg$name <- cfg$name %||% fs::path_file(fs::path_abs(dir))
+  cfg$name <- cfg$name %||% config_app_name(dir) %||% fs::path_file(fs::path_abs(dir))
   cfg$engine <- cfg$engine %||% "plumber2"
   if (!identical(cfg$engine, "plumber2")) {
     cli::cli_abort(c(
@@ -79,6 +79,52 @@ helper_files <- function(cfg) {
   sort(fs::dir_ls(dir, glob = "*.R", type = "file"))
 }
 
+# Best-effort read of `app_name` from data/config.yml (the config-package file)
+# to use as the app name when `_aurora.yml` declares none -- removes the one
+# field that otherwise duplicates between the two files. Returns NULL if absent.
+config_app_name <- function(dir) {
+  f <- fs::path(dir, aurora_layout$config)
+  if (!fs::file_exists(f)) return(NULL)
+  y <- tryCatch(yaml::read_yaml(f), error = function(e) NULL)
+  if (is.null(y)) return(NULL)
+  (y$default %||% list())$app_name %||% y$app_name
+}
+
+#' Read the app's `data/config.yml`, anchored to the app root
+#'
+#' Thin wrapper over [config::get()] that resolves `data/config.yml` relative to
+#' the **app directory** (an absolute path), instead of the \pkg{config} package's
+#' default search from the current working directory. This avoids the cwd pitfall
+#' where a helper or handler is evaluated with a working directory other than the
+#' app root and `config::get()` cannot find the file.
+#'
+#' `data/config.yml` (app runtime config: DB credentials, environment profiles,
+#' service URLs) is intentionally separate from `_aurora.yml` (aurora wiring); see
+#' the project decision records. This helper just makes reading it robust.
+#'
+#' @param value Config value to read; `NULL` (default) returns the whole active
+#'   configuration as a list.
+#' @param ... Passed to [config::get()].
+#' @param dir App directory (used to locate `data/config.yml`).
+#' @param file Explicit path to the config file; overrides `dir` when supplied.
+#' @param config Active configuration name; defaults to the `R_CONFIG_ACTIVE`
+#'   environment variable or `"default"`.
+#'
+#' @return The requested config value (or the whole config list).
+#' @export
+aurora_config <- function(value = NULL, ..., dir = ".", file = NULL,
+                          config = Sys.getenv("R_CONFIG_ACTIVE", "default")) {
+  rlang::check_installed("config", reason = "to read {.path data/config.yml}")
+  f <- file %||% fs::path_abs(fs::path(dir, aurora_layout$config))
+  if (!fs::file_exists(f)) {
+    cli::cli_abort(c(
+      "Config file {.path {f}} not found.",
+      i = "aurora expects {.path data/config.yml}; pass {.arg dir} or {.arg file}."
+    ))
+  }
+  config::get(value = value, ..., file = f, config = config, use_parent = FALSE)
+}
+
 # Coerce a character/logical/NULL to a single logical (for env/manifest flags).
 as_flag <- function(x, default = FALSE) {
   if (is.null(x)) return(default)
@@ -103,9 +149,13 @@ abort_app_file <- function(file, dir, e, what = "file", call = NULL) {
   rel <- tryCatch(fs::path_rel(file, dir), error = function(.) basename(file))
   msg <- conditionMessage(e)
   bullets <- c("aurora could not load {what} {.path {rel}}.", "x" = msg)
+  # Match the package name between the quotes R uses in "there is no package
+  # called 'x'" (straight or fancy quotes). The fancy quotes are written as
+  # \u2018/\u2019 so the source stays ASCII (R CMD check flags non-ASCII string
+  # literals as a WARNING).
   pkg <- regmatches(
     msg,
-    regexpr("(?<=called [‘'\"`])[^’'\"`]+", msg, perl = TRUE)
+    regexpr("(?<=called [\u2018'\"`])[^\u2019'\"`]+", msg, perl = TRUE)
   )
   if (length(pkg) == 1L && nzchar(pkg)) {
     bullets <- c(bullets,
@@ -116,10 +166,19 @@ abort_app_file <- function(file, dir, e, what = "file", call = NULL) {
   cli::cli_abort(bullets, call = call)
 }
 
+# Resolve whether to attach the app's declared runtime packages before sourcing
+# helpers, by precedence: explicit `attach` arg > `_aurora.yml: attach:` > env
+# AURORA_ATTACH > FALSE. See ADR-012.
+resolve_attach <- function(cfg, attach = NULL) {
+  if (!is.null(attach)) return(isTRUE(attach))
+  if (!is.null(cfg$attach)) return(as_flag(cfg$attach))
+  as_flag(Sys.getenv("AURORA_ATTACH", ""), default = FALSE)
+}
+
 # Whether to emit verbose, per-step cli logs (e.g. one line per sourced helper /
 # parsed router). Errors, warnings, and key successes always print regardless.
 # Precedence: explicit `verbose` arg > option(aurora.verbose) > env
-# AURORA_VERBOSE > FALSE (quiet — a single assembly summary line).
+# AURORA_VERBOSE > FALSE (quiet -- a single assembly summary line).
 aurora_is_verbose <- function(verbose = NULL) {
   if (!is.null(verbose)) return(isTRUE(verbose))
   opt <- getOption("aurora.verbose")

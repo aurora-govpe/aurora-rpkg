@@ -23,17 +23,44 @@
 #'   `options(aurora.verbose)` then the `AURORA_VERBOSE` env var, falling back to
 #'   `FALSE` (quiet: a single assembly-summary line). Errors and warnings always
 #'   print.
+#' @param attach Attach the runtime packages declared in `_aurora.yml`
+#'   (`packages:`) before sourcing helpers, so helpers and handlers can use their
+#'   functions unqualified (mirrors a plumber-v1 `library()` block). `NULL`
+#'   (default) resolves from `_aurora.yml` (`attach:`) then `AURORA_ATTACH`,
+#'   falling back to `FALSE`. Off by default to keep assembly thin; the
+#'   `packages:` list is the runtime set (no `shiny`/`bslib`), so it is safe to
+#'   enable. See ADR-012.
 #'
 #' @return An object of class `aurora_app`.
 #' @export
 aurora_app <- function(dir = ".", rebuild_ui = TRUE,
                        host = "127.0.0.1", port = 8000L, otel = NULL,
-                       verbose = NULL) {
+                       verbose = NULL, attach = NULL) {
   rlang::check_installed("plumber2", reason = "to assemble an aurora app")
   verbose <- aurora_is_verbose(verbose)
   cfg <- read_config(dir)
 
   if (isTRUE(rebuild_ui)) aurora_build_ui(dir)
+
+  # Optionally attach the app's declared runtime packages (the `packages:` list
+  # in _aurora.yml) before sourcing helpers, so helpers/handlers can call their
+  # functions unqualified -- mirroring the `library()` block at the head of a
+  # plumber-v1 entrypoint. Opt-in (ADR-012); off by default to stay thin.
+  if (resolve_attach(cfg, attach) && length(cfg$packages) > 0) {
+    if (verbose) cli::cli_alert_info(
+      "Attaching {length(cfg$packages)} package{?s} from {.file _aurora.yml}: {.pkg {cfg$packages}}."
+    )
+    for (p in cfg$packages) {
+      tryCatch(
+        suppressPackageStartupMessages(library(p, character.only = TRUE)),
+        error = function(e) cli::cli_abort(c(
+          "Could not attach package {.pkg {p}} declared in {.file _aurora.yml} ({.field packages}).",
+          "x" = conditionMessage(e),
+          "i" = "Install it, e.g. {.code install.packages(\"{p}\")}."
+        ), call = NULL)
+      )
+    }
+  }
 
   # Source helpers first so handlers in routers/ can call them. Run them with the
   # app directory as the working directory (NOT chdir into helpers/) so that

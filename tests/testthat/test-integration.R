@@ -8,10 +8,11 @@ test_that("a booted aurora_app serves /health and the static UI over HTTP", {
   skip_if_not_installed("httr2")
   skip_if_not_installed("callr")
   skip_if_not_installed("bslib")
+  skip_if_not_installed("shiny")
   skip_if_not_installed("fiery")
   skip_if_not_installed("httpuv")
   if (!isTRUE(callr::r(function() requireNamespace("aurora", quietly = TRUE)))) {
-    skip("aurora not loadable in a separate process (dev load_all) — skipping real boot")
+    skip("aurora not loadable in a separate process (dev load_all) -- skipping real boot")
   }
 
   app_dir <- fs::path(withr::local_tempdir(), "itest")

@@ -68,3 +68,15 @@ test_that("aurora_data_get errors clearly when the file is gone", {
   fs::file_delete(f)
   expect_error(aurora_data_get(store, "g"), "not found")
 })
+
+test_that("data store resolves paths at register time (immune to cwd changes)", {
+  d <- withr::local_tempdir()
+  fs::dir_create(fs::path(d, "data"))
+  saveRDS(data.frame(x = 1:3), fs::path(d, "data", "s.rds"))
+
+  old <- setwd(d)
+  store <- aurora_data_store(s = "data/s.rds")  # dir = "." -> anchored to d
+  setwd(old)                                      # move cwd away from the app
+
+  expect_equal(nrow(aurora_data_get(store, "s")), 3L)  # still reads correctly
+})
