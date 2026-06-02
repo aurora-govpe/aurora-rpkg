@@ -13,7 +13,8 @@ aurora_app(
   rebuild_ui = TRUE,
   host = "127.0.0.1",
   port = 8000L,
-  otel = NULL
+  otel = NULL,
+  verbose = NULL
 )
 ```
 
@@ -40,6 +41,13 @@ aurora_app(
   environment variable, falling back to `FALSE`. Wiring is a no-op until
   the otel package is enabled in the environment, so it is safe to leave
   on.
+
+- verbose:
+
+  Emit a per-step cli log (one line per sourced helper / parsed router,
+  otel wiring). `NULL` (default) resolves from `options(aurora.verbose)`
+  then the `AURORA_VERBOSE` env var, falling back to `FALSE` (quiet: a
+  single assembly-summary line). Errors and warnings always print.
 
 ## Value
 

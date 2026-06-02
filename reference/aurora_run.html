@@ -65,7 +65,8 @@ and container entry share one assembly path.</p>
 <span>  rebuild_ui <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  watch <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  watch_interval <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  otel <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  otel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -109,6 +110,11 @@ package.</p></dd>
 <dt id="arg-otel">otel<a class="anchor" aria-label="anchor" href="#arg-otel"></a></dt>
 <dd><p>Enable OpenTelemetry logging. Passed to <code><a href="aurora_app.html">aurora_app()</a></code>; <code>NULL</code>
 (default) resolves from <code>_aurora.yml</code> then the <code>AURORA_OTEL</code> env var.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Per-step <span class="pkg">cli</span> logging. Passed to <code><a href="aurora_app.html">aurora_app()</a></code>; <code>NULL</code>
+(default) resolves from <code>options(aurora.verbose)</code> then <code>AURORA_VERBOSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

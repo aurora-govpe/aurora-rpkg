@@ -16,7 +16,8 @@ aurora_run(
   rebuild_ui = NULL,
   watch = FALSE,
   watch_interval = 1,
-  otel = NULL
+  otel = NULL,
+  verbose = NULL
 )
 ```
 
@@ -62,6 +63,13 @@ aurora_run(
   [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md);
   `NULL` (default) resolves from `_aurora.yml` then the `AURORA_OTEL`
   env var.
+
+- verbose:
+
+  Per-step cli logging. Passed to
+  [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md);
+  `NULL` (default) resolves from `options(aurora.verbose)` then
+  `AURORA_VERBOSE`.
 
 ## Value
 
