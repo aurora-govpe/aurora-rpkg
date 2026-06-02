@@ -1,0 +1,15 @@
+^aurora\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^\.github$
+^\.gitignore$
+^_pkgdown\.yml$
+^docs$
+^dev$
+^CLAUDE\.md$
+^\.claude$
+^ARCHITECTURE\.md$
+^STATE\.md$
+^inst/examples/[^/]+/www/lib$
+^inst/examples/[^/]+/www/index\.html$
+^vignettes/articles$

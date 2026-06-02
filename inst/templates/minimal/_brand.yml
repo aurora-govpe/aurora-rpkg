@@ -1,0 +1,13 @@
+meta:
+  name: minimal
+color:
+  palette:
+    primary-color: "#2c3e50"
+    accent-color: "#e67e22"
+  primary: primary-color
+  secondary: accent-color
+typography:
+  base:
+    family: system-ui
+# Logos are not auto-applied by bslib UIs. Put logo files in www/images/
+# and embed them in build_ui.R, e.g. tags$img(src = "images/logo.png").

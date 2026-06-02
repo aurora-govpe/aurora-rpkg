@@ -1,0 +1,4 @@
+# Optional. Convention is the source of truth; this file only overrides.
+# Recognised keys: name, engine (must be plumber2), auth, otel.
+name: auth
+engine: plumber2

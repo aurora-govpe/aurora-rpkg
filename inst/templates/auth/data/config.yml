@@ -1,0 +1,5 @@
+default:
+  app_name: auth
+
+production:
+  app_name: auth

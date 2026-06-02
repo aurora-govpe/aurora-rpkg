@@ -1,0 +1,5 @@
+default:
+  app_name: minimal
+
+production:
+  app_name: minimal

@@ -1,0 +1,45 @@
+Package: aurora
+Title: Build Stateless Web Apps in R with plumber2
+Version: 0.1.0
+Authors@R:
+    person("Equipe", "NGR-Dados", , "ngr-dados@gd.seplag.pe.gov.br", role = c("aut", "cre"))
+Description: A scaffolding and deployment toolkit for building stateless web
+    applications in R on top of 'plumber2'. The UI is authored with 'bslib'
+    and compiled to a static HTML asset at build time, while 'plumber2' serves
+    the assets and exposes JSON API routes. Provides functions to scaffold app
+    skeletons, run them locally, and generate Dockerfiles and images suitable
+    for 'ShinyProxy' or plain Docker.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.1)
+Imports:
+    cli,
+    fs,
+    glue,
+    htmltools,
+    plumber2 (>= 0.2.0),
+    rlang,
+    yaml
+Suggests:
+    brand.yml,
+    bslib (>= 0.9.0),
+    fiery,
+    httr2,
+    jose,
+    knitr,
+    later,
+    nanoparquet,
+    pak,
+    reqres,
+    rmarkdown,
+    sodium,
+    testthat (>= 3.0.0),
+    withr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+URL: https://github.com/segpr-ndgr/aurora,
+    https://segpr-ndgr.github.io/aurora
+BugReports: https://github.com/segpr-ndgr/aurora/issues
+Config/roxygen2/version: 8.0.0

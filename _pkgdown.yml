@@ -1,0 +1,45 @@
+url: https://segpr-ndgr.github.io/aurora
+
+development:
+  mode: auto
+
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#2c3e50"
+    base_font: {google: "Jost"}
+    heading_font: {google: "Jost"}
+
+home:
+  title: aurora
+  description: Build stateless web apps in R with plumber2 and bslib.
+
+navbar:
+  structure:
+    left: [intro, reference, articles, gallery, news]
+  components:
+    gallery:
+      text: Gallery
+      href: articles/gallery.html
+
+reference:
+- title: Scaffolding
+  contents: [aurora_create_app, aurora_add_route]
+- title: Build & run
+  contents: [aurora_build_ui, aurora_app, aurora_run]
+- title: UI
+  contents: [aurora_component]
+- title: Data
+  contents: [aurora_data_store, aurora_data_register, aurora_data_get, aurora_data_names]
+- title: Deploy
+  contents: [aurora_dockerfile, aurora_build_image, aurora_shinyproxy_yaml]
+- title: Auth
+  contents: [aurora_auth_jwt, aurora_jwt_token, aurora_jwt_decode, aurora_jwt_guard,
+             aurora_set_auth_cookie, aurora_clear_auth_cookie]
+
+articles:
+- title: Articles
+  navbar: ~
+  contents: [aurora, migrating-from-shiny, auth, telemetry, deploy]
+- title: Gallery
+  contents: [articles/gallery]
