@@ -31,8 +31,7 @@ likes.
 }
 \details{
 aurora deliberately ships no rendering JavaScript: this keeps the runtime thin
-(see the design invariants in \code{CLAUDE.md} / ADR-002 and ADR-009) and leaves
-charts, tables, and maps fully under the app's control. Use it to avoid
+and leaves charts, tables, and maps fully under the app's control. Use it to avoid
 hand-writing the \verb{data-*} plumbing on every element.
 }
 \examples{

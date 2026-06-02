@@ -12,3 +12,6 @@ inst/examples/*/www/lib/
 inst/examples/*/www/index.html
 inst/templates/*/www/lib/
 inst/templates/*/www/index.html
+# Internal docs / project memory — kept local, not published
+CLAUDE.md
+dev/

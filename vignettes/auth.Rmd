@@ -101,7 +101,7 @@ datastore plugin, and return `400`/`403`. A self-issued JWT-cookie session
 needs a uniform `401` for both absent and expired sessions (cookie expiry looks
 like "absent") and no extra infrastructure — so aurora uses a `@header` guard +
 `reqres::abort_unauthorized()`, the migration-endorsed replacement for v1
-filters. (See the ADRs in the package's `dev/DECISIONS.md`.)
+filters.
 
 ## Production checklist
 

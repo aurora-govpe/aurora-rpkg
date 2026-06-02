@@ -1,6 +1,6 @@
 # Convention-first app configuration --------------------------------------------
 #
-# The canonical aurora app layout is fixed by convention (see dev/ARCHITECTURE.md):
+# The canonical aurora app layout is fixed by convention:
 #   api.R            entry point
 #   build_ui.R       defines build_ui()
 #   helpers/         *.R sourced before routers are parsed

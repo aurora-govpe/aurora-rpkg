@@ -40,4 +40,4 @@ pkgdown site. `R CMD check` is clean (0 errors / 0 warnings).
   + `installr`, a tiny source-built image). `aurora_build_image()` and
   `aurora_shinyproxy_yaml()` (emits a ShinyProxy `proxy.specs` block).
 
-See `dev/PLAN.md` for the roadmap and `dev/STATE.md` for current status.
+See the package website for the full reference and articles.
