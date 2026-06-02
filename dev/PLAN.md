@@ -34,9 +34,13 @@ Goal: one-command containerisation.
 - [x] `aurora_build_image()` (docker CLI wrapper)
 - [x] `aurora_shinyproxy_yaml()` — emits the `proxy.specs` block (id/display-name/
       container-image/port/container-env; `wrap`/`write` options). Tested.
-- [ ] Validate a generated Dockerfile with a real `docker build` (needs Docker)
+- [x] Validate a generated Dockerfile with a real `docker build` — DONE
+      (2026-06-02): debian image builds with PPM binaries, boots ~2s, serves
+      `/health`, the static UI, and `/lib/*` assets; no bslib/shiny in the image.
+      Surfaced + fixed: brand.yml, graphics sysdeps, PPM binaries (`HTTPUserAgent`),
+      libuv, and the prebuilt-UI / runtime-deps-only architecture.
 - [ ] Optional `packages:` field in `_aurora.yml` to pin prod deps (see BACKLOG)
-Acceptance: generated image runs and serves the app on the exposed port.
+Acceptance: generated image runs and serves the app on the exposed port. ✅
 
 ## Phase 2.5 — Telemetry / OpenTelemetry (requested)
 Goal: make instrumentation a one-liner for aurora apps. plumber2 already wires

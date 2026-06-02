@@ -181,17 +181,25 @@ Full v1→v2 map + reqres translation table: `dev/MIGRATION-V1-V2.md`.
   favicons generated (`pkgdown::build_favicons()`); shows in the pkgdown navbar.
   Site rebuilt clean with the logo.
 
-## Dockerfile validation ▶ in progress (2026-06-01) — found + fixing real bugs
-Validating a generated Dockerfile via real `docker build` (Docker 29.4.3 up;
-aurora installed from the local 0.1.0 tarball since it isn't on GitHub yet).
-Bugs found and fixed in `R/dockerfile.R`:
-- Missing `brand.yml` — the minimal template's `bs_theme(brand = TRUE)` needs it
-  at startup but `detect_packages()` can't see it; now added when `_brand.yml` exists.
-- Source-compile failures — `pak` compiled the whole tree from CRAN source and
-  `textshaping`/`ragg`/`svglite` failed for lack of harfbuzz/fribidi/freetype.
-  Fixed: expanded `default_sysdeps` with the graphics/text libs + set PPM repo in
-  `Rprofile.site`. STILL TODO: add `HTTPUserAgent` so PPM serves Linux *binaries*
-  (repos alone → PPM still serves source). Re-validate the binary fast-path.
+## Dockerfile validation ✅ DONE (2026-06-02) — built + ran + served
+Validated a generated debian Dockerfile via real `docker build --platform
+linux/amd64` (Docker 29.4.3; aurora from the local 0.1.0 tarball since it isn't
+on GitHub yet). Final container: boots ~2s, `GET /health` 200 JSON, `GET /` 200
+(static UI), `GET /lib/<bslib>.css` 200 — with NO bslib/shiny in the image.
+Bugs found and fixed in `R/dockerfile.R` / `R/run.R` / minimal template:
+- Missing `brand.yml` for `bs_theme(brand=TRUE)` (UI build only — see below).
+- Source-compile failures → expanded `default_sysdeps` (harfbuzz/fribidi/
+  freetype/png/tiff/jpeg) AND set PPM `repos` + `HTTPUserAgent` in `Rprofile.site`
+  so PPM serves binaries. (PPM is amd64-only → build `--platform linux/amd64`.)
+- `fs` binary needs runtime `libuv` → added `libuv1-dev` (Debian) / `libuv`(-dev)
+  (Alpine).
+- 🔴 Architecture fix: **bslib `page_*()` require shiny**, so the container now
+  serves the PREBUILT UI and does NOT rebuild (`AURORA_REBUILD_UI=false`;
+  `aurora_run(rebuild_ui=NULL)` resolves the env). `aurora_dockerfile()` installs
+  RUNTIME deps only (routers/+helpers/+api.R, not build_ui/ui_modules), so no
+  bslib/shiny/brand.yml in the image. Build the UI before the image.
+Note: the GitHub-source install line (`pak::pak('segpr-ndgr/aurora')`) is the one
+bit not validated locally (aurora unpublished); validation used the tarball.
 
 ## Next actions (pick up here)
 0.1.0 prepped (tag pending a real checkout). Remaining:
