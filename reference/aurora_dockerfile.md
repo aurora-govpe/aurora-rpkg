@@ -71,9 +71,10 @@ aurora_dockerfile(
 
   Locale baked as `ENV LANG=`/`LC_ALL=`. Defaults to `"C.UTF-8"` (UTF-8,
   available everywhere). A specific locale like `"pt_BR.UTF-8"` needs
-  the matching locale installed in the base image – fine on the glibc
-  `"debian"` base, but musl/`"alpine"` has no full locale support, so
-  keep `"C.UTF-8"` there.
+  the matching locale in the image: on `"debian"` (glibc) it is present;
+  on `"alpine"` aurora adds the `musl-locales`/`musl-locales-lang`
+  packages so it works – though musl's locale support is partial
+  (charset and messages apply, but collation falls back to C).
 
 - write:
 

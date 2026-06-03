@@ -123,9 +123,10 @@ the image also gets <code>tzdata</code> and <code>TZDIR</code> so the zone actua
 <dt id="arg-locale">locale<a class="anchor" aria-label="anchor" href="#arg-locale"></a></dt>
 <dd><p>Locale baked as <code>ENV LANG=</code>/<code>LC_ALL=</code>. Defaults to <code>"C.UTF-8"</code>
 (UTF-8, available everywhere). A specific locale like <code>"pt_BR.UTF-8"</code> needs
-the matching locale installed in the base image – fine on the glibc
-<code>"debian"</code> base, but musl/<code>"alpine"</code> has no full locale support, so keep
-<code>"C.UTF-8"</code> there.</p></dd>
+the matching locale in the image: on <code>"debian"</code> (glibc) it is present; on
+<code>"alpine"</code> aurora adds the <code>musl-locales</code>/<code>musl-locales-lang</code> packages so it
+works – though musl's locale support is partial (charset and messages
+apply, but collation falls back to C).</p></dd>
 
 
 <dt id="arg-write">write<a class="anchor" aria-label="anchor" href="#arg-write"></a></dt>
