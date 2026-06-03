@@ -20,11 +20,16 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Equipe NGR-Dados \email{ngr-dados@gd.seplag.pe.gov.br}
+\strong{Maintainer}: Andre Leite \email{leite@castlab.org}
 
 Authors:
 \itemize{
-  \item Equipe NGR-Dados \email{ngr-dados@gd.seplag.pe.gov.br}
+  \item Andre Leite \email{leite@castlab.org}
+  \item Marcos Wasilew \email{marcos.wasilew@gmail.com}
+  \item Hugo Vasconcelos \email{hugo.vasconcelos@ufpe.br}
+  \item Carlos Amorin \email{carlos.agaf@ufpe.br}
+  \item Diogo Bezerra \email{diogo.bezerra@ufpe.br}
+  \item Júlia Nascimento Barreto \email{juliabarreto@gd.seplag.pe.gov.br}
 }
 
 }
