@@ -206,10 +206,10 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #'   comprehensive defaults instead -- extra `-dev` packages are build-time only.)
 #' @param port Port exposed and bound (via the `AURORA_PORT` env var).
 #' @param aurora_source pak/remotes spec used to install aurora in the image.
-#'   Pin a tag or commit for reproducible builds (e.g.
-#'   `"aurora-govpe/aurora-rpkg@v0.1.0"`): an unpinned moving ref (a branch)
-#'   interacts badly with Docker's layer cache, which can silently keep an old
-#'   commit on rebuild.
+#'   Defaults to the pinned release `"aurora-govpe/aurora-rpkg@v0.1.0"` for
+#'   reproducible builds. Avoid an unpinned moving ref (a branch): it interacts
+#'   badly with Docker's layer cache, which can silently keep an old commit on
+#'   rebuild. Bump this default (or pass an explicit `@tag`) per release.
 #' @param tz Timezone baked into the image as `ENV TZ=` (set before R starts, so
 #'   it applies to system logs, R's date-times, and DB drivers). Defaults to
 #'   `"America/Recife"`; pass `NULL` (or `""`) to omit the line.
@@ -222,7 +222,7 @@ aurora_dockerfile <- function(dir = ".",
                               base = NULL,
                               sysdeps = "auto",
                               port = 8000L,
-                              aurora_source = "aurora-govpe/aurora-rpkg",
+                              aurora_source = "aurora-govpe/aurora-rpkg@v0.1.0",
                               tz = "America/Recife",
                               write = TRUE) {
   flavor <- rlang::arg_match(flavor)

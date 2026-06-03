@@ -10,7 +10,7 @@ aurora_dockerfile(
   base = NULL,
   sysdeps = "auto",
   port = 8000L,
-  aurora_source = "aurora-govpe/aurora-rpkg",
+  aurora_source = "aurora-govpe/aurora-rpkg@v0.1.0",
   tz = "America/Recife",
   write = TRUE
 )
@@ -34,10 +34,10 @@ comprehensive defaults instead -- extra \code{-dev} packages are build-time only
 \item{port}{Port exposed and bound (via the \code{AURORA_PORT} env var).}
 
 \item{aurora_source}{pak/remotes spec used to install aurora in the image.
-Pin a tag or commit for reproducible builds (e.g.
-\code{"aurora-govpe/aurora-rpkg@v0.1.0"}): an unpinned moving ref (a branch)
-interacts badly with Docker's layer cache, which can silently keep an old
-commit on rebuild.}
+Defaults to the pinned release \code{"aurora-govpe/aurora-rpkg@v0.1.0"} for
+reproducible builds. Avoid an unpinned moving ref (a branch): it interacts
+badly with Docker's layer cache, which can silently keep an old commit on
+rebuild. Bump this default (or pass an explicit \verb{@tag}) per release.}
 
 \item{tz}{Timezone baked into the image as \verb{ENV TZ=} (set before R starts, so
 it applies to system logs, R's date-times, and DB drivers). Defaults to
