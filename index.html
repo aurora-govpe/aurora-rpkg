@@ -17,8 +17,10 @@
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="aurora">
-<meta name="description" content="Build stateless web apps in R with plumber2 and bslib.">
-<meta property="og:description" content="Build stateless web apps in R with plumber2 and bslib.">
+<meta name="description" content="Shiny-style authoring, stateless API deployment. Build the UI in R with bslib, compile it to a static asset, and serve it plus JSON routes with plumber2.
+">
+<meta property="og:description" content="Shiny-style authoring, stateless API deployment. Build the UI in R with bslib, compile it to a static asset, and serve it plus JSON routes with plumber2.
+">
 <meta property="og:image" content="https://aurora-govpe.github.io/aurora-rpkg/logo.svg">
 </head>
 <body>
@@ -71,21 +73,59 @@
 <img src="logo.svg" class="logo" alt=""><h1 id="aurora-">aurora <a class="anchor" aria-label="anchor" href="#aurora-"></a>
 </h1>
 </div>
+<!-- badges: start -->
+
 <blockquote>
-<p>Build stateless web apps in R with <strong>plumber2</strong>.</p>
+<p><strong>Shiny-style authoring, stateless API deployment.</strong></p>
 </blockquote>
-<p><code>aurora</code> packages a pattern: author your UI with <strong>bslib</strong>, compile it to a <em>static</em> <code>index.html</code> at build time, and let <strong>plumber2</strong> serve those assets plus JSON API routes. No reactive server, no per-user R process, no sticky sessions — the app is stateless and scales horizontally behind a load balancer, ShinyProxy, or plain Docker.</p>
+<p>aurora lets you build a web app the way you’d build a Shiny app — author the UI in R with <a href="https://rstudio.github.io/bslib/" class="external-link"><strong>bslib</strong></a>, scaffold the project, run it locally with hot-reload — but it compiles the UI to a <em>static</em> <code>index.html</code> at build time and lets <a href="https://posit-dev.github.io/plumber2/" class="external-link"><strong>plumber2</strong></a> serve that UI plus your JSON API. There’s no reactive server, no per-user R process, and no sticky sessions: the app is <strong>stateless</strong> and scales horizontally behind a load balancer, ShinyProxy, or plain Docker.</p>
+<ul>
+<li>🎨 <strong>UI in R</strong> — author with bslib + <code>_brand.yml</code>; ship a static HTML asset.</li>
+<li>⚡ <strong>Stateless</strong> — plumber2 serves the assets and JSON routes; scale by adding containers.</li>
+<li>🧩 <strong>Convention over config</strong> — fixed folders, no required manifest.</li>
+<li>🔐 <strong>Batteries, opt-in</strong> — JWT-cookie auth, a hot-reloading data store, OpenTelemetry.</li>
+<li>🐳 <strong>One-command deploy</strong> — generate a Dockerfile (<code>debian</code> or <code>alpine</code>) or a ShinyProxy spec.</li>
+</ul>
 <div class="section level2">
-<h2 id="the-pattern">The pattern<a class="anchor" aria-label="anchor" href="#the-pattern"></a>
+<h2 id="what-an-app-looks-like">What an app looks like<a class="anchor" aria-label="anchor" href="#what-an-app-looks-like"></a>
 </h2>
-<pre><code>build_ui.R (bslib + _brand.yml) --aurora_build_ui()--&gt; www/index.html  (static)
-                                                |
-Browser  &lt;--&gt;  plumber2 server (aurora_app)
-(www/js/core.js + app.js)  |-- static assets  -&gt; serves the UI
-                           |-- routers/*.R     -&gt; JSON
-                                   |-- helpers/*.R (sourced first)
-                                   |-- aurora_data_store() (hot-reload)
-                                   |-- optional JWT-cookie auth guard</code></pre>
+<p>A route handler is just an annotated function — its URL is the annotation:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># routers/iniciativas.R   -&gt;   GET /api/iniciativas/data</span></span>
+<span><span class="co">#* @get /api/iniciativas/data</span></span>
+<span><span class="co">#* @serializer json</span></span>
+<span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">dados</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/aurora_data_get.html">aurora_data_get</a></span><span class="op">(</span><span class="va">store</span>, <span class="st">"iniciativas"</span><span class="op">)</span>   <span class="co"># hot-reloaded from disk</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">dados</span>, municipios <span class="op">=</span> <span class="fu"><a href="reference/aurora_unique.html">aurora_unique</a></span><span class="op">(</span><span class="va">dados</span><span class="op">$</span><span class="va">municipio</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>The UI is plain bslib, compiled once to <code>www/index.html</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># build_ui.R   -&gt;   www/index.html (static, built by aurora_build_ui())</span></span>
+<span><span class="va">build_ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">bslib</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/bslib/reference/page_fillable.html" class="external-link">page_fillable</a></span><span class="op">(</span></span>
+<span>    theme <span class="op">=</span> <span class="fu">bslib</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/bslib/reference/bs_theme.html" class="external-link">bs_theme</a></span><span class="op">(</span>version <span class="op">=</span> <span class="fl">5</span>, brand <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="reference/aurora_component.html">aurora_component</a></span><span class="op">(</span><span class="st">"/api/iniciativas/data"</span>, id <span class="op">=</span> <span class="st">"tabela"</span><span class="op">)</span>  <span class="co"># wires a div to the endpoint</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<pre><code>build_ui.R (bslib + _brand.yml) ──aurora_build_ui()──▶ www/index.html (static)
+
+Browser ◀──▶ plumber2 server (aurora_app)
+              ├── serves www/ (static UI + core.js/app.js)
+              ├── routers/*.R        → JSON
+              ├── helpers/*.R         (sourced first: config, db, auth, store)
+              └── optional JWT-cookie auth guard</code></pre>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("pak"); pak::pak("aurora-govpe/aurora-rpkg")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/aurora-govpe/aurora-rpkg" class="external-link">aurora</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/aurora_create_app.html">aurora_create_app</a></span><span class="op">(</span><span class="st">"meu_app"</span>, template <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/aurora_add_route.html">aurora_add_route</a></span><span class="op">(</span><span class="st">"iniciativas"</span>, dir <span class="op">=</span> <span class="st">"meu_app"</span><span class="op">)</span>   <span class="co"># -&gt; routers/iniciativas.R</span></span>
+<span><span class="fu"><a href="reference/aurora_run.html">aurora_run</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                              <span class="co"># http://127.0.0.1:8000 (docs at /__docs__)</span></span></code></pre></div>
+<p><code>aurora_run("meu_app", watch = TRUE)</code> rebuilds the static UI on change. Theming is a <code>_brand.yml</code> consumed by bslib; auth, data, and telemetry are opt-in (<code>template = "auth"</code>, <code><a href="reference/aurora_data_store.html">aurora_data_store()</a></code>, <code>aurora_run(otel = TRUE)</code>).</p>
 </div>
 <div class="section level2">
 <h2 id="canonical-app-layout-convention-no-manifest-required">Canonical app layout (convention; no manifest required)<a class="anchor" aria-label="anchor" href="#canonical-app-layout-convention-no-manifest-required"></a>
@@ -93,38 +133,23 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 <pre><code>&lt;app&gt;/
 ├── api.R            # entry: aurora::aurora_run("."), host/port from env
 ├── build_ui.R       # defines build_ui() -&gt; htmltools tag; sources ui_modules/
-├── helpers/         # *.R sourced before routers are parsed
+├── helpers/         # *.R sourced before routers are parsed (config, db, auth…)
 ├── routers/         # plumber2 annotated handlers; URL = annotation path
 ├── ui_modules/      # ui_*.R partials
-├── www/
-│   ├── js/core.js   # aurora runtime (window.aurora: fetch + auth basics)
-│   ├── js/app.js    # orchestrator (app-authored)
-│   ├── style.css
-│   └── images/
-├── data/config.yml  # config (config package)
-├── .dockerignore
+├── www/             # static assets: js/core.js (runtime), js/app.js, style.css, images/
+├── data/config.yml  # app config (config package)
+├── _brand.yml       # optional: bslib theming (color/type/logo)
+├── _aurora.yml      # optional: overrides name/engine/auth/packages/attach
 └── Dockerfile       # generated by aurora_dockerfile()</code></pre>
-<p><code>_aurora.yml</code> is optional and only overrides <code>name</code>/<code>engine</code>/<code>auth</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+<h2 id="deploy">Deploy<a class="anchor" aria-label="anchor" href="#deploy"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("pak"); pak::pak("aurora-govpe/aurora-rpkg")</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/aurora-govpe/aurora-rpkg" class="external-link">aurora</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/aurora_create_app.html">aurora_create_app</a></span><span class="op">(</span><span class="st">"meu_app"</span>, template <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/aurora_run.html">aurora_run</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                          <span class="co"># http://127.0.0.1:8000 (docs at /__docs__)</span></span>
-<span><span class="fu"><a href="reference/aurora_add_route.html">aurora_add_route</a></span><span class="op">(</span><span class="st">"iniciativas"</span>, dir <span class="op">=</span> <span class="st">"meu_app"</span><span class="op">)</span>   <span class="co"># -&gt; routers/iniciativas.R, /api/iniciativas/data</span></span></code></pre></div>
-<p>Deploy:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                          <span class="co"># flavor = "debian" (default)</span></span>
-<span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span>, flavor <span class="op">=</span> <span class="st">"alpine"</span><span class="op">)</span>       <span class="co"># tiny image, source-built</span></span>
-<span><span class="fu"><a href="reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"meuorg/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="image-flavors">Image flavors<a class="anchor" aria-label="anchor" href="#image-flavors"></a>
-</h3>
-<p><code>aurora_dockerfile(flavor = ...)</code> generates one of two base images. The container serves the prebuilt static UI, so neither installs bslib/shiny at runtime.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                        <span class="co"># flavor = "debian" (default)</span></span>
+<span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span>, flavor <span class="op">=</span> <span class="st">"alpine"</span><span class="op">)</span>     <span class="co"># tiny image, source-built</span></span>
+<span><span class="fu"><a href="reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"org/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The container serves the <strong>prebuilt</strong> static UI, so neither flavor installs bslib/shiny at runtime.</p>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -150,12 +175,12 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 <tr>
 <td>Build speed</td>
 <td>fast</td>
-<td>slow (full compile, incl. Rust for some deps)</td>
+<td>slow (full compile)</td>
 </tr>
 <tr>
 <td>Image size</td>
-<td>large (~1.6 GB)</td>
-<td>tiny (base ~25 MB)</td>
+<td>large (~1 GB+)</td>
+<td>small</td>
 </tr>
 <tr>
 <td>Architectures</td>
@@ -170,15 +195,7 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 </tr>
 </tbody>
 </table>
-<ul>
-<li>
-<strong>Pros of <code>debian</code>:</strong> fast, reproducible binary builds; trivial system deps; broad compatibility for heavy/geo/Java packages; the validated default. <strong>Cons:</strong> large image; PPM binaries are amd64-only (on Apple Silicon build with <code>--platform linux/amd64</code>).</li>
-<li>
-<strong>Pros of <code>alpine</code>:</strong> very small images (~220 MB), good for size-sensitive/edge deploys; builds natively on arm64. <strong>Cons:</strong> every dependency compiles from source (slow builds, needs a toolchain), musl-libc quirks, and you curate the Alpine system libraries.</li>
-</ul>
-<p>Rule of thumb: <strong><code>debian</code></strong> for fast CI and rich dependencies; <strong><code>alpine</code></strong> when the final image size matters most and you can absorb longer builds.</p>
-<p>During development, <code>aurora_run("meu_app", watch = TRUE)</code> rebuilds the static UI on change. Theming is a <code>_brand.yml</code> consumed by bslib; auth, data, and telemetry are opt-in (<code>aurora_create_app(template = "auth")</code>, <code><a href="reference/aurora_data_store.html">aurora_data_store()</a></code>, <code>aurora_run(otel = TRUE)</code>).</p>
-</div>
+<p>Rule of thumb: <strong><code>debian</code></strong> for fast CI and rich/geo dependencies; <strong><code>alpine</code></strong> when image size matters most and you can absorb longer builds.</p>
 </div>
 <div class="section level2">
 <h2 id="core-functions">Core functions<a class="anchor" aria-label="anchor" href="#core-functions"></a>
@@ -244,7 +261,7 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 </tr>
 </tbody>
 </table>
-<p>See the <a href="https://aurora-govpe.github.io/aurora-rpkg/articles/aurora.html">Get started</a> article and the <a href="https://aurora-govpe.github.io/aurora-rpkg/articles/gallery.html">Gallery</a>.</p>
+<p>See the <a href="https://aurora-govpe.github.io/aurora-rpkg/articles/aurora.html">Get started</a> article, the <a href="https://aurora-govpe.github.io/aurora-rpkg/articles/gallery.html">Gallery</a>, and the <a href="https://aurora-govpe.github.io/aurora-rpkg/reference/">function reference</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="design-decisions">Design decisions<a class="anchor" aria-label="anchor" href="#design-decisions"></a>
@@ -263,21 +280,12 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 </ul>
 </div>
 <div class="section level2">
-<h2 id="status">Status<a class="anchor" aria-label="anchor" href="#status"></a>
-</h2>
-<p><code>0.1.0</code>. The local dev loop, theming, UI↔︎API wiring, auth, the hot-reload data store, telemetry, Docker/ShinyProxy generation, the docs site, and three worked examples are in place; <code>R CMD check</code> is clean (0 errors / 0 warnings).</p>
-</div>
-<div class="section level2">
 <h2 id="authors">Authors<a class="anchor" aria-label="anchor" href="#authors"></a>
 </h2>
 <ul>
 <li>
 <strong>Andre Leite</strong> — maintainer (<a href="mailto:leite@castlab.org" class="email">leite@castlab.org</a>)</li>
-<li>Marcos Wasilew</li>
-<li>Hugo Vasconcelos</li>
-<li>Carlos Amorin</li>
-<li>Diogo Bezerra</li>
-<li>Júlia Nascimento Barreto</li>
+<li>Marcos Wasilew · Hugo Vasconcelos · Carlos Amorin · Diogo Bezerra · Júlia Nascimento Barreto</li>
 </ul>
 <p>Developed by the NGR-Dados team (SEPLAG-PE) with UFPE.</p>
 </div>
