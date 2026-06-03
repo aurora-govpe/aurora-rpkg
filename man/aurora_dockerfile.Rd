@@ -12,6 +12,7 @@ aurora_dockerfile(
   port = 8000L,
   aurora_source = "aurora-govpe/aurora-rpkg@v0.1.3",
   tz = "America/Recife",
+  locale = "C.UTF-8",
   write = TRUE
 )
 }
@@ -41,7 +42,14 @@ rebuild. Bump this default (or pass an explicit \verb{@tag}) per release.}
 
 \item{tz}{Timezone baked into the image as \verb{ENV TZ=} (set before R starts, so
 it applies to system logs, R's date-times, and DB drivers). Defaults to
-\code{"America/Recife"}; pass \code{NULL} (or \code{""}) to omit the line.}
+\code{"America/Recife"}; pass \code{NULL} (or \code{""}) to omit the line. On \code{"alpine"}
+the image also gets \code{tzdata} and \code{TZDIR} so the zone actually resolves.}
+
+\item{locale}{Locale baked as \verb{ENV LANG=}/\verb{LC_ALL=}. Defaults to \code{"C.UTF-8"}
+(UTF-8, available everywhere). A specific locale like \code{"pt_BR.UTF-8"} needs
+the matching locale installed in the base image -- fine on the glibc
+\code{"debian"} base, but musl/\code{"alpine"} has no full locale support, so keep
+\code{"C.UTF-8"} there.}
 
 \item{write}{Write the file (\code{TRUE}) or return its text (\code{FALSE}).}
 }
