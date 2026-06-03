@@ -5,10 +5,37 @@ development:
 
 template:
   bootstrap: 5
+  light-switch: true
+  theme: arrow-light
+  theme-dark: arrow-dark
   bslib:
-    primary: "#2c3e50"
-    base_font: {google: "Jost"}
+    # Warm "aurora" (sunrise) palette, keyed to the logo's amber/orange/gold.
+    primary: "#C0451C"
+    secondary: "#6E3E12"
+    success: "#1E8E5A"
+    info: "#2980B9"
+    warning: "#FEC200"
+    base_font: {google: "Inter"}
     heading_font: {google: "Jost"}
+    code_font: {google: "JetBrains Mono"}
+    "border-radius": "0.55rem"
+    "btn-border-radius": "0.55rem"
+    enable-shadows: true
+    enable-rounded: true
+    # Subtle warm tint behind code so snippets feel part of the brand.
+    "code-bg": "#fbf6ef"
+    "code-color": "#9A3412"
+    "navbar-brand-font-size": "1.4rem"
+
+navbar:
+  bg: light
+  structure:
+    left: [intro, reference, articles, gallery, news]
+    right: [search, github, lightswitch]
+  components:
+    gallery:
+      text: Gallery
+      href: articles/gallery.html
 
 home:
   title: aurora
@@ -17,28 +44,26 @@ home:
     bslib, compile it to a static asset, and serve it plus JSON routes with
     plumber2.
 
-navbar:
-  structure:
-    left: [intro, reference, articles, gallery, news]
-  components:
-    gallery:
-      text: Gallery
-      href: articles/gallery.html
-
 reference:
 - title: Scaffolding
+  desc: Create the canonical app layout and add routes.
   contents: [aurora_create_app, aurora_add_route]
 - title: Build & run
+  desc: Compile the UI, assemble the API, run locally.
   contents: [aurora_build_ui, aurora_app, aurora_run, aurora_config, aurora_check]
 - title: UI
   contents: [aurora_component]
 - title: Serializers
+  desc: NULL-safe helpers for JSON responses.
   contents: [aurora_unbox, aurora_geojson, aurora_unique]
 - title: Data
+  desc: Globals-free, hot-reloading data store for handlers.
   contents: [aurora_data_store, aurora_data_register, aurora_data_get, aurora_data_names]
 - title: Deploy
+  desc: Docker images and ShinyProxy specs.
   contents: [aurora_dockerfile, aurora_build_image, aurora_shinyproxy_yaml]
 - title: Auth
+  desc: Optional JWT-cookie authentication scheme.
   contents: [aurora_auth_jwt, aurora_jwt_token, aurora_jwt_decode, aurora_jwt_guard,
              aurora_set_auth_cookie, aurora_clear_auth_cookie]
 
