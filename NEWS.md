@@ -1,3 +1,11 @@
+# aurora 0.1.2
+
+## Fixes
+- Alpine Dockerfiles now install `tzdata` whenever `aurora_dockerfile(tz = )` is
+  set (the default). Alpine ships no timezone database, so `ENV TZ` previously
+  fell back to UTC; with `tzdata` the timezone (e.g. `America/Recife`) resolves
+  in the OS, R, and DB drivers.
+
 # aurora 0.1.1
 
 Hardening and ergonomics distilled from migrating and containerizing a real app.

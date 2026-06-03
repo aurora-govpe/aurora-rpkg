@@ -206,7 +206,7 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #'   comprehensive defaults instead -- extra `-dev` packages are build-time only.)
 #' @param port Port exposed and bound (via the `AURORA_PORT` env var).
 #' @param aurora_source pak/remotes spec used to install aurora in the image.
-#'   Defaults to the pinned release `"aurora-govpe/aurora-rpkg@v0.1.1"` for
+#'   Defaults to the pinned release `"aurora-govpe/aurora-rpkg@v0.1.2"` for
 #'   reproducible builds. Avoid an unpinned moving ref (a branch): it interacts
 #'   badly with Docker's layer cache, which can silently keep an old commit on
 #'   rebuild. Bump this default (or pass an explicit `@tag`) per release.
@@ -222,7 +222,7 @@ aurora_dockerfile <- function(dir = ".",
                               base = NULL,
                               sysdeps = "auto",
                               port = 8000L,
-                              aurora_source = "aurora-govpe/aurora-rpkg@v0.1.1",
+                              aurora_source = "aurora-govpe/aurora-rpkg@v0.1.2",
                               tz = "America/Recife",
                               write = TRUE) {
   flavor <- rlang::arg_match(flavor)
@@ -259,6 +259,9 @@ aurora_dockerfile <- function(dir = ".",
       build_deps <- sysdeps
       runtime_deps <- default_alpine_runtime
     }
+    # Alpine ships no timezone database, so ENV TZ falls back to UTC unless
+    # tzdata is installed. Add it (runtime) whenever a tz is baked in.
+    if (!is.null(tz) && nzchar(tz)) runtime_deps <- unique(c(runtime_deps, "tzdata"))
     df <- dockerfile_alpine(cfg$name, base, build_deps, runtime_deps, pkgs, port, aurora_source, tz = tz)
     n_sys <- length(build_deps)
   }

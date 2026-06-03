@@ -15,7 +15,7 @@ test_that("debian flavor (default) targets rocker + PPM binaries", {
   expect_match(df, "packagemanager.posit.co", fixed = TRUE)
   expect_match(df, "HTTPUserAgent", fixed = TRUE)
   expect_match(df, "install.packages(c('plumber2'", fixed = TRUE)
-  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.1')", fixed = TRUE)
+  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.2')", fixed = TRUE)
   expect_match(df, "CMD [\"Rscript\", \"api.R\"]", fixed = TRUE)
 })
 
@@ -85,4 +85,17 @@ test_that("aurora_dockerfile bakes ENV TZ (default America/Recife), omits on NUL
     df3 <- aurora_dockerfile(app, flavor = fl, tz = NULL, write = FALSE)
     expect_false(grepl("TZ=", df3, fixed = TRUE))
   }
+})
+
+test_that("alpine installs tzdata when a tz is baked in (not otherwise)", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("<!doctype html>", fs::path(app, "www", "index.html"))
+  writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
+
+  df <- aurora_dockerfile(app, flavor = "alpine", write = FALSE)         # tz default
+  expect_match(df, "tzdata", fixed = TRUE)
+  df0 <- aurora_dockerfile(app, flavor = "alpine", tz = NULL, write = FALSE)
+  expect_false(grepl("tzdata", df0, fixed = TRUE))
 })
