@@ -47,9 +47,10 @@ the image also gets \code{tzdata} and \code{TZDIR} so the zone actually resolves
 
 \item{locale}{Locale baked as \verb{ENV LANG=}/\verb{LC_ALL=}. Defaults to \code{"C.UTF-8"}
 (UTF-8, available everywhere). A specific locale like \code{"pt_BR.UTF-8"} needs
-the matching locale installed in the base image -- fine on the glibc
-\code{"debian"} base, but musl/\code{"alpine"} has no full locale support, so keep
-\code{"C.UTF-8"} there.}
+the matching locale in the image: on \code{"debian"} (glibc) it is present; on
+\code{"alpine"} aurora adds the \code{musl-locales}/\code{musl-locales-lang} packages so it
+works -- though musl's locale support is partial (charset and messages
+apply, but collation falls back to C).}
 
 \item{write}{Write the file (\code{TRUE}) or return its text (\code{FALSE}).}
 }

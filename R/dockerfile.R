@@ -220,9 +220,10 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #'   the image also gets `tzdata` and `TZDIR` so the zone actually resolves.
 #' @param locale Locale baked as `ENV LANG=`/`LC_ALL=`. Defaults to `"C.UTF-8"`
 #'   (UTF-8, available everywhere). A specific locale like `"pt_BR.UTF-8"` needs
-#'   the matching locale installed in the base image -- fine on the glibc
-#'   `"debian"` base, but musl/`"alpine"` has no full locale support, so keep
-#'   `"C.UTF-8"` there.
+#'   the matching locale in the image: on `"debian"` (glibc) it is present; on
+#'   `"alpine"` aurora adds the `musl-locales`/`musl-locales-lang` packages so it
+#'   works -- though musl's locale support is partial (charset and messages
+#'   apply, but collation falls back to C).
 #' @param write Write the file (`TRUE`) or return its text (`FALSE`).
 #'
 #' @return The Dockerfile path (if written) or its contents, invisibly.
@@ -291,6 +292,13 @@ aurora_dockerfile <- function(dir = ".",
     # Alpine ships no timezone database, so ENV TZ falls back to UTC unless
     # tzdata is installed. Add it (runtime) whenever a tz is baked in.
     if (!is.null(tz) && nzchar(tz)) runtime_deps <- unique(c(runtime_deps, "tzdata"))
+    # musl only ships C/POSIX + UTF-8; a specific locale (e.g. pt_BR.UTF-8) needs
+    # the musl-locales packages (partial support: charset/messages work,
+    # collation falls back to C).
+    if (!is.null(locale) && nzchar(locale) &&
+        !toupper(locale) %in% c("C", "C.UTF-8", "POSIX")) {
+      runtime_deps <- unique(c(runtime_deps, "musl-locales", "musl-locales-lang"))
+    }
     df <- dockerfile_alpine(cfg$name, base, build_deps, runtime_deps, pkgs, port, aurora_source, tz = tz, locale = locale)
     n_sys <- length(build_deps)
   }
