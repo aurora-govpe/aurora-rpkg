@@ -49,7 +49,7 @@ Docker or a ShinyProxy container. A .dockerignore is written if absent."><meta p
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Generate a Dockerfile (and .dockerignore) for an aurora app</h1>
-      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/v0.1.0/R/dockerfile.R" class="external-link"><code>R/dockerfile.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/R/dockerfile.R" class="external-link"><code>R/dockerfile.R</code></a></small>
       <div class="d-none name"><code>aurora_dockerfile.Rd</code></div>
     </div>
 
@@ -67,7 +67,7 @@ Docker or a ShinyProxy container. A <code>.dockerignore</code> is written if abs
 <span>  base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sysdeps <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  port <span class="op">=</span> <span class="fl">8000L</span>,</span>
-<span>  aurora_source <span class="op">=</span> <span class="st">"aurora-govpe/aurora-rpkg"</span>,</span>
+<span>  aurora_source <span class="op">=</span> <span class="st">"aurora-govpe/aurora-rpkg@v0.1.0"</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"America/Recife"</span>,</span>
 <span>  write <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -106,10 +106,10 @@ comprehensive defaults instead – extra <code>-dev</code> packages are build-ti
 
 <dt id="arg-aurora-source">aurora_source<a class="anchor" aria-label="anchor" href="#arg-aurora-source"></a></dt>
 <dd><p>pak/remotes spec used to install aurora in the image.
-Pin a tag or commit for reproducible builds (e.g.
-<code>"aurora-govpe/aurora-rpkg@v0.1.0"</code>): an unpinned moving ref (a branch)
-interacts badly with Docker's layer cache, which can silently keep an old
-commit on rebuild.</p></dd>
+Defaults to the pinned release <code>"aurora-govpe/aurora-rpkg@v0.1.0"</code> for
+reproducible builds. Avoid an unpinned moving ref (a branch): it interacts
+badly with Docker's layer cache, which can silently keep an old commit on
+rebuild. Bump this default (or pass an explicit <code>@tag</code>) per release.</p></dd>
 
 
 <dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>

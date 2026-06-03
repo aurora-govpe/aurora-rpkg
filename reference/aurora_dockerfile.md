@@ -14,7 +14,7 @@ aurora_dockerfile(
   base = NULL,
   sysdeps = "auto",
   port = 8000L,
-  aurora_source = "aurora-govpe/aurora-rpkg",
+  aurora_source = "aurora-govpe/aurora-rpkg@v0.1.0",
   tz = "America/Recife",
   write = TRUE
 )
@@ -52,11 +52,11 @@ aurora_dockerfile(
 
 - aurora_source:
 
-  pak/remotes spec used to install aurora in the image. Pin a tag or
-  commit for reproducible builds (e.g.
-  `"aurora-govpe/aurora-rpkg@v0.1.0"`): an unpinned moving ref (a
-  branch) interacts badly with Docker's layer cache, which can silently
-  keep an old commit on rebuild.
+  pak/remotes spec used to install aurora in the image. Defaults to the
+  pinned release `"aurora-govpe/aurora-rpkg@v0.1.0"` for reproducible
+  builds. Avoid an unpinned moving ref (a branch): it interacts badly
+  with Docker's layer cache, which can silently keep an old commit on
+  rebuild. Bump this default (or pass an explicit `@tag`) per release.
 
 - tz:
 
