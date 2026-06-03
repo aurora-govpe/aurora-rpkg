@@ -63,7 +63,7 @@ Browser ◀──▶ plumber2 server (aurora_app)
 ```r
 # From GitHub — latest release (recommended):
 # install.packages("pak")
-pak::pak("aurora-govpe/aurora-rpkg@v0.1.4")
+pak::pak("aurora-govpe/aurora-rpkg@v0.1.5")
 
 # Development version (main branch):
 pak::pak("aurora-govpe/aurora-rpkg")
@@ -72,7 +72,7 @@ pak::pak("aurora-govpe/aurora-rpkg")
 install.packages("aurora")
 ```
 
-> `remotes`/`devtools` work too: `remotes::install_github("aurora-govpe/aurora-rpkg@v0.1.4")`.
+> `remotes`/`devtools` work too: `remotes::install_github("aurora-govpe/aurora-rpkg@v0.1.5")`.
 
 ## Quick start
 
