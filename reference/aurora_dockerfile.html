@@ -69,6 +69,7 @@ Docker or a ShinyProxy container. A <code>.dockerignore</code> is written if abs
 <span>  port <span class="op">=</span> <span class="fl">8000L</span>,</span>
 <span>  aurora_source <span class="op">=</span> <span class="st">"aurora-govpe/aurora-rpkg@v0.1.3"</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"America/Recife"</span>,</span>
+<span>  locale <span class="op">=</span> <span class="st">"C.UTF-8"</span>,</span>
 <span>  write <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -115,7 +116,16 @@ rebuild. Bump this default (or pass an explicit <code>@tag</code>) per release.<
 <dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
 <dd><p>Timezone baked into the image as <code>ENV TZ=</code> (set before R starts, so
 it applies to system logs, R's date-times, and DB drivers). Defaults to
-<code>"America/Recife"</code>; pass <code>NULL</code> (or <code>""</code>) to omit the line.</p></dd>
+<code>"America/Recife"</code>; pass <code>NULL</code> (or <code>""</code>) to omit the line. On <code>"alpine"</code>
+the image also gets <code>tzdata</code> and <code>TZDIR</code> so the zone actually resolves.</p></dd>
+
+
+<dt id="arg-locale">locale<a class="anchor" aria-label="anchor" href="#arg-locale"></a></dt>
+<dd><p>Locale baked as <code>ENV LANG=</code>/<code>LC_ALL=</code>. Defaults to <code>"C.UTF-8"</code>
+(UTF-8, available everywhere). A specific locale like <code>"pt_BR.UTF-8"</code> needs
+the matching locale installed in the base image – fine on the glibc
+<code>"debian"</code> base, but musl/<code>"alpine"</code> has no full locale support, so keep
+<code>"C.UTF-8"</code> there.</p></dd>
 
 
 <dt id="arg-write">write<a class="anchor" aria-label="anchor" href="#arg-write"></a></dt>

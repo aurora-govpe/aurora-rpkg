@@ -16,6 +16,7 @@ aurora_dockerfile(
   port = 8000L,
   aurora_source = "aurora-govpe/aurora-rpkg@v0.1.3",
   tz = "America/Recife",
+  locale = "C.UTF-8",
   write = TRUE
 )
 ```
@@ -62,7 +63,17 @@ aurora_dockerfile(
 
   Timezone baked into the image as `ENV TZ=` (set before R starts, so it
   applies to system logs, R's date-times, and DB drivers). Defaults to
-  `"America/Recife"`; pass `NULL` (or `""`) to omit the line.
+  `"America/Recife"`; pass `NULL` (or `""`) to omit the line. On
+  `"alpine"` the image also gets `tzdata` and `TZDIR` so the zone
+  actually resolves.
+
+- locale:
+
+  Locale baked as `ENV LANG=`/`LC_ALL=`. Defaults to `"C.UTF-8"` (UTF-8,
+  available everywhere). A specific locale like `"pt_BR.UTF-8"` needs
+  the matching locale installed in the base image – fine on the glibc
+  `"debian"` base, but musl/`"alpine"` has no full locale support, so
+  keep `"C.UTF-8"` there.
 
 - write:
 
