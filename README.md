@@ -97,8 +97,11 @@ telemetry are opt-in (`aurora_create_app(template = "auth")`,
 |---|---|
 | `aurora_create_app()` | Scaffold the canonical layout (`minimal` / `auth` template) |
 | `aurora_add_route()` | Generate an annotated plumber2 router in `routers/` |
-| `aurora_build_ui()` / `aurora_app()` / `aurora_run()` | Compile UI, assemble the API, run locally |
+| `aurora_build_ui()` / `aurora_app()` / `aurora_run()` | Compile UI, assemble the API, run locally (incl. `attach=` to load `_aurora.yml` packages and `on_exit=` for shutdown cleanup) |
+| `aurora_config()` | Read `data/config.yml` anchored to the app root (no cwd pitfall) |
+| `aurora_check()` | Lint the app: UI code in runtime helpers, undeclared packages, missing UI |
 | `aurora_component()` | Emit a UI element wired to a JSON endpoint (`data-endpoint`) |
+| `aurora_unbox()` / `aurora_geojson()` / `aurora_unique()` | NULL-safe JSON response helpers (unbox / sf→GeoJSON / sorted-unique) |
 | `aurora_data_store()` | Globals-free, hot-reloading data store for handlers |
 | `aurora_auth_jwt()` + `aurora_jwt_*` / `aurora_*_auth_cookie()` | JWT-cookie auth scheme (pluggable) |
 | `aurora_dockerfile()` / `aurora_build_image()` / `aurora_shinyproxy_yaml()` | Deploy: Docker + ShinyProxy |
