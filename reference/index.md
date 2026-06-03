@@ -2,12 +2,16 @@
 
 ## Scaffolding
 
+Create the canonical app layout and add routes.
+
 - [`aurora_create_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_create_app.md)
   : Scaffold a new aurora app
 - [`aurora_add_route()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_add_route.md)
   : Add an API route to an aurora app
 
 ## Build & run
+
+Compile the UI, assemble the API, run locally.
 
 - [`aurora_build_ui()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_build_ui.md)
   : Build the static UI for an aurora app
@@ -33,6 +37,8 @@
 
 ## Serializers
 
+NULL-safe helpers for JSON responses.
+
 - [`aurora_unbox()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_unbox.md)
   : Unbox a scalar for a JSON response, NULL-safe
 - [`aurora_geojson()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_geojson.md)
@@ -41,6 +47,8 @@
   : Sorted unique non-missing values, for filter options
 
 ## Data
+
+Globals-free, hot-reloading data store for handlers.
 
 - [`aurora_data_store()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_data_store.md)
   : Create a hot-reloading data store
@@ -53,6 +61,8 @@
 
 ## Deploy
 
+Docker images and ShinyProxy specs.
+
 - [`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
   : Generate a Dockerfile (and .dockerignore) for an aurora app
 - [`aurora_build_image()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_build_image.md)
@@ -61,6 +71,8 @@
   : Emit a ShinyProxy app-spec block for an aurora image
 
 ## Auth
+
+Optional JWT-cookie authentication scheme.
 
 - [`aurora_auth_jwt()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_auth_jwt.md)
   : JWT-cookie authentication scheme
