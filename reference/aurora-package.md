@@ -19,8 +19,18 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Equipe NGR-Dados <ngr-dados@gd.seplag.pe.gov.br>
+**Maintainer**: Andre Leite <leite@castlab.org>
 
 Authors:
 
-- Equipe NGR-Dados <ngr-dados@gd.seplag.pe.gov.br>
+- Andre Leite <leite@castlab.org>
+
+- Marcos Wasilew <marcos.wasilew@gmail.com>
+
+- Hugo Vasconcelos <hugo.vasconcelos@ufpe.br>
+
+- Carlos Amorin <carlos.agaf@ufpe.br>
+
+- Diogo Bezerra <diogo.bezerra@ufpe.br>
+
+- Júlia Nascimento Barreto <juliabarreto@gd.seplag.pe.gov.br>
