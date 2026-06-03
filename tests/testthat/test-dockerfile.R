@@ -125,3 +125,19 @@ test_that("aurora_dockerfile(locale=) sets ENV LANG/LC_ALL (default C.UTF-8)", {
                  "LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8", fixed = TRUE)
   }
 })
+
+test_that("aurora_dockerfile validates tz and locale", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("<!doctype html>", fs::path(app, "www", "index.html"))
+  writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
+
+  # invalid timezone -> error
+  expect_error(aurora_dockerfile(app, tz = "Brazil/Recife", write = FALSE), "Unknown timezone")
+  # valid tz/locale -> no error
+  expect_no_error(aurora_dockerfile(app, tz = "America/Recife", locale = "C.UTF-8", write = FALSE))
+  expect_no_error(aurora_dockerfile(app, tz = "UTC", write = FALSE))
+  # non-UTF-8 locale -> warning (still generates)
+  expect_warning(aurora_dockerfile(app, locale = "pt_BR.ISO-8859-1", write = FALSE), "not UTF-8")
+})
