@@ -1,5 +1,14 @@
 # Changelog
 
+## aurora 0.1.3
+
+### Fixes
+
+- Alpine: also set `ENV TZDIR=/usr/share/zoneinfo` (alongside `tzdata`)
+  so the baked timezone actually resolves in R. r-minimal strips R’s
+  bundled zoneinfo, so without `TZDIR` R warned “unknown timezone” and
+  fell back to UTC despite `tzdata` being installed.
+
 ## aurora 0.1.2
 
 ### Fixes
