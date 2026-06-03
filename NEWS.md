@@ -1,3 +1,17 @@
+# aurora 0.1.4
+
+## New
+- `aurora_dockerfile(locale = )` controls the image `ENV LANG`/`LC_ALL`
+  (default `"C.UTF-8"`), pairing with `tz = `.
+- `tz` and `locale` arguments are now validated at generation time: an unknown
+  timezone (not in `OlsonNames()`) errors instead of silently falling back to
+  UTC in the container; a non-UTF-8 locale warns.
+
+## Fixes
+- alpine: a specific locale (e.g. `pt_BR.UTF-8`) now installs the
+  `musl-locales`/`musl-locales-lang` packages so it actually resolves in R.
+  musl support is partial (charset/messages apply; collation falls back to C).
+
 # aurora 0.1.3
 
 ## Fixes
