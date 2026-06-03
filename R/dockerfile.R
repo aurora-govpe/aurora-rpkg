@@ -237,6 +237,24 @@ aurora_dockerfile <- function(dir = ".",
                               locale = "C.UTF-8",
                               write = TRUE) {
   flavor <- rlang::arg_match(flavor)
+
+  # Validate tz/locale early so a typo fails here instead of silently falling
+  # back to UTC / breaking encoding inside the running container.
+  if (!is.null(tz) && nzchar(tz) && !tz %in% OlsonNames()) {
+    cli::cli_abort(c(
+      "Unknown timezone {.val {tz}}.",
+      i = "Use an IANA name (see {.run OlsonNames()}), e.g. {.val America/Recife} or {.val UTC}.",
+      i = "Pass {.code tz = NULL} to omit the {.code ENV TZ} line."
+    ))
+  }
+  if (!is.null(locale) && nzchar(locale) &&
+      !grepl("utf-?8$|^C$|^POSIX$", locale, ignore.case = TRUE)) {
+    cli::cli_warn(c(
+      "Locale {.val {locale}} is not UTF-8 (nor C/POSIX); non-UTF-8 locales often cause encoding issues.",
+      i = "Prefer {.val C.UTF-8} or a {.val *.UTF-8} locale; it must exist in the base image (glibc/debian, not musl/alpine)."
+    ))
+  }
+
   cfg <- read_config(dir)
 
   # Runtime deps only: the container serves the prebuilt static UI and does not
