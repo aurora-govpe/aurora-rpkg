@@ -68,6 +68,7 @@ Docker or a ShinyProxy container. A <code>.dockerignore</code> is written if abs
 <span>  sysdeps <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  port <span class="op">=</span> <span class="fl">8000L</span>,</span>
 <span>  aurora_source <span class="op">=</span> <span class="st">"aurora-govpe/aurora-rpkg"</span>,</span>
+<span>  tz <span class="op">=</span> <span class="st">"America/Recife"</span>,</span>
 <span>  write <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -109,6 +110,12 @@ Pin a tag or commit for reproducible builds (e.g.
 <code>"aurora-govpe/aurora-rpkg@v0.1.0"</code>): an unpinned moving ref (a branch)
 interacts badly with Docker's layer cache, which can silently keep an old
 commit on rebuild.</p></dd>
+
+
+<dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
+<dd><p>Timezone baked into the image as <code>ENV TZ=</code> (set before R starts, so
+it applies to system logs, R's date-times, and DB drivers). Defaults to
+<code>"America/Recife"</code>; pass <code>NULL</code> (or <code>""</code>) to omit the line.</p></dd>
 
 
 <dt id="arg-write">write<a class="anchor" aria-label="anchor" href="#arg-write"></a></dt>

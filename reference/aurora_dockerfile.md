@@ -15,6 +15,7 @@ aurora_dockerfile(
   sysdeps = "auto",
   port = 8000L,
   aurora_source = "aurora-govpe/aurora-rpkg",
+  tz = "America/Recife",
   write = TRUE
 )
 ```
@@ -56,6 +57,12 @@ aurora_dockerfile(
   `"aurora-govpe/aurora-rpkg@v0.1.0"`): an unpinned moving ref (a
   branch) interacts badly with Docker's layer cache, which can silently
   keep an old commit on rebuild.
+
+- tz:
+
+  Timezone baked into the image as `ENV TZ=` (set before R starts, so it
+  applies to system logs, R's date-times, and DB drivers). Defaults to
+  `"America/Recife"`; pass `NULL` (or `""`) to omit the line.
 
 - write:
 
