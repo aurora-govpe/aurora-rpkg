@@ -14,9 +14,9 @@ aurora_dockerfile(
   base = NULL,
   sysdeps = "auto",
   port = 8000L,
-  aurora_source = "aurora-govpe/aurora-rpkg@v0.1.4",
+  aurora_source = "aurora-govpe/aurora-rpkg@v0.1.5",
   tz = "America/Recife",
-  locale = "C.UTF-8",
+  locale = "pt_BR.UTF-8",
   write = TRUE
 )
 ```
@@ -54,7 +54,7 @@ aurora_dockerfile(
 - aurora_source:
 
   pak/remotes spec used to install aurora in the image. Defaults to the
-  pinned release `"aurora-govpe/aurora-rpkg@v0.1.4"` for reproducible
+  pinned release `"aurora-govpe/aurora-rpkg@v0.1.5"` for reproducible
   builds. Avoid an unpinned moving ref (a branch): it interacts badly
   with Docker's layer cache, which can silently keep an old commit on
   rebuild. Bump this default (or pass an explicit `@tag`) per release.
@@ -69,12 +69,13 @@ aurora_dockerfile(
 
 - locale:
 
-  Locale baked as `ENV LANG=`/`LC_ALL=`. Defaults to `"C.UTF-8"` (UTF-8,
-  available everywhere). A specific locale like `"pt_BR.UTF-8"` needs
-  the matching locale in the image: on `"debian"` (glibc) it is present;
-  on `"alpine"` aurora adds the `musl-locales`/`musl-locales-lang`
-  packages so it works – though musl's locale support is partial
-  (charset and messages apply, but collation falls back to C).
+  Locale baked as `ENV LANG=`/`LC_ALL=`. Defaults to `"pt_BR.UTF-8"`.
+  `"C.UTF-8"` is UTF-8 and available everywhere (no generation needed).
+  A specific locale like `"pt_BR.UTF-8"` needs the matching locale in
+  the image: on `"debian"` (glibc) it is present; on `"alpine"` aurora
+  adds the `musl-locales`/`musl-locales-lang` packages so it works –
+  though musl's locale support is partial (charset and messages apply,
+  but collation falls back to C).
 
 - write:
 

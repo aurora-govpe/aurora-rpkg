@@ -1,5 +1,17 @@
 # Changelog
 
+## aurora 0.1.5
+
+### Changes
+
+- `aurora_dockerfile(locale = )` now defaults to `"pt_BR.UTF-8"`
+  (matching the `tz = "America/Recife"` default). Pass
+  `locale = "C.UTF-8"` for the universal UTF-8 locale, or any other.
+- **debian**: a specific locale is now generated in the image
+  (`apt-get install locales` + `locale-gen`), since the rocker/Ubuntu
+  base ships only en_US.UTF-8. Combined with the alpine `musl-locales`
+  support, a non-C locale works on both flavors out of the box.
+
 ## aurora 0.1.4
 
 ### New

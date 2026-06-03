@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,19 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/v0.1.4/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.5" id="aurora-015">aurora 0.1.5<a class="anchor" aria-label="anchor" href="#aurora-015"></a></h2>
+<div class="section level3">
+<h3 id="changes-0-1-5">Changes<a class="anchor" aria-label="anchor" href="#changes-0-1-5"></a></h3>
+<ul><li>
+<code>aurora_dockerfile(locale = )</code> now defaults to <code>"pt_BR.UTF-8"</code> (matching the <code>tz = "America/Recife"</code> default). Pass <code>locale = "C.UTF-8"</code> for the universal UTF-8 locale, or any other.</li>
+<li>
+<strong>debian</strong>: a specific locale is now generated in the image (<code>apt-get install locales</code> + <code>locale-gen</code>), since the rocker/Ubuntu base ships only en_US.UTF-8. Combined with the alpine <code>musl-locales</code> support, a non-C locale works on both flavors out of the box.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.4" id="aurora-014">aurora 0.1.4<a class="anchor" aria-label="anchor" href="#aurora-014"></a></h2>
 <div class="section level3">
