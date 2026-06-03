@@ -58,11 +58,28 @@ build_ui <- function() {
                   ├── helpers/*.R         (sourced first: config, db, auth, store)
                   └── optional JWT-cookie auth guard
 
+## Installation
+
+``` r
+
+# From GitHub — latest release (recommended):
+# install.packages("pak")
+pak::pak("aurora-govpe/aurora-rpkg@v0.1.1")
+
+# Development version (main branch):
+pak::pak("aurora-govpe/aurora-rpkg")
+
+# From CRAN (once published):
+install.packages("aurora")
+```
+
+> `remotes`/`devtools` work too:
+> `remotes::install_github("aurora-govpe/aurora-rpkg@v0.1.1")`.
+
 ## Quick start
 
 ``` r
 
-# install.packages("pak"); pak::pak("aurora-govpe/aurora-rpkg")
 library(aurora)
 
 aurora_create_app("meu_app", template = "minimal")

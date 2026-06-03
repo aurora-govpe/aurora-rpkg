@@ -126,11 +126,27 @@ Browser ◀──▶ plumber2 server (aurora_app)
               └── optional JWT-cookie auth guard</code></pre>
 </div>
 <div class="section level2">
-<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("pak"); pak::pak("aurora-govpe/aurora-rpkg")</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/aurora-govpe/aurora-rpkg" class="external-link">aurora</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># From GitHub — latest release (recommended):</span></span>
+<span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"aurora-govpe/aurora-rpkg@v0.1.1"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Development version (main branch):</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"aurora-govpe/aurora-rpkg"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># From CRAN (once published):</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"aurora"</span><span class="op">)</span></span></code></pre></div>
+<blockquote>
+<p><code>remotes</code>/<code>devtools</code> work too: <code>remotes::install_github("aurora-govpe/aurora-rpkg@v0.1.1")</code>.</p>
+</blockquote>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/aurora-govpe/aurora-rpkg" class="external-link">aurora</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/aurora_create_app.html">aurora_create_app</a></span><span class="op">(</span><span class="st">"meu_app"</span>, template <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/aurora_add_route.html">aurora_add_route</a></span><span class="op">(</span><span class="st">"iniciativas"</span>, dir <span class="op">=</span> <span class="st">"meu_app"</span><span class="op">)</span>   <span class="co"># -&gt; routers/iniciativas.R</span></span>
@@ -155,7 +171,7 @@ Browser ◀──▶ plumber2 server (aurora_app)
 <div class="section level2">
 <h2 id="deploy">Deploy<a class="anchor" aria-label="anchor" href="#deploy"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                        <span class="co"># flavor = "debian" (default)</span></span>
 <span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span>, flavor <span class="op">=</span> <span class="st">"alpine"</span><span class="op">)</span>     <span class="co"># tiny image, source-built</span></span>
 <span><span class="fu"><a href="reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"org/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
