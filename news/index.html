@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,13 @@
       <small>Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.2" id="aurora-012">aurora 0.1.2<a class="anchor" aria-label="anchor" href="#aurora-012"></a></h2>
+<div class="section level3">
+<h3 id="fixes-0-1-2">Fixes<a class="anchor" aria-label="anchor" href="#fixes-0-1-2"></a></h3>
+<ul><li>Alpine Dockerfiles now install <code>tzdata</code> whenever <code>aurora_dockerfile(tz = )</code> is set (the default). Alpine ships no timezone database, so <code>ENV TZ</code> previously fell back to UTC; with <code>tzdata</code> the timezone (e.g. <code>America/Recife</code>) resolves in the OS, R, and DB drivers.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="aurora-011">aurora 0.1.1<a class="anchor" aria-label="anchor" href="#aurora-011"></a></h2>
 <p>Hardening and ergonomics distilled from migrating and containerizing a real app.</p>

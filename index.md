@@ -64,7 +64,7 @@ build_ui <- function() {
 
 # From GitHub — latest release (recommended):
 # install.packages("pak")
-pak::pak("aurora-govpe/aurora-rpkg@v0.1.1")
+pak::pak("aurora-govpe/aurora-rpkg@v0.1.2")
 
 # Development version (main branch):
 pak::pak("aurora-govpe/aurora-rpkg")
@@ -74,7 +74,7 @@ install.packages("aurora")
 ```
 
 > `remotes`/`devtools` work too:
-> `remotes::install_github("aurora-govpe/aurora-rpkg@v0.1.1")`.
+> `remotes::install_github("aurora-govpe/aurora-rpkg@v0.1.2")`.
 
 ## Quick start
 
