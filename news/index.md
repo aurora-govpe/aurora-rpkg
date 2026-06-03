@@ -1,5 +1,51 @@
 # Changelog
 
+## aurora 0.1.1
+
+Hardening and ergonomics distilled from migrating and containerizing a
+real app.
+
+### New
+
+- [`aurora_config()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_config.md)
+  reads `data/config.yml` anchored to the app root (no cwd pitfall).
+- [`aurora_check()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_check.md)
+  lints an app: UI code in runtime helpers, packages used but undeclared
+  in `_aurora.yml`, missing prebuilt UI.
+- JSON serializer helpers
+  [`aurora_unbox()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_unbox.md)
+  /
+  [`aurora_geojson()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_geojson.md)
+  /
+  [`aurora_unique()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_unique.md)
+  (NULL-safe unbox / sf -\> GeoJSON / sorted-unique).
+- `aurora_app(attach = )` / `_aurora.yml: attach:` attaches the declared
+  runtime `packages:` before sourcing helpers, so handlers can call them
+  unqualified.
+- `aurora_run(on_exit = )` runs a cleanup function when the server stops
+  (e.g. `pool::poolClose()`), on plumber2’s `"end"` lifecycle event.
+- `aurora_dockerfile(tz = )` bakes `ENV TZ` (default `America/Recife`);
+  the default `aurora_source` is pinned to a release tag for
+  reproducible builds.
+
+### Fixes
+
+- Helpers are sourced with the app directory as the working directory,
+  so app-root-relative paths (`config::get("data/config.yml")`,
+  `readRDS("data/x.rds")`) resolve as they did under the plumber-v1
+  entrypoint.
+- Helper/router/UI-builder load failures name the offending file and
+  hint a missing package, instead of a bare `loadNamespace` error.
+- Alpine Dockerfiles get per-package system deps (`sf` -\>
+  gdal/geos/proj, `RPostgres` -\> libpq, …) plus gfortran/libgfortran;
+  `.dockerignore` excludes `data/`.
+
+### Docs
+
+- Refreshed README and pkgdown home; modern bslib theme keyed to the
+  logo (Inter + Jost + JetBrains Mono, warm palette, light/dark switch);
+  package authors.
+
 ## aurora 0.1.0
 
 First release (2026-06-01). A complete dev loop, theming, UI↔︎API wiring,
