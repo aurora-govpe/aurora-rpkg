@@ -15,7 +15,7 @@ test_that("debian flavor (default) targets rocker + PPM binaries", {
   expect_match(df, "packagemanager.posit.co", fixed = TRUE)
   expect_match(df, "HTTPUserAgent", fixed = TRUE)
   expect_match(df, "install.packages(c('plumber2'", fixed = TRUE)
-  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.2')", fixed = TRUE)
+  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.3')", fixed = TRUE)
   expect_match(df, "CMD [\"Rscript\", \"api.R\"]", fixed = TRUE)
 })
 
@@ -98,4 +98,16 @@ test_that("alpine installs tzdata when a tz is baked in (not otherwise)", {
   expect_match(df, "tzdata", fixed = TRUE)
   df0 <- aurora_dockerfile(app, flavor = "alpine", tz = NULL, write = FALSE)
   expect_false(grepl("tzdata", df0, fixed = TRUE))
+})
+
+test_that("alpine sets TZDIR so the baked timezone resolves in R", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("<!doctype html>", fs::path(app, "www", "index.html"))
+  writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
+  df <- aurora_dockerfile(app, flavor = "alpine", write = FALSE)
+  expect_match(df, "TZDIR=/usr/share/zoneinfo", fixed = TRUE)
+  df0 <- aurora_dockerfile(app, flavor = "alpine", tz = NULL, write = FALSE)
+  expect_false(grepl("TZDIR", df0, fixed = TRUE))
 })
