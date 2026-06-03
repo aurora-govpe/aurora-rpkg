@@ -15,7 +15,7 @@ test_that("debian flavor (default) targets rocker + PPM binaries", {
   expect_match(df, "packagemanager.posit.co", fixed = TRUE)
   expect_match(df, "HTTPUserAgent", fixed = TRUE)
   expect_match(df, "install.packages(c('plumber2'", fixed = TRUE)
-  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.4')", fixed = TRUE)
+  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.5')", fixed = TRUE)
   expect_match(df, "CMD [\"Rscript\", \"api.R\"]", fixed = TRUE)
 })
 
@@ -79,7 +79,7 @@ test_that("aurora_dockerfile bakes ENV TZ (default America/Recife), omits on NUL
 
   for (fl in c("debian", "alpine")) {
     df <- aurora_dockerfile(app, flavor = fl, write = FALSE)
-    expect_match(df, "ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=America/Recife", fixed = TRUE)
+    expect_match(df, "ENV LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8 TZ=America/Recife", fixed = TRUE)
     df2 <- aurora_dockerfile(app, flavor = fl, tz = "UTC", write = FALSE)
     expect_match(df2, "TZ=UTC", fixed = TRUE)
     df3 <- aurora_dockerfile(app, flavor = fl, tz = NULL, write = FALSE)
@@ -112,7 +112,7 @@ test_that("alpine sets TZDIR so the baked timezone resolves in R", {
   expect_false(grepl("TZDIR", df0, fixed = TRUE))
 })
 
-test_that("aurora_dockerfile(locale=) sets ENV LANG/LC_ALL (default C.UTF-8)", {
+test_that("aurora_dockerfile(locale=) sets ENV LANG/LC_ALL (default pt_BR.UTF-8)", {
   app <- withr::local_tempdir()
   fs::dir_create(fs::path(app, c("routers", "www")))
   writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
@@ -120,9 +120,9 @@ test_that("aurora_dockerfile(locale=) sets ENV LANG/LC_ALL (default C.UTF-8)", {
   writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
   for (fl in c("debian", "alpine")) {
     expect_match(aurora_dockerfile(app, flavor = fl, write = FALSE),
-                 "ENV LANG=C.UTF-8 LC_ALL=C.UTF-8", fixed = TRUE)
-    expect_match(aurora_dockerfile(app, flavor = fl, locale = "pt_BR.UTF-8", write = FALSE),
-                 "LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8", fixed = TRUE)
+                 "ENV LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8", fixed = TRUE)
+    expect_match(aurora_dockerfile(app, flavor = fl, locale = "C.UTF-8", write = FALSE),
+                 "LANG=C.UTF-8 LC_ALL=C.UTF-8", fixed = TRUE)
   }
 })
 
@@ -152,6 +152,20 @@ test_that("alpine adds musl-locales for a specific locale (not for C.UTF-8)", {
   df <- aurora_dockerfile(app, flavor = "alpine", locale = "pt_BR.UTF-8", write = FALSE)
   expect_match(df, "musl-locales", fixed = TRUE)
   expect_match(df, "musl-locales-lang", fixed = TRUE)
-  df0 <- aurora_dockerfile(app, flavor = "alpine", write = FALSE)   # C.UTF-8 default
+  df0 <- aurora_dockerfile(app, flavor = "alpine", locale = "C.UTF-8", write = FALSE)
   expect_false(grepl("musl-locales", df0, fixed = TRUE))
+})
+
+test_that("debian generates a specific locale with locale-gen (not for C.UTF-8)", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("<!doctype html>", fs::path(app, "www", "index.html"))
+  writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
+
+  df <- aurora_dockerfile(app, flavor = "debian", write = FALSE)   # default pt_BR.UTF-8
+  expect_match(df, "locale-gen", fixed = TRUE)
+  expect_match(df, "pt_BR.UTF-8 UTF-8", fixed = TRUE)
+  df0 <- aurora_dockerfile(app, flavor = "debian", locale = "C.UTF-8", write = FALSE)
+  expect_false(grepl("locale-gen", df0, fixed = TRUE))
 })

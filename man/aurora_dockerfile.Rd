@@ -10,9 +10,9 @@ aurora_dockerfile(
   base = NULL,
   sysdeps = "auto",
   port = 8000L,
-  aurora_source = "aurora-govpe/aurora-rpkg@v0.1.4",
+  aurora_source = "aurora-govpe/aurora-rpkg@v0.1.5",
   tz = "America/Recife",
-  locale = "C.UTF-8",
+  locale = "pt_BR.UTF-8",
   write = TRUE
 )
 }
@@ -35,7 +35,7 @@ comprehensive defaults instead -- extra \code{-dev} packages are build-time only
 \item{port}{Port exposed and bound (via the \code{AURORA_PORT} env var).}
 
 \item{aurora_source}{pak/remotes spec used to install aurora in the image.
-Defaults to the pinned release \code{"aurora-govpe/aurora-rpkg@v0.1.4"} for
+Defaults to the pinned release \code{"aurora-govpe/aurora-rpkg@v0.1.5"} for
 reproducible builds. Avoid an unpinned moving ref (a branch): it interacts
 badly with Docker's layer cache, which can silently keep an old commit on
 rebuild. Bump this default (or pass an explicit \verb{@tag}) per release.}
@@ -45,8 +45,8 @@ it applies to system logs, R's date-times, and DB drivers). Defaults to
 \code{"America/Recife"}; pass \code{NULL} (or \code{""}) to omit the line. On \code{"alpine"}
 the image also gets \code{tzdata} and \code{TZDIR} so the zone actually resolves.}
 
-\item{locale}{Locale baked as \verb{ENV LANG=}/\verb{LC_ALL=}. Defaults to \code{"C.UTF-8"}
-(UTF-8, available everywhere). A specific locale like \code{"pt_BR.UTF-8"} needs
+\item{locale}{Locale baked as \verb{ENV LANG=}/\verb{LC_ALL=}. Defaults to \code{"pt_BR.UTF-8"}.
+\code{"C.UTF-8"} is UTF-8 and available everywhere (no generation needed). A specific locale like \code{"pt_BR.UTF-8"} needs
 the matching locale in the image: on \code{"debian"} (glibc) it is present; on
 \code{"alpine"} aurora adds the \code{musl-locales}/\code{musl-locales-lang} packages so it
 works -- though musl's locale support is partial (charset and messages
