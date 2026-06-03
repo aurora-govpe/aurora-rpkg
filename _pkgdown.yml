@@ -12,7 +12,10 @@ template:
 
 home:
   title: aurora
-  description: Build stateless web apps in R with plumber2 and bslib.
+  description: >
+    Shiny-style authoring, stateless API deployment. Build the UI in R with
+    bslib, compile it to a static asset, and serve it plus JSON routes with
+    plumber2.
 
 navbar:
   structure:
