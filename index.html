@@ -206,11 +206,25 @@ Browser  &lt;--&gt;  plumber2 server (aurora_app)
 <td>
 <code><a href="reference/aurora_build_ui.html">aurora_build_ui()</a></code> / <code><a href="reference/aurora_app.html">aurora_app()</a></code> / <code><a href="reference/aurora_run.html">aurora_run()</a></code>
 </td>
-<td>Compile UI, assemble the API, run locally</td>
+<td>Compile UI, assemble the API, run locally (incl. <code>attach=</code> to load <code>_aurora.yml</code> packages and <code>on_exit=</code> for shutdown cleanup)</td>
+</tr>
+<tr>
+<td><code><a href="reference/aurora_config.html">aurora_config()</a></code></td>
+<td>Read <code>data/config.yml</code> anchored to the app root (no cwd pitfall)</td>
+</tr>
+<tr>
+<td><code><a href="reference/aurora_check.html">aurora_check()</a></code></td>
+<td>Lint the app: UI code in runtime helpers, undeclared packages, missing UI</td>
 </tr>
 <tr>
 <td><code><a href="reference/aurora_component.html">aurora_component()</a></code></td>
 <td>Emit a UI element wired to a JSON endpoint (<code>data-endpoint</code>)</td>
+</tr>
+<tr>
+<td>
+<code><a href="reference/aurora_unbox.html">aurora_unbox()</a></code> / <code><a href="reference/aurora_geojson.html">aurora_geojson()</a></code> / <code><a href="reference/aurora_unique.html">aurora_unique()</a></code>
+</td>
+<td>NULL-safe JSON response helpers (unbox / sf→GeoJSON / sorted-unique)</td>
 </tr>
 <tr>
 <td><code><a href="reference/aurora_data_store.html">aurora_data_store()</a></code></td>
