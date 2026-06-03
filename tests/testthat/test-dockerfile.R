@@ -141,3 +141,17 @@ test_that("aurora_dockerfile validates tz and locale", {
   # non-UTF-8 locale -> warning (still generates)
   expect_warning(aurora_dockerfile(app, locale = "pt_BR.ISO-8859-1", write = FALSE), "not UTF-8")
 })
+
+test_that("alpine adds musl-locales for a specific locale (not for C.UTF-8)", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("<!doctype html>", fs::path(app, "www", "index.html"))
+  writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
+
+  df <- aurora_dockerfile(app, flavor = "alpine", locale = "pt_BR.UTF-8", write = FALSE)
+  expect_match(df, "musl-locales", fixed = TRUE)
+  expect_match(df, "musl-locales-lang", fixed = TRUE)
+  df0 <- aurora_dockerfile(app, flavor = "alpine", write = FALSE)   # C.UTF-8 default
+  expect_false(grepl("musl-locales", df0, fixed = TRUE))
+})
