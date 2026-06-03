@@ -111,3 +111,17 @@ test_that("alpine sets TZDIR so the baked timezone resolves in R", {
   df0 <- aurora_dockerfile(app, flavor = "alpine", tz = NULL, write = FALSE)
   expect_false(grepl("TZDIR", df0, fixed = TRUE))
 })
+
+test_that("aurora_dockerfile(locale=) sets ENV LANG/LC_ALL (default C.UTF-8)", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("<!doctype html>", fs::path(app, "www", "index.html"))
+  writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
+  for (fl in c("debian", "alpine")) {
+    expect_match(aurora_dockerfile(app, flavor = fl, write = FALSE),
+                 "ENV LANG=C.UTF-8 LC_ALL=C.UTF-8", fixed = TRUE)
+    expect_match(aurora_dockerfile(app, flavor = fl, locale = "pt_BR.UTF-8", write = FALSE),
+                 "LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8", fixed = TRUE)
+  }
+})
