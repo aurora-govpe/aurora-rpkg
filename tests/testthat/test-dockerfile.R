@@ -69,3 +69,20 @@ test_that("writing produces Dockerfile + .dockerignore", {
   expect_true(fs::file_exists(out))
   expect_true(fs::file_exists(fs::path(d, ".dockerignore")))
 })
+
+test_that("aurora_dockerfile bakes ENV TZ (default America/Recife), omits on NULL", {
+  app <- withr::local_tempdir()
+  fs::dir_create(fs::path(app, c("routers", "www")))
+  writeLines(c("#* @get /h", "function() 1"), fs::path(app, "routers", "h.R"))
+  writeLines("<!doctype html>", fs::path(app, "www", "index.html"))
+  writeLines(c("name: demo", "packages:", "  - cli"), fs::path(app, "_aurora.yml"))
+
+  for (fl in c("debian", "alpine")) {
+    df <- aurora_dockerfile(app, flavor = fl, write = FALSE)
+    expect_match(df, "ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=America/Recife", fixed = TRUE)
+    df2 <- aurora_dockerfile(app, flavor = fl, tz = "UTC", write = FALSE)
+    expect_match(df2, "TZ=UTC", fixed = TRUE)
+    df3 <- aurora_dockerfile(app, flavor = fl, tz = NULL, write = FALSE)
+    expect_false(grepl("TZ=", df3, fixed = TRUE))
+  }
+})

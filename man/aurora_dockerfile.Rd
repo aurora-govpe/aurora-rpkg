@@ -11,6 +11,7 @@ aurora_dockerfile(
   sysdeps = "auto",
   port = 8000L,
   aurora_source = "aurora-govpe/aurora-rpkg",
+  tz = "America/Recife",
   write = TRUE
 )
 }
@@ -37,6 +38,10 @@ Pin a tag or commit for reproducible builds (e.g.
 \code{"aurora-govpe/aurora-rpkg@v0.1.0"}): an unpinned moving ref (a branch)
 interacts badly with Docker's layer cache, which can silently keep an old
 commit on rebuild.}
+
+\item{tz}{Timezone baked into the image as \verb{ENV TZ=} (set before R starts, so
+it applies to system logs, R's date-times, and DB drivers). Defaults to
+\code{"America/Recife"}; pass \code{NULL} (or \code{""}) to omit the line.}
 
 \item{write}{Write the file (\code{TRUE}) or return its text (\code{FALSE}).}
 }
