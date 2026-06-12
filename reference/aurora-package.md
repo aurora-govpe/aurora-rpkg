@@ -1,4 +1,4 @@
-# aurora: Build Stateless Web Apps in R with plumber2
+# aurora: Build Stateless Web Apps with 'plumber2'
 
 A scaffolding and deployment toolkit for building stateless web
 applications in R on top of 'plumber2'. The UI is authored with 'bslib'

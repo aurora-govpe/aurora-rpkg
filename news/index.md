@@ -1,5 +1,18 @@
 # Changelog
 
+## aurora 0.1.7
+
+### Changes
+
+- CRAN preparation: templates no longer ship hidden files. The template
+  `.dockerignore` is bundled un-hidden (as `dockerignore`) and renamed
+  by
+  [`aurora_create_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_create_app.md);
+  the empty `www/`/`www/images/` `.gitkeep` placeholders are gone (the
+  scaffold creates `www/images/` itself). Scaffolded apps are unchanged.
+  `R CMD check --as-cran` is now 0/0/0.
+- `aurora_dockerfile(aurora_source = )` default pin bumped to `@v0.1.7`.
+
 ## aurora 0.1.6
 
 ### New

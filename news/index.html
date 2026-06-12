@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,15 @@
       <small>Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.7" id="aurora-017">aurora 0.1.7<a class="anchor" aria-label="anchor" href="#aurora-017"></a></h2>
+<div class="section level3">
+<h3 id="changes-0-1-7">Changes<a class="anchor" aria-label="anchor" href="#changes-0-1-7"></a></h3>
+<ul><li>CRAN preparation: templates no longer ship hidden files. The template <code>.dockerignore</code> is bundled un-hidden (as <code>dockerignore</code>) and renamed by <code><a href="../reference/aurora_create_app.html">aurora_create_app()</a></code>; the empty <code>www/</code>/<code>www/images/</code> <code>.gitkeep</code> placeholders are gone (the scaffold creates <code>www/images/</code> itself). Scaffolded apps are unchanged. <code>R CMD check --as-cran</code> is now 0/0/0.</li>
+<li>
+<code>aurora_dockerfile(aurora_source = )</code> default pin bumped to <code>@v0.1.7</code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.6" id="aurora-016">aurora 0.1.6<a class="anchor" aria-label="anchor" href="#aurora-016"></a></h2>
 <div class="section level3">
