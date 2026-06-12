@@ -17,7 +17,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/aurora-govpe/aurora-rpkg/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/aurora-govpe/aurora-rpkg/blob/v0.1.7/DESCRIPTION)
 
 Leite A, Wasilew M, Vasconcelos H, Amorin C, Bezerra D, Nascimento
 Barreto J (2026). *aurora: Build Stateless Web Apps with 'plumber2'*. R
