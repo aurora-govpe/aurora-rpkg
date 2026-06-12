@@ -15,3 +15,4 @@
 ^vignettes/articles$
 ^pkgdown$
 ^\.DS_Store$
+^cran-comments\.md$

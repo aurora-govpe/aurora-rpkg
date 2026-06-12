@@ -4,7 +4,7 @@
 \name{aurora-package}
 \alias{aurora}
 \alias{aurora-package}
-\title{aurora: Build Stateless Web Apps in R with plumber2}
+\title{aurora: Build Stateless Web Apps with 'plumber2'}
 \description{
 \if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
 

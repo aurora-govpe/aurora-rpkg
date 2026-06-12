@@ -222,7 +222,7 @@ dockerfile_alpine <- function(name, base, build_deps, runtime_deps, pkgs, port, 
 #'   comprehensive defaults instead -- extra `-dev` packages are build-time only.)
 #' @param port Port exposed and bound (via the `AURORA_PORT` env var).
 #' @param aurora_source pak/remotes spec used to install aurora in the image.
-#'   Defaults to the pinned release `"aurora-govpe/aurora-rpkg@v0.1.6"` for
+#'   Defaults to the pinned release `"aurora-govpe/aurora-rpkg@v0.1.7"` for
 #'   reproducible builds. Avoid an unpinned moving ref (a branch): it interacts
 #'   badly with Docker's layer cache, which can silently keep an old commit on
 #'   rebuild. Bump this default (or pass an explicit `@tag`) per release.
@@ -245,7 +245,7 @@ aurora_dockerfile <- function(dir = ".",
                               base = NULL,
                               sysdeps = "auto",
                               port = 8000L,
-                              aurora_source = "aurora-govpe/aurora-rpkg@v0.1.6",
+                              aurora_source = "aurora-govpe/aurora-rpkg@v0.1.7",
                               tz = "America/Recife",
                               locale = "pt_BR.UTF-8",
                               write = TRUE) {
