@@ -7,7 +7,13 @@ and a working Docker installation on `PATH`.
 ## Usage
 
 ``` r
-aurora_build_image(dir = ".", tag, push = FALSE, dockerfile = "Dockerfile")
+aurora_build_image(
+  dir = ".",
+  tag,
+  push = FALSE,
+  dockerfile = "Dockerfile",
+  platform = "linux/amd64"
+)
 ```
 
 ## Arguments
@@ -27,6 +33,12 @@ aurora_build_image(dir = ".", tag, push = FALSE, dockerfile = "Dockerfile")
 - dockerfile:
 
   Path to the Dockerfile relative to `dir`.
+
+- platform:
+
+  Target platform passed to `docker build --platform`. Defaults to
+  `"linux/amd64"` so images built on Apple Silicon run on the usual
+  x86-64 servers. Use `NULL` to build for the host architecture.
 
 ## Value
 

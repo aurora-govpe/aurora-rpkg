@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -175,7 +175,7 @@ Browser ◀──▶ plumber2 server (aurora_app)
 <code class="sourceCode R"><span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span><span class="op">)</span>                        <span class="co"># flavor = "debian" (default)</span></span>
 <span><span class="fu"><a href="reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span>, flavor <span class="op">=</span> <span class="st">"alpine"</span><span class="op">)</span>     <span class="co"># tiny image, source-built</span></span>
 <span><span class="fu"><a href="reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"org/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>The container serves the <strong>prebuilt</strong> static UI, so neither flavor installs bslib/shiny at runtime.</p>
+<p>The container serves the <strong>prebuilt</strong> static UI, so neither flavor installs bslib/shiny at runtime. <code><a href="reference/aurora_build_image.html">aurora_build_image()</a></code> targets <code>linux/amd64</code> by default, so images built on an Apple Silicon Mac run on x86-64 servers (pass <code>platform = NULL</code> for a host-native build).</p>
 <table class="table">
 <colgroup>
 <col width="33%">

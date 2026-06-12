@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Deploying aurora apps</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/v0.1.5/vignettes/deploy.Rmd" class="external-link"><code>vignettes/deploy.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/vignettes/deploy.Rmd" class="external-link"><code>vignettes/deploy.Rmd</code></a></small>
       <div class="d-none name"><code>deploy.Rmd</code></div>
     </div>
 
@@ -112,11 +112,19 @@ image:</p>
 <span><span class="fu"><a href="../reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"org/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The generated Dockerfile pulls R packages as prebuilt
 <strong>binaries</strong> from Posit Package Manager, so builds are fast
-and need no compiler toolchain at run time. Posit Package Manager only
-serves <strong>amd64 (x86_64)</strong> Linux binaries, so on an Apple
-Silicon machine build for the production target explicitly — otherwise
-the native arm64 build compiles every dependency from source:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--platform</span> linux/amd64 <span class="at">-t</span> org/meu_app:latest .</span></code></pre></div>
+and need no compiler toolchain at run time.</p>
+<p><code><a href="../reference/aurora_build_image.html">aurora_build_image()</a></code> targets
+<strong><code>linux/amd64</code> by default</strong> (it passes
+<code>--platform linux/amd64</code> to <code>docker build</code>).
+Production servers are almost always x86-64, and an image built natively
+on an Apple Silicon machine is arm64 — it fails there with
+<code>exec format error</code>. The default also matches Posit Package
+Manager, which only serves amd64 Linux binaries. Building the amd64
+image on an arm64 Mac works via emulation (enable Rosetta in Docker
+Desktop); it is slower, but the image runs everywhere you deploy. To
+build for the host architecture instead — e.g. deploying to an arm64
+server — pass <code>platform = NULL</code>, or any explicit target like
+<code>platform = "linux/arm64"</code>.</p>
 <p><code><a href="../reference/aurora_dockerfile.html">aurora_dockerfile()</a></code> writes a Dockerfile whose entry
 point is <code>Rscript api.R</code>, so the container and local
 development share one assembly path. Key arguments:</p>
@@ -180,7 +188,7 @@ TLS/curl/db/geo/graphics needs; pass a vector to override.</li>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/aurora_dockerfile.html">aurora_dockerfile</a></span><span class="op">(</span><span class="st">"meu_app"</span>, flavor <span class="op">=</span> <span class="st">"alpine"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>alpine</code> flavor compiles everything (no CRAN binaries
 on Alpine) and uses
@@ -192,6 +200,27 @@ non-trivial tree (httpuv, the fiery stack, roxygen2, the graphics
 packages), so even a small app compiles a fair amount on Alpine — the
 win is final image size.</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="publishing-to-a-registry">Publishing to a registry<a class="anchor" aria-label="anchor" href="#publishing-to-a-registry"></a>
+</h2>
+<p><code>aurora_build_image(push = TRUE)</code> publishes after a
+successful build. The <strong>tag chooses the registry</strong> — that
+is how Docker addresses images, so no extra argument is needed:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Docker Hub (the default registry)</span></span>
+<span><span class="fu"><a href="../reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"myorg/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># GitHub Container Registry</span></span>
+<span><span class="fu"><a href="../reference/aurora_build_image.html">aurora_build_image</a></span><span class="op">(</span><span class="st">"meu_app"</span>, tag <span class="op">=</span> <span class="st">"ghcr.io/myorg/meu_app:latest"</span>, push <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Authenticate once with the docker CLI before pushing — aurora
+deliberately does not wrap registry login (credential helpers and tokens
+belong to the docker config, not to an R session):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">docker</span> login                                  <span class="co"># Docker Hub</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"</span><span class="va">$GITHUB_PAT</span><span class="st">"</span> <span class="kw">|</span> <span class="ex">docker</span> login ghcr.io <span class="at">-u</span> <span class="op">&lt;</span>user<span class="op">&gt;</span> --password-stdin</span></code></pre></div>
+<p>For a private app, create the repository as <strong>private</strong>
+on the registry (on Docker Hub, free accounts default new repositories
+to public).</p>
 </div>
 <div class="section level2">
 <h2 id="runtime-configuration-environment-variables">Runtime configuration (environment variables)<a class="anchor" aria-label="anchor" href="#runtime-configuration-environment-variables"></a>
@@ -233,10 +262,10 @@ HTTPS)</td>
 </tbody>
 </table>
 <p>Never bake secrets into the image — inject them at run time:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-p</span> 8000:8000 <span class="dt">\</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">-e</span> AURORA_JWT_SECRET=<span class="st">"</span><span class="va">$(</span><span class="ex">openssl</span> rand <span class="at">-hex</span> 32<span class="va">)</span><span class="st">"</span> <span class="dt">\</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">-e</span> AURORA_ENV=prod <span class="dt">\</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  org/meu_app:latest</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-p</span> 8000:8000 <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">-e</span> AURORA_JWT_SECRET=<span class="st">"</span><span class="va">$(</span><span class="ex">openssl</span> rand <span class="at">-hex</span> 32<span class="va">)</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">-e</span> AURORA_ENV=prod <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  org/meu_app:latest</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="behind-a-reverse-proxy-load-balancer">Behind a reverse proxy / load balancer<a class="anchor" aria-label="anchor" href="#behind-a-reverse-proxy-load-balancer"></a>
@@ -255,7 +284,7 @@ in the client (cookies) or an external store, not in the R process (see
 <p>ShinyProxy launches the container like any Docker-backed app.
 <code><a href="../reference/aurora_shinyproxy_yaml.html">aurora_shinyproxy_yaml()</a></code> emits the <code>proxy.specs</code>
 entry for you:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/aurora_shinyproxy_yaml.html">aurora_shinyproxy_yaml</a></span><span class="op">(</span></span>
 <span>  image <span class="op">=</span> <span class="st">"org/meu_app:latest"</span>,</span>
 <span>  dir   <span class="op">=</span> <span class="st">"meu_app"</span>,              <span class="co"># defaults id / display-name from the app name</span></span>

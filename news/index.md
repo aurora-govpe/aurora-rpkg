@@ -1,5 +1,20 @@
 # Changelog
 
+## aurora 0.1.6
+
+### New
+
+- `aurora_build_image(platform = )` selects the image’s target platform
+  via `docker build --platform`, defaulting to `"linux/amd64"` so images
+  built on Apple Silicon run on the usual x86-64 servers (an arm64 image
+  fails there with `exec format error`). Pass `platform = NULL` to build
+  for the host architecture.
+
+### Changes
+
+- `aurora_dockerfile(aurora_source = )` default pin bumped to `@v0.1.6`.
+- New deploy-vignette section on publishing images to Docker Hub / GHCR.
+
 ## aurora 0.1.5
 
 ### Changes

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,23 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/v0.1.5/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.6" id="aurora-016">aurora 0.1.6<a class="anchor" aria-label="anchor" href="#aurora-016"></a></h2>
+<div class="section level3">
+<h3 id="new-0-1-6">New<a class="anchor" aria-label="anchor" href="#new-0-1-6"></a></h3>
+<ul><li>
+<code>aurora_build_image(platform = )</code> selects the image’s target platform via <code>docker build --platform</code>, defaulting to <code>"linux/amd64"</code> so images built on Apple Silicon run on the usual x86-64 servers (an arm64 image fails there with <code>exec format error</code>). Pass <code>platform = NULL</code> to build for the host architecture.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-0-1-6">Changes<a class="anchor" aria-label="anchor" href="#changes-0-1-6"></a></h3>
+<ul><li>
+<code>aurora_dockerfile(aurora_source = )</code> default pin bumped to <code>@v0.1.6</code>.</li>
+<li>New deploy-vignette section on publishing images to Docker Hub / GHCR.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.5" id="aurora-015">aurora 0.1.5<a class="anchor" aria-label="anchor" href="#aurora-015"></a></h2>
 <div class="section level3">
