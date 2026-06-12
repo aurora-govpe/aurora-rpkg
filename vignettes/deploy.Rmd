@@ -37,13 +37,16 @@ aurora_build_image("meu_app", tag = "org/meu_app:latest", push = TRUE)
 
 The generated Dockerfile pulls R packages as prebuilt **binaries** from Posit
 Package Manager, so builds are fast and need no compiler toolchain at run time.
-Posit Package Manager only serves **amd64 (x86_64)** Linux binaries, so on an
-Apple Silicon machine build for the production target explicitly — otherwise the
-native arm64 build compiles every dependency from source:
 
-```sh
-docker build --platform linux/amd64 -t org/meu_app:latest .
-```
+`aurora_build_image()` targets **`linux/amd64` by default** (it passes
+`--platform linux/amd64` to `docker build`). Production servers are almost
+always x86-64, and an image built natively on an Apple Silicon machine is
+arm64 — it fails there with `exec format error`. The default also matches
+Posit Package Manager, which only serves amd64 Linux binaries. Building the
+amd64 image on an arm64 Mac works via emulation (enable Rosetta in Docker
+Desktop); it is slower, but the image runs everywhere you deploy. To build for
+the host architecture instead — e.g. deploying to an arm64 server — pass
+`platform = NULL`, or any explicit target like `platform = "linux/arm64"`.
 
 `aurora_dockerfile()` writes a Dockerfile whose entry point is `Rscript api.R`,
 so the container and local development share one assembly path. Key arguments:
@@ -74,6 +77,32 @@ cover the plumber2 + bslib baseline; for extra system libraries (e.g. GDAL/GEOS
 for `sf`) pass them via `sysdeps`. Note that aurora's baseline still pulls a
 non-trivial tree (httpuv, the fiery stack, roxygen2, the graphics packages), so
 even a small app compiles a fair amount on Alpine — the win is final image size.
+
+## Publishing to a registry
+
+`aurora_build_image(push = TRUE)` publishes after a successful build. The
+**tag chooses the registry** — that is how Docker addresses images, so no
+extra argument is needed:
+
+```{r}
+# Docker Hub (the default registry)
+aurora_build_image("meu_app", tag = "myorg/meu_app:latest", push = TRUE)
+
+# GitHub Container Registry
+aurora_build_image("meu_app", tag = "ghcr.io/myorg/meu_app:latest", push = TRUE)
+```
+
+Authenticate once with the docker CLI before pushing — aurora deliberately
+does not wrap registry login (credential helpers and tokens belong to the
+docker config, not to an R session):
+
+```sh
+docker login                                  # Docker Hub
+echo "$GITHUB_PAT" | docker login ghcr.io -u <user> --password-stdin
+```
+
+For a private app, create the repository as **private** on the registry (on
+Docker Hub, free accounts default new repositories to public).
 
 ## Runtime configuration (environment variables)
 

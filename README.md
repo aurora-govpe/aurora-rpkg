@@ -113,7 +113,9 @@ aurora_build_image("meu_app", tag = "org/meu_app:latest", push = TRUE)
 ```
 
 The container serves the **prebuilt** static UI, so neither flavor installs
-bslib/shiny at runtime.
+bslib/shiny at runtime. `aurora_build_image()` targets `linux/amd64` by
+default, so images built on an Apple Silicon Mac run on x86-64 servers
+(pass `platform = NULL` for a host-native build).
 
 | | **`debian`** (default) — `rocker/r-ver` | **`alpine`** — `rhub/r-minimal` |
 |---|---|---|
