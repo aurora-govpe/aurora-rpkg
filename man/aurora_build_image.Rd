@@ -4,7 +4,13 @@
 \alias{aurora_build_image}
 \title{Build (and optionally push) a Docker image for an aurora app}
 \usage{
-aurora_build_image(dir = ".", tag, push = FALSE, dockerfile = "Dockerfile")
+aurora_build_image(
+  dir = ".",
+  tag,
+  push = FALSE,
+  dockerfile = "Dockerfile",
+  platform = "linux/amd64"
+)
 }
 \arguments{
 \item{dir}{App directory (build context).}
@@ -14,6 +20,10 @@ aurora_build_image(dir = ".", tag, push = FALSE, dockerfile = "Dockerfile")
 \item{push}{Whether to \verb{docker push} after a successful build.}
 
 \item{dockerfile}{Path to the Dockerfile relative to \code{dir}.}
+
+\item{platform}{Target platform passed to \verb{docker build --platform}.
+Defaults to \code{"linux/amd64"} so images built on Apple Silicon run on the
+usual x86-64 servers. Use \code{NULL} to build for the host architecture.}
 }
 \value{
 The image \code{tag}, invisibly.
