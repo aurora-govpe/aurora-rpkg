@@ -37,6 +37,12 @@ aurora_create_app <- function(path,
   }
   fs::dir_copy(tmpl_dir, path)
 
+  # Templates ship `dockerignore` un-hidden and no .gitkeep placeholders
+  # (CRAN flags hidden files in inst/); the scaffold restores the layout.
+  di <- fs::path(path, "dockerignore")
+  if (fs::file_exists(di)) fs::file_move(di, fs::path(path, ".dockerignore"))
+  fs::dir_create(fs::path(path, "www", "images"))
+
   # Inject the (always current) JS runtime as www/js/core.js.
   runtime <- system.file("runtime", "core.js", package = "aurora")
   fs::dir_create(fs::path(path, "www", "js"))

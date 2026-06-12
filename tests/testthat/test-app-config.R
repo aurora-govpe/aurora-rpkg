@@ -43,6 +43,12 @@ test_that("create_app scaffolds the canonical layout", {
   expect_true(fs::file_exists(fs::path(app, "data", "config.yml")))
   expect_true(fs::file_exists(fs::path(app, "_brand.yml")))
 
+  # the un-hidden template `dockerignore` is restored to its real name,
+  # and the asset dirs exist without shipped .gitkeep placeholders
+  expect_true(fs::file_exists(fs::path(app, ".dockerignore")))
+  expect_false(fs::file_exists(fs::path(app, "dockerignore")))
+  expect_true(fs::dir_exists(fs::path(app, "www", "images")))
+
   expect_identical(read_config(app)$name, "demo")
 })
 
