@@ -126,6 +126,43 @@ docker run -p 8000:8000 \
   org/meu_app:latest
 ```
 
+## Sharing assets across apps (`statics:`)
+
+When several apps on a server share the same static files (a logo,
+common JS libraries, a stylesheet), keep one copy in a server-side
+directory, mount it as a read-only volume, and declare it in
+`_aurora.yml` under `statics:` – a map of URL prefix to directory:
+
+``` yaml
+# _aurora.yml
+statics:
+  /assets: /srv/aurora-shared
+```
+
+[`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md)
+serves that directory at the prefix (in addition to `www/` at `/`), so
+the app references the files by URL:
+
+``` html
+<img src="/assets/logo.png">
+<script src="/assets/lib/echarts.min.js"></script>
+```
+
+``` sh
+docker run -p 8000:8000 \
+  -v ./data:/app/data:ro \
+  -v /srv/aurora-shared:/srv/aurora-shared:ro \
+  org/meu_app:latest
+```
+
+Update the shared directory once and every app picks it up. Relative
+paths resolve against the app root; a missing directory (e.g. a volume
+that was not mounted) is skipped with a warning so the app still starts.
+The root path `/` is reserved for the app’s own `www/` – mount shared
+files under a sub-path, or simply drop them in a sub-folder of `www/`
+(also served, no config needed) if they don’t need to be shared across
+apps.
+
 ## Behind a reverse proxy / load balancer
 
 Serve the app under a path prefix or a subdomain via your proxy (nginx,

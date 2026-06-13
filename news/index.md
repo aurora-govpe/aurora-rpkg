@@ -1,5 +1,25 @@
 # Changelog
 
+## aurora 0.1.8
+
+### New
+
+- `_aurora.yml` gains an optional `statics:` key – a map of URL prefix
+  to directory, served by
+  [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md)
+  at that prefix in addition to `www/` at `/`. Lets several apps share
+  assets (logo, JS libraries, CSS) from one server-side directory
+  mounted as a volume. Relative paths resolve against the app root; a
+  missing directory (e.g. an unmounted volume) is skipped with a warning
+  so the app still starts. The root path `/` stays reserved for `www/`.
+  See
+  [`vignette("deploy")`](https://aurora-govpe.github.io/aurora-rpkg/articles/deploy.md)
+  and ADR-018.
+
+### Changes
+
+- `aurora_dockerfile(aurora_source = )` default pin bumped to `@v0.1.8`.
+
 ## aurora 0.1.7
 
 ### Changes

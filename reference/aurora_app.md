@@ -67,6 +67,15 @@ An object of class `aurora_app`.
 
 ## Details
 
+Extra static mounts can be declared in `_aurora.yml` under `statics:` –
+a map of URL prefix to directory, served at that prefix (in addition to
+`www/` at `/`). This is for assets shared across apps from a server-side
+directory mounted as a volume; e.g. `statics:` then
+` /assets: /srv/shared` serves `/srv/shared/logo.png` at
+`/assets/logo.png`. Relative paths resolve against the app root; a
+missing directory (e.g. an unmounted volume) is skipped with a warning
+so the app still starts. See ADR-018.
+
 Each handler's URL is taken verbatim from its `#* @get /...` annotation,
 so the route prefix is embedded by
 [`aurora_add_route()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_add_route.md)

@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Get started with aurora</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/v0.1.8/vignettes/aurora.Rmd" class="external-link"><code>vignettes/aurora.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/vignettes/aurora.Rmd" class="external-link"><code>vignettes/aurora.Rmd</code></a></small>
       <div class="d-none name"><code>aurora.Rmd</code></div>
     </div>
 
@@ -126,7 +126,7 @@ to be wired by hand; aurora finds it by convention.</p>
 ├── www/             # static assets: js/core.js (runtime), js/app.js, style.css, images/
 ├── data/config.yml  # config (the config package)
 ├── _brand.yml        # optional: visual brand consumed by bslib
-└── _aurora.yml       # optional: overrides name / engine / auth</code></pre>
+└── _aurora.yml       # optional: overrides name / engine / auth / statics</code></pre>
 </div>
 <div class="section level2">
 <h2 id="writing-a-route">Writing a route<a class="anchor" aria-label="anchor" href="#writing-a-route"></a>
@@ -189,6 +189,12 @@ changes on disk.</li>
 <li>
 <strong>Telemetry</strong> — <code>aurora_run(otel = TRUE)</code>.
 See <code><a href="../articles/telemetry.html">vignette("telemetry")</a></code>.</li>
+<li>
+<strong>Shared assets</strong> — serve a directory shared across
+apps at its own URL prefix with <code>_aurora.yml</code>’s
+<code>statics:</code> (e.g. <code>statics:</code> then
+<code>/assets: /srv/shared</code>). See
+<code><a href="../articles/deploy.html">vignette("deploy")</a></code>.</li>
 </ul>
 </div>
 <div class="section level2">

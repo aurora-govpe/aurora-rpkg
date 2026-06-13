@@ -42,7 +42,7 @@ be wired by hand; aurora finds it by convention.
     ├── www/             # static assets: js/core.js (runtime), js/app.js, style.css, images/
     ├── data/config.yml  # config (the config package)
     ├── _brand.yml        # optional: visual brand consumed by bslib
-    └── _aurora.yml       # optional: overrides name / engine / auth
+    └── _aurora.yml       # optional: overrides name / engine / auth / statics
 
 ## Writing a route
 
@@ -104,6 +104,10 @@ apps.
   [`vignette("auth")`](https://aurora-govpe.github.io/aurora-rpkg/articles/auth.md).
 - **Telemetry** — `aurora_run(otel = TRUE)`. See
   [`vignette("telemetry")`](https://aurora-govpe.github.io/aurora-rpkg/articles/telemetry.md).
+- **Shared assets** — serve a directory shared across apps at its own
+  URL prefix with `_aurora.yml`’s `statics:` (e.g. `statics:` then
+  `/assets: /srv/shared`). See
+  [`vignette("deploy")`](https://aurora-govpe.github.io/aurora-rpkg/articles/deploy.md).
 
 ## Deploy
 

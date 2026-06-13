@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Deploying aurora apps</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/v0.1.8/vignettes/deploy.Rmd" class="external-link"><code>vignettes/deploy.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/aurora-govpe/aurora-rpkg/blob/main/vignettes/deploy.Rmd" class="external-link"><code>vignettes/deploy.Rmd</code></a></small>
       <div class="d-none name"><code>deploy.Rmd</code></div>
     </div>
 
@@ -268,6 +268,34 @@ HTTPS)</td>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  org/meu_app:latest</span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="sharing-assets-across-apps-statics">Sharing assets across apps (<code>statics:</code>)<a class="anchor" aria-label="anchor" href="#sharing-assets-across-apps-statics"></a>
+</h2>
+<p>When several apps on a server share the same static files (a logo,
+common JS libraries, a stylesheet), keep one copy in a server-side
+directory, mount it as a read-only volume, and declare it in
+<code>_aurora.yml</code> under <code>statics:</code> – a map of URL
+prefix to directory:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># _aurora.yml</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">statics</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="at">  </span><span class="fu">/assets</span><span class="kw">:</span><span class="at"> /srv/aurora-shared</span></span></code></pre></div>
+<p><code><a href="../reference/aurora_app.html">aurora_app()</a></code> serves that directory at the prefix (in
+addition to <code>www/</code> at <code>/</code>), so the app references
+the files by URL:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"/assets/logo.png"</span><span class="dt">&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> src</span><span class="op">=</span><span class="st">"/assets/lib/echarts.min.js"</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-p</span> 8000:8000 <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">-v</span> ./data:/app/data:ro <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">-v</span> /srv/aurora-shared:/srv/aurora-shared:ro <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  org/meu_app:latest</span></code></pre></div>
+<p>Update the shared directory once and every app picks it up. Relative
+paths resolve against the app root; a missing directory (e.g. a volume
+that was not mounted) is skipped with a warning so the app still starts.
+The root path <code>/</code> is reserved for the app’s own
+<code>www/</code> – mount shared files under a sub-path, or simply drop
+them in a sub-folder of <code>www/</code> (also served, no config
+needed) if they don’t need to be shared across apps.</p>
+</div>
+<div class="section level2">
 <h2 id="behind-a-reverse-proxy-load-balancer">Behind a reverse proxy / load balancer<a class="anchor" aria-label="anchor" href="#behind-a-reverse-proxy-load-balancer"></a>
 </h2>
 <p>Serve the app under a path prefix or a subdomain via your proxy
@@ -284,7 +312,7 @@ in the client (cookies) or an external store, not in the R process (see
 <p>ShinyProxy launches the container like any Docker-backed app.
 <code><a href="../reference/aurora_shinyproxy_yaml.html">aurora_shinyproxy_yaml()</a></code> emits the <code>proxy.specs</code>
 entry for you:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/aurora_shinyproxy_yaml.html">aurora_shinyproxy_yaml</a></span><span class="op">(</span></span>
 <span>  image <span class="op">=</span> <span class="st">"org/meu_app:latest"</span>,</span>
 <span>  dir   <span class="op">=</span> <span class="st">"meu_app"</span>,              <span class="co"># defaults id / display-name from the app name</span></span>
