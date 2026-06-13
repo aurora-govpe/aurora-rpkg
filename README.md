@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/aurora-govpe/aurora-rpkg/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aurora-govpe/aurora-rpkg/actions/workflows/R-CMD-check.yaml)
-[![Docs](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://aurora-govpe.github.io/aurora-rpkg)
+[![Docs](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://aurora-govpe.github.io/aurora-rpkg/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
