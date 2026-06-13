@@ -61,7 +61,7 @@ Globals-free, hot-reloading data store for handlers.
 
 ## Deploy
 
-Docker images and ShinyProxy specs.
+Docker images and ShinyProxy / Ruscker specs.
 
 - [`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
   : Generate a Dockerfile (and .dockerignore) for an aurora app
@@ -69,6 +69,8 @@ Docker images and ShinyProxy specs.
   : Build (and optionally push) a Docker image for an aurora app
 - [`aurora_shinyproxy_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_shinyproxy_yaml.md)
   : Emit a ShinyProxy app-spec block for an aurora image
+- [`aurora_ruscker_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_ruscker_yaml.md)
+  : Emit a Ruscker app-spec block for an aurora image
 
 ## Auth
 

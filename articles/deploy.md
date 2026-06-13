@@ -199,6 +199,47 @@ Paste that under `proxy.specs` in your ShinyProxy config, or pass
 `wrap = TRUE` for a complete `proxy: specs:` snippet (and `write = TRUE`
 to save it to a file).
 
+## Ruscker
+
+[Ruscker](https://github.com/StrategicProjects/ruscker) is a reverse
+proxy and container orchestrator (a lightweight ShinyProxy alternative)
+that reads the same `application.yml` schema and adds fields for
+stateless APIs and replica pools. Because an aurora app *is* a stateless
+‘plumber2’ API,
+[`aurora_ruscker_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_ruscker_yaml.md)
+emits a `type: api` spec: Ruscker load-balances a replica pool of the
+container rather than running one container per session.
+
+``` r
+
+aurora_ruscker_yaml(
+  image = "org/meu_app:latest",
+  dir   = "meu_app",              # defaults id / display-name from the app name
+  rate_limit = "100/min",         # optional proxy-side throttle
+  cors  = TRUE,                   # optional permissive CORS headers
+  env   = list(AURORA_ENV = "prod")
+)
+#> - id: meu_app
+#>   display-name: meu_app
+#>   container-image: org/meu_app:latest
+#>   type: api
+#>   api:
+#>     port: 8000
+#>     docs-path: /__docs__
+#>     health-path: /__healthz__
+#>     rate-limit: 100/min
+#>     cors: yes
+#>   min-replicas: 0
+#>   max-replicas: 3
+#>   container-env:
+#>     AURORA_ENV: prod
+```
+
+`min_replicas` defaults to `0` (spawn on demand); raise it to keep
+instances warm, and set `max_replicas` for the auto-scale ceiling. As
+with ShinyProxy, `wrap = TRUE` emits a full `proxy: specs:` snippet and
+`write = TRUE` saves it.
+
 ## Checklist
 
 Strong `AURORA_JWT_SECRET` injected at run time (if using auth).

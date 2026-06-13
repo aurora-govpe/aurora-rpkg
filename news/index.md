@@ -1,5 +1,25 @@
 # Changelog
 
+## aurora 0.1.11
+
+### New
+
+- [`aurora_ruscker_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_ruscker_yaml.md)
+  emits a [Ruscker](https://github.com/StrategicProjects/ruscker) app
+  spec for a built aurora image, the counterpart to
+  [`aurora_shinyproxy_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_shinyproxy_yaml.md).
+  Ruscker is a lightweight ShinyProxy alternative that reads the same
+  `application.yml` schema; since an aurora app is a stateless
+  ‘plumber2’ API, the spec uses `type: api` with an `api:` block
+  (`port`, `docs-path`, `health-path`, optional `rate-limit`/`cors`) and
+  a replica pool (`min-replicas`/`max-replicas`). See
+  [`vignette("deploy")`](https://aurora-govpe.github.io/aurora-rpkg/articles/deploy.md).
+
+### Changes
+
+- [`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
+  default pin bumped to `@v0.1.11`.
+
 ## aurora 0.1.10
 
 ### Changes

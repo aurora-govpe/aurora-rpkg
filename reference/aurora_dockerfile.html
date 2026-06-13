@@ -11,7 +11,7 @@ Docker or a ShinyProxy container. A .dockerignore is written if absent."><meta p
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ Docker or a ShinyProxy container. A <code>.dockerignore</code> is written if abs
 <span>  base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sysdeps <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  port <span class="op">=</span> <span class="fl">8000L</span>,</span>
-<span>  aurora_source <span class="op">=</span> <span class="st">"aurora-govpe/aurora-rpkg@v0.1.10"</span>,</span>
+<span>  aurora_source <span class="op">=</span> <span class="st">"aurora-govpe/aurora-rpkg@v0.1.11"</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"America/Recife"</span>,</span>
 <span>  locale <span class="op">=</span> <span class="st">"pt_BR.UTF-8"</span>,</span>
 <span>  write <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -107,7 +107,7 @@ comprehensive defaults instead – extra <code>-dev</code> packages are build-ti
 
 <dt id="arg-aurora-source">aurora_source<a class="anchor" aria-label="anchor" href="#arg-aurora-source"></a></dt>
 <dd><p>pak/remotes spec used to install aurora in the image.
-Defaults to the pinned release <code>"aurora-govpe/aurora-rpkg@v0.1.10"</code> for
+Defaults to the pinned release <code>"aurora-govpe/aurora-rpkg@v0.1.11"</code> for
 reproducible builds. Avoid an unpinned moving ref (a branch): it interacts
 badly with Docker's layer cache, which can silently keep an old commit on
 rebuild. Bump this default (or pass an explicit <code>@tag</code>) per release.</p></dd>
