@@ -1,5 +1,16 @@
 # Changelog
 
+## aurora 0.1.10
+
+### Changes
+
+- CRAN resubmission: the plumber2 documentation link in `README.md` now
+  points to the canonical `https://plumber2.posit.co/` (the old
+  `https://posit-dev.github.io/plumber2/` returned a 301 redirect,
+  flagged by CRAN incoming checks).
+  [`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
+  default pin bumped to `@v0.1.10`.
+
 ## aurora 0.1.9
 
 ### Changes

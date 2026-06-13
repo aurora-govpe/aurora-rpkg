@@ -6,10 +6,10 @@ aurora lets you build a web app the way you’d build a Shiny app — author
 the UI in R with [**bslib**](https://rstudio.github.io/bslib/), scaffold
 the project, run it locally with hot-reload — but it compiles the UI to
 a *static* `index.html` at build time and lets
-[**plumber2**](https://posit-dev.github.io/plumber2/) serve that UI plus
-your JSON API. There’s no reactive server, no per-user R process, and no
-sticky sessions: the app is **stateless** and scales horizontally behind
-a load balancer, ShinyProxy, or plain Docker.
+[**plumber2**](https://plumber2.posit.co/) serve that UI plus your JSON
+API. There’s no reactive server, no per-user R process, and no sticky
+sessions: the app is **stateless** and scales horizontally behind a load
+balancer, ShinyProxy, or plain Docker.
 
 - 🎨 **UI in R** — author with bslib + `_brand.yml`; ship a static HTML
   asset.

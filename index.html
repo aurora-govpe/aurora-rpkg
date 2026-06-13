@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
 <blockquote>
 <p><strong>Shiny-style authoring, stateless API deployment.</strong></p>
 </blockquote>
-<p>aurora lets you build a web app the way you’d build a Shiny app — author the UI in R with <a href="https://rstudio.github.io/bslib/" class="external-link"><strong>bslib</strong></a>, scaffold the project, run it locally with hot-reload — but it compiles the UI to a <em>static</em> <code>index.html</code> at build time and lets <a href="https://posit-dev.github.io/plumber2/" class="external-link"><strong>plumber2</strong></a> serve that UI plus your JSON API. There’s no reactive server, no per-user R process, and no sticky sessions: the app is <strong>stateless</strong> and scales horizontally behind a load balancer, ShinyProxy, or plain Docker.</p>
+<p>aurora lets you build a web app the way you’d build a Shiny app — author the UI in R with <a href="https://rstudio.github.io/bslib/" class="external-link"><strong>bslib</strong></a>, scaffold the project, run it locally with hot-reload — but it compiles the UI to a <em>static</em> <code>index.html</code> at build time and lets <a href="https://plumber2.posit.co/" class="external-link"><strong>plumber2</strong></a> serve that UI plus your JSON API. There’s no reactive server, no per-user R process, and no sticky sessions: the app is <strong>stateless</strong> and scales horizontally behind a load balancer, ShinyProxy, or plain Docker.</p>
 <ul>
 <li>🎨 <strong>UI in R</strong> — author with bslib + <code>_brand.yml</code>; ship a static HTML asset.</li>
 <li>⚡ <strong>Stateless</strong> — plumber2 serves the assets and JSON routes; scale by adding containers.</li>
