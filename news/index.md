@@ -1,5 +1,14 @@
 # Changelog
 
+## aurora 0.1.9
+
+### Changes
+
+- CRAN submission polish: the pkgdown URL in DESCRIPTION/README is now
+  the canonical form (trailing slash, no redirect).
+  [`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
+  default pin bumped to `@v0.1.9`.
+
 ## aurora 0.1.8
 
 ### New

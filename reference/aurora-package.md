@@ -13,7 +13,7 @@ Useful links:
 
 - <https://github.com/aurora-govpe/aurora-rpkg>
 
-- <https://aurora-govpe.github.io/aurora-rpkg>
+- <https://aurora-govpe.github.io/aurora-rpkg/>
 
 - Report bugs at <https://github.com/aurora-govpe/aurora-rpkg/issues>
 
