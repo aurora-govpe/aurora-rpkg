@@ -52,6 +52,14 @@ directory at \code{/}. No \verb{_aurora.yml} is required; an optional manifest o
 overrides a few keys.
 }
 \details{
+Extra static mounts can be declared in \verb{_aurora.yml} under \verb{statics:} -- a map
+of URL prefix to directory, served at that prefix (in addition to \verb{www/} at
+\code{/}). This is for assets shared across apps from a server-side directory
+mounted as a volume; e.g. \verb{statics:} then \verb{  /assets: /srv/shared} serves
+\verb{/srv/shared/logo.png} at \verb{/assets/logo.png}. Relative paths resolve against
+the app root; a missing directory (e.g. an unmounted volume) is skipped with
+a warning so the app still starts. See ADR-018.
+
 Each handler's URL is taken verbatim from its \verb{#* @get /...} annotation, so
 the route prefix is embedded by \code{\link[=aurora_add_route]{aurora_add_route()}} at scaffold time -- there
 is no runtime path injection here.

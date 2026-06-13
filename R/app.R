@@ -5,6 +5,14 @@
 #' directory at `/`. No `_aurora.yml` is required; an optional manifest only
 #' overrides a few keys.
 #'
+#' Extra static mounts can be declared in `_aurora.yml` under `statics:` -- a map
+#' of URL prefix to directory, served at that prefix (in addition to `www/` at
+#' `/`). This is for assets shared across apps from a server-side directory
+#' mounted as a volume; e.g. `statics:` then `  /assets: /srv/shared` serves
+#' `/srv/shared/logo.png` at `/assets/logo.png`. Relative paths resolve against
+#' the app root; a missing directory (e.g. an unmounted volume) is skipped with
+#' a warning so the app still starts. See ADR-018.
+#'
 #' Each handler's URL is taken verbatim from its `#* @get /...` annotation, so
 #' the route prefix is embedded by [aurora_add_route()] at scaffold time -- there
 #' is no runtime path injection here.
@@ -103,6 +111,28 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
     )
   }
 
+  # Extra static mounts from `_aurora.yml` (`statics:`), each at its own URL
+  # prefix -- e.g. a server-side volume of assets shared across apps. Added
+  # before the catch-all so a specific prefix (e.g. /assets) wins over `/`. A
+  # missing directory (e.g. an unmounted volume) is skipped with a warning so
+  # the app still starts. See ADR-018.
+  for (s in resolve_statics(cfg, dir)) {
+    if (!fs::dir_exists(s$path)) {
+      cli::cli_warn(c(
+        "Static mount {.url {s$at}} skipped: directory {.path {s$path}} not found.",
+        i = "If it is a runtime-mounted volume, check the {.code -v} mount."
+      ))
+      next
+    }
+    if (verbose) cli::cli_alert_info(
+      "Serving statics {.url {s$at}} from {.path {s$path}}"
+    )
+    # api_assets (same as the `www` mount) rather than api_statics: it serves
+    # through the request router, so it is consistent with `/` and observable in
+    # tests via `pa$test_request()`.
+    pa <- plumber2::api_assets(pa, s$at, s$path)
+  }
+
   pa <- plumber2::api_assets(pa, "/", static_dir)
 
   if (resolve_otel(cfg, otel)) {
@@ -137,13 +167,19 @@ print.aurora_app <- function(x, ...) {
   cfg <- x$config
   n_routers <- length(router_files(cfg))
   n_helpers <- length(helper_files(cfg))
+  statics <- resolve_statics(cfg, x$dir)
   cli::cli_h2("aurora app: {cfg$name}")
-  cli::cli_ul(c(
+  bullets <- c(
     "engine: {.pkg {cfg$engine}}",
     "dir: {.path {x$dir}}",
     "routers: {n_routers} | helpers: {n_helpers}",
-    "static: {.path {cfg$static}}",
-    "bind: {.url http://{x$host}:{x$port}}"
-  ))
+    "static: {.path {cfg$static}}"
+  )
+  if (length(statics) > 0) {
+    mounts <- vapply(statics, function(s) paste0(s$at, " -> ", s$path), character(1))
+    bullets <- c(bullets, "statics: {.val {mounts}}")
+  }
+  bullets <- c(bullets, "bind: {.url http://{x$host}:{x$port}}")
+  cli::cli_ul(bullets)
   invisible(x)
 }

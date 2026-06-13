@@ -50,7 +50,7 @@ meu_app/
 ├── www/             # static assets: js/core.js (runtime), js/app.js, style.css, images/
 ├── data/config.yml  # config (the config package)
 ├── _brand.yml        # optional: visual brand consumed by bslib
-└── _aurora.yml       # optional: overrides name / engine / auth
+└── _aurora.yml       # optional: overrides name / engine / auth / statics
 ```
 
 ## Writing a route
@@ -103,6 +103,9 @@ See `inst/examples/02-dashboard-echarts` and `03-map` for full worked apps.
 - **Auth** — opt-in JWT-cookie scheme; scaffold it with
   `aurora_create_app(..., template = "auth")`. See `vignette("auth")`.
 - **Telemetry** — `aurora_run(otel = TRUE)`. See `vignette("telemetry")`.
+- **Shared assets** — serve a directory shared across apps at its own URL prefix
+  with `_aurora.yml`'s `statics:` (e.g. `statics:` then `  /assets: /srv/shared`).
+  See `vignette("deploy")`.
 
 ## Deploy
 
