@@ -79,6 +79,38 @@ helper_files <- function(cfg) {
   sort(fs::dir_ls(dir, glob = "*.R", type = "file"))
 }
 
+# Resolve extra static mounts declared in `_aurora.yml` (`statics:` -- a map of
+# URL prefix -> directory). Lets several apps share assets from one server-side
+# directory mounted as a volume, served at a URL prefix outside `www/`. Relative
+# dirs resolve against the app root; absolute dirs (typically a runtime-mounted
+# volume) are kept as-is. Returns a list of list(at=, path=), empty if none.
+# See ADR-018.
+resolve_statics <- function(cfg, dir) {
+  st <- cfg$statics
+  if (is.null(st)) return(list())
+  if (!is.list(st) || is.null(names(st)) || any(!nzchar(names(st)))) {
+    cli::cli_abort(c(
+      "{.field statics} in {.file _aurora.yml} must be a map of URL prefix to directory.",
+      i = "e.g. {.code statics:} with an entry {.code /assets: /srv/shared}."
+    ))
+  }
+  out <- list()
+  for (at in names(st)) {
+    url <- if (startsWith(at, "/")) at else paste0("/", at)
+    if (identical(url, "/")) {
+      cli::cli_abort(c(
+        "{.field statics} cannot mount at the root path -- that already serves the app's own assets.",
+        i = "Use a sub-path such as {.val /assets}, or put shared files under {.path www}."
+      ))
+    }
+    out[[length(out) + 1L]] <- list(
+      at = url,
+      path = fs::path_abs(st[[at]], start = dir)
+    )
+  }
+  out
+}
+
 # Best-effort read of `app_name` from data/config.yml (the config-package file)
 # to use as the app name when `_aurora.yml` declares none -- removes the one
 # field that otherwise duplicates between the two files. Returns NULL if absent.
