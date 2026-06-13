@@ -1,6 +1,6 @@
 Package: aurora
 Title: Build Stateless Web Apps with 'plumber2'
-Version: 0.1.8
+Version: 0.1.9
 Authors@R: c(
     person("Andre", "Leite", email = "leite@castlab.org", role = c("aut", "cre")),
     person("Marcos", "Wasilew", email = "marcos.wasilew@gmail.com", role = "aut"),
@@ -52,6 +52,6 @@ Suggests:
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://github.com/aurora-govpe/aurora-rpkg,
-    https://aurora-govpe.github.io/aurora-rpkg
+    https://aurora-govpe.github.io/aurora-rpkg/
 BugReports: https://github.com/aurora-govpe/aurora-rpkg/issues
 Config/roxygen2/version: 8.0.0
