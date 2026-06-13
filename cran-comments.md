@@ -2,12 +2,16 @@
 
 ## Submission
 
-Resubmission of aurora to CRAN (version 0.1.10).
+Resubmission of aurora to CRAN (version 0.1.11).
 
 The previous submission (0.1.9) was flagged by the incoming pre-test for a
 moved URL (301): `README.md` linked to `https://posit-dev.github.io/plumber2/`,
 which now redirects to `https://plumber2.posit.co/`. The README has been
 updated to the canonical target URL.
+
+This version also adds one new exported function, `aurora_ruscker_yaml()`
+(a deployment-spec generator alongside the existing `aurora_shinyproxy_yaml()`),
+which is why the version is 0.1.11 rather than 0.1.10.
 
 aurora is a scaffolding and deployment toolkit for stateless web apps on top
 of 'plumber2': the UI ('bslib') is compiled to static HTML at build time and

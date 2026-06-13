@@ -60,8 +60,8 @@ reference:
   desc: Globals-free, hot-reloading data store for handlers.
   contents: [aurora_data_store, aurora_data_register, aurora_data_get, aurora_data_names]
 - title: Deploy
-  desc: Docker images and ShinyProxy specs.
-  contents: [aurora_dockerfile, aurora_build_image, aurora_shinyproxy_yaml]
+  desc: Docker images and ShinyProxy / Ruscker specs.
+  contents: [aurora_dockerfile, aurora_build_image, aurora_shinyproxy_yaml, aurora_ruscker_yaml]
 - title: Auth
   desc: Optional JWT-cookie authentication scheme.
   contents: [aurora_auth_jwt, aurora_jwt_token, aurora_jwt_decode, aurora_jwt_guard,
