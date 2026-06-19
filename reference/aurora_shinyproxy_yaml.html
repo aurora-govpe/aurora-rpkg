@@ -13,7 +13,7 @@ the spec just needs the image and the port the app listens on."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">aurora</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ the spec just needs the image and the port the app listens on.</p>
 <span>  env <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  wrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  write <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  file <span class="op">=</span> <span class="st">"shinyproxy-app.yml"</span></span>
+<span>  file <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -124,7 +124,9 @@ complete, paste-ready snippet. If <code>FALSE</code> (default), emit just the
 
 
 <dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
-<dd><p>Output path used when <code>write = TRUE</code>.</p></dd>
+<dd><p>Output path. Required when <code>write = TRUE</code> (there is no default
+path – pass an explicit location, e.g. one under <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code>); <code>NULL</code>
+otherwise.</p></dd>
 
 </dl></div>
     <div class="section level2">

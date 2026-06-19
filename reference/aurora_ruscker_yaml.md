@@ -32,7 +32,7 @@ aurora_ruscker_yaml(
   env = NULL,
   wrap = FALSE,
   write = FALSE,
-  file = "ruscker-app.yml"
+  file = NULL
 )
 ```
 
@@ -110,7 +110,10 @@ aurora_ruscker_yaml(
 
 - file:
 
-  Output path used when `write = TRUE`.
+  Output path. Required when `write = TRUE` (there is no default path –
+  pass an explicit location, e.g. one under
+  [`tempdir()`](https://rdrr.io/r/base/tempfile.html)); `NULL`
+  otherwise.
 
 ## Value
 

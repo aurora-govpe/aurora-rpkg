@@ -1,11 +1,12 @@
 # aurora: Build Stateless Web Apps with 'plumber2'
 
 A scaffolding and deployment toolkit for building stateless web
-applications in R on top of 'plumber2'. The UI is authored with 'bslib'
-and compiled to a static HTML asset at build time, while 'plumber2'
-serves the assets and exposes JSON API routes. Provides functions to
-scaffold app skeletons, run them locally, and generate Dockerfiles and
-images suitable for 'ShinyProxy' or plain Docker.
+applications in R on top of the 'plumber2' web framework
+(<https://plumber2.posit.co/>). The UI is authored with 'bslib' and
+compiled to a static HTML asset at build time, while 'plumber2' serves
+the assets and exposes JSON API routes. Provides functions to scaffold
+app skeletons, run them locally, and generate Dockerfiles and images
+suitable for 'ShinyProxy' or plain Docker.
 
 ## See also
 

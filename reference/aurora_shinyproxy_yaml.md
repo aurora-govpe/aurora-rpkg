@@ -19,7 +19,7 @@ aurora_shinyproxy_yaml(
   env = NULL,
   wrap = FALSE,
   write = FALSE,
-  file = "shinyproxy-app.yml"
+  file = NULL
 )
 ```
 
@@ -68,7 +68,10 @@ aurora_shinyproxy_yaml(
 
 - file:
 
-  Output path used when `write = TRUE`.
+  Output path. Required when `write = TRUE` (there is no default path –
+  pass an explicit location, e.g. one under
+  [`tempdir()`](https://rdrr.io/r/base/tempfile.html)); `NULL`
+  otherwise.
 
 ## Value
 

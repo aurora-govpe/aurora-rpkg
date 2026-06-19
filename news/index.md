@@ -1,5 +1,30 @@
 # Changelog
 
+## aurora 0.1.12
+
+### CRAN review fixes
+
+- Package code no longer modifies the global environment:
+  [`aurora_app()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_app.md)
+  now sources `helpers/*.R` into a dedicated environment (parented on
+  the global env) and parses each router with `parse_file(env = )` so
+  handlers still resolve helpers, without anything landing in
+  `.GlobalEnv`.
+- The YAML emitters no longer carry a default output path:
+  [`aurora_shinyproxy_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_shinyproxy_yaml.md)
+  and
+  [`aurora_ruscker_yaml()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_ruscker_yaml.md)
+  take `file = NULL` and require an explicit path when `write = TRUE`
+  (no writes to [`getwd()`](https://rdrr.io/r/base/getwd.html) by
+  default).
+- `DESCRIPTION` adds an auto-linked reference to the ‘plumber2’ web
+  framework.
+
+### Changes
+
+- [`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
+  default pin bumped to `@v0.1.12`.
+
 ## aurora 0.1.11
 
 ### New
@@ -18,7 +43,7 @@
 ### Changes
 
 - [`aurora_dockerfile()`](https://aurora-govpe.github.io/aurora-rpkg/reference/aurora_dockerfile.md)
-  default pin bumped to `@v0.1.11`.
+  default pin bumped to `@v0.1.11` (now `@v0.1.12`).
 
 ## aurora 0.1.10
 
