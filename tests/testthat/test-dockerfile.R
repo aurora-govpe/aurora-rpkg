@@ -15,7 +15,7 @@ test_that("debian flavor (default) targets rocker + PPM binaries", {
   expect_match(df, "packagemanager.posit.co", fixed = TRUE)
   expect_match(df, "HTTPUserAgent", fixed = TRUE)
   expect_match(df, "install.packages(c('plumber2'", fixed = TRUE)
-  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.11')", fixed = TRUE)
+  expect_match(df, "pak::pak('aurora-govpe/aurora-rpkg@v0.1.12')", fixed = TRUE)
   expect_match(df, "CMD [\"Rscript\", \"api.R\"]", fixed = TRUE)
 })
 

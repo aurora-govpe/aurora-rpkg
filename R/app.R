@@ -70,12 +70,18 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
     }
   }
 
-  # Source helpers first so handlers in routers/ can call them. Run them with the
-  # app directory as the working directory (NOT chdir into helpers/) so that
+  # Source helpers first so handlers in routers/ can call them. They go into a
+  # dedicated environment (parented on the global env, so the search path and
+  # attached packages remain visible) -- NOT into `.GlobalEnv` itself, which CRAN
+  # policy forbids a package from modifying. Router handlers resolve helpers by
+  # parsing each router with `env = helper_env` below, so the handler closures
+  # see this environment on their lookup chain. Helpers are run with the app
+  # directory as the working directory (NOT chdir into helpers/) so that
   # app-root-relative paths inside a helper -- e.g. config::get("data/config.yml")
   # or readRDS("data/x.rds") -- resolve exactly as they did under the v1
   # entrypoint, where the process cwd was the app root. (LESSONS: helpers are
   # app-root-relative, not helpers/-relative.)
+  helper_env <- new.env(parent = globalenv())
   helpers <- helper_files(cfg)
   if (length(helpers) > 0) {
     owd <- getwd()
@@ -84,7 +90,7 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
     for (f in helpers) {
       if (verbose) cli::cli_alert_info("Sourcing helper {.path {fs::path_rel(f, dir)}}")
       tryCatch(
-        sys.source(f, envir = globalenv(), chdir = FALSE),
+        sys.source(f, envir = helper_env, chdir = FALSE),
         error = function(e) abort_app_file(f, dir, e, what = "helper")
       )
     }
@@ -105,8 +111,11 @@ aurora_app <- function(dir = ".", rebuild_ui = TRUE,
   }
   for (f in routers) {
     if (verbose) cli::cli_alert_info("Parsing router {.path {fs::path_rel(f, dir)}}")
+    # parse_file(env=) parents the handler-evaluation env on `helper_env` so the
+    # handlers resolve sourced helpers without anything landing in `.GlobalEnv`.
+    # (plumber2::api_parse() offers no `env` hook, hence the R6 method directly.)
     pa <- tryCatch(
-      plumber2::api_parse(pa, f),
+      pa$parse_file(f, env = helper_env),
       error = function(e) abort_app_file(f, dir, e, what = "router")
     )
   }

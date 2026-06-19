@@ -20,7 +20,7 @@ aurora_ruscker_yaml(
   env = NULL,
   wrap = FALSE,
   write = FALSE,
-  file = "ruscker-app.yml"
+  file = NULL
 )
 }
 \arguments{
@@ -65,7 +65,9 @@ complete, paste-ready snippet. If \code{FALSE} (default), emit just the
 
 \item{write}{If \code{TRUE}, also write the YAML to \code{file}.}
 
-\item{file}{Output path used when \code{write = TRUE}.}
+\item{file}{Output path. Required when \code{write = TRUE} (there is no default
+path -- pass an explicit location, e.g. one under \code{\link[=tempdir]{tempdir()}}); \code{NULL}
+otherwise.}
 }
 \value{
 The YAML block as a single string, invisibly.
