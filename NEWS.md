@@ -1,3 +1,19 @@
+# aurora 0.1.12
+
+## CRAN review fixes
+- Package code no longer modifies the global environment: `aurora_app()` now
+  sources `helpers/*.R` into a dedicated environment (parented on the global
+  env) and parses each router with `parse_file(env = )` so handlers still
+  resolve helpers, without anything landing in `.GlobalEnv`.
+- The YAML emitters no longer carry a default output path:
+  `aurora_shinyproxy_yaml()` and `aurora_ruscker_yaml()` take `file = NULL` and
+  require an explicit path when `write = TRUE` (no writes to `getwd()` by
+  default).
+- `DESCRIPTION` adds an auto-linked reference to the 'plumber2' web framework.
+
+## Changes
+- `aurora_dockerfile()` default pin bumped to `@v0.1.12`.
+
 # aurora 0.1.11
 
 ## New
@@ -10,7 +26,7 @@
   replica pool (`min-replicas`/`max-replicas`). See `vignette("deploy")`.
 
 ## Changes
-- `aurora_dockerfile()` default pin bumped to `@v0.1.11`.
+- `aurora_dockerfile()` default pin bumped to `@v0.1.11` (now `@v0.1.12`).
 
 # aurora 0.1.10
 

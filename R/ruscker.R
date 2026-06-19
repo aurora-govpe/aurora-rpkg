@@ -36,7 +36,9 @@
 #'   complete, paste-ready snippet. If `FALSE` (default), emit just the
 #'   `- id: ...` list item to add under your existing `proxy.specs`.
 #' @param write If `TRUE`, also write the YAML to `file`.
-#' @param file Output path used when `write = TRUE`.
+#' @param file Output path. Required when `write = TRUE` (there is no default
+#'   path -- pass an explicit location, e.g. one under [tempdir()]); `NULL`
+#'   otherwise.
 #'
 #' @return The YAML block as a single string, invisibly.
 #' @seealso [aurora_shinyproxy_yaml()] for the interactive ShinyProxy spec.
@@ -58,7 +60,7 @@ aurora_ruscker_yaml <- function(image,
                                 env = NULL,
                                 wrap = FALSE,
                                 write = FALSE,
-                                file = "ruscker-app.yml") {
+                                file = NULL) {
   if (missing(image) || !is.character(image) || length(image) != 1L || !nzchar(image)) {
     cli::cli_abort(c(
       "{.arg image} must be a single non-empty image tag.",
@@ -106,9 +108,14 @@ aurora_ruscker_yaml <- function(image,
   yaml <- yaml::as.yaml(obj, indent = 2)
 
   if (isTRUE(write)) {
-    out <- fs::path(dir, file)
-    writeLines(yaml, out)
-    cli::cli_alert_success("Wrote Ruscker spec to {.path {fs::path_rel(out, dir)}}")
+    if (is.null(file) || !is.character(file) || length(file) != 1L || !nzchar(file)) {
+      cli::cli_abort(c(
+        "{.arg file} must be an explicit output path when {.code write = TRUE}.",
+        i = "There is no default path; pass e.g. {.code file = file.path(tempdir(), \"ruscker-app.yml\")}."
+      ))
+    }
+    writeLines(yaml, file)
+    cli::cli_alert_success("Wrote Ruscker spec to {.path {file}}")
   }
   cli::cli_alert_info("Ruscker {.code type: api} spec for {.val {id}} (image {.val {image}}, port {.val {port}})")
 

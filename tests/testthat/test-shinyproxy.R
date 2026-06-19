@@ -35,9 +35,17 @@ test_that("id/display-name default from the app name", {
 
 test_that("write = TRUE writes the file", {
   d <- withr::local_tempdir()
+  out <- fs::path(d, "sp.yml")
   aurora_shinyproxy_yaml(image = "org/app:latest", id = "demo", dir = d,
-                         write = TRUE, file = "sp.yml")
-  expect_true(fs::file_exists(fs::path(d, "sp.yml")))
+                         write = TRUE, file = out)
+  expect_true(fs::file_exists(out))
+})
+
+test_that("write = TRUE without an explicit file errors", {
+  expect_error(
+    aurora_shinyproxy_yaml(image = "org/app:latest", id = "demo", write = TRUE),
+    "explicit output path"
+  )
 })
 
 test_that("a missing/empty image is rejected", {
