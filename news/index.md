@@ -2,6 +2,8 @@
 
 ## aurora 0.1.12
 
+CRAN release: 2026-06-24
+
 ### CRAN review fixes
 
 - Package code no longer modifies the global environment:
