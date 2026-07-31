@@ -171,7 +171,7 @@ and the [function reference](https://aurora-govpe.github.io/aurora-rpkg/referenc
 ## Authors
 
 - **Andre Leite** — maintainer (leite@castlab.org)
-- Marcos Wasilew · Hugo Vasconcelos · Carlos Amorim · Diogo Bezerra · Júlia Nascimento Barreto
+- Marcos Wasiliew · Hugo Vasconcelos · Carlos Amorim · Diogo Bezerra · Júlia Nascimento Barreto
 
 Developed by the NGR-Dados team (SEPLAG-PE) with UFPE.
 
