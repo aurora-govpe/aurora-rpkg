@@ -4,7 +4,7 @@
 
 - **Andre Leite**. Author, maintainer.
 
-- **Marcos Wasiliew**. Author.
+- **Marcos Wasiliew**. Author. [](https://orcid.org/0009-0004-4694-3159)
 
 - **Hugo Vasconcelos**. Author.
 
@@ -13,6 +13,7 @@
 - **Diogo Bezerra**. Author.
 
 - **Júlia Nascimento Barreto**. Author.
+  [](https://orcid.org/0009-0004-2851-7770)
 
 ## Citation
 

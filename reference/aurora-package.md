@@ -26,7 +26,8 @@ Authors:
 
 - Andre Leite <leite@castlab.org>
 
-- Marcos Wasiliew <marcos.wasilew@gmail.com>
+- Marcos Wasiliew <marcos.wasiliew@gmail.com>
+  ([ORCID](https://orcid.org/0009-0004-4694-3159))
 
 - Hugo Vasconcelos <hugo.vasconcelos@ufpe.br>
 
@@ -35,3 +36,4 @@ Authors:
 - Diogo Bezerra <diogo.bezerra@ufpe.br>
 
 - Júlia Nascimento Barreto <juliabarreto@gd.seplag.pe.gov.br>
+  ([ORCID](https://orcid.org/0009-0004-2851-7770))
