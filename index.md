@@ -185,7 +185,7 @@ reference](https://aurora-govpe.github.io/aurora-rpkg/reference/).
 
 ## Authors
 
-- **Andre Leite** — maintainer (<leite@castlab.org>)
+- **André Leite** — maintainer (<leite@castlab.org>)
 - Marcos Wasiliew · Hugo Vasconcelos · Carlos Amorim · Diogo Bezerra ·
   Júlia Nascimento Barreto
 
